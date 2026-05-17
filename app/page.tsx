@@ -1,94 +1,94 @@
-import Image from "next/image";
-import Link from "next/link";
+import React from 'react';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Reload to get a chance for a different deployment.
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-neutral-800 selection:text-white">
+      {/* Header */}
+      <header className="max-w-5xl mx-auto px-6 py-8 flex justify-between items-center border-b border-neutral-900">
+        <div className="text-xs font-bold tracking-widest text-neutral-200">
+          PURE APPROACH INVESTMENTS
         </div>
-      </div>
+        <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400">
+          <a href="#divisions" className="hover:text-white transition">DIVISIONS</a>
+          <a href="#framework" className="hover:text-white transition">FRAMEWORK</a>
+        </nav>
+      </header>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      {/* Hero Section */}
+      <main className="max-w-4xl mx-auto px-6 pt-20 pb-16">
+        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight bg-gradient-to-r from-white via-neutral-200 to-neutral-400 bg-clip-text text-transparent">
+          Orchestrating High-Growth Capital & Scalable Digital Architecture.
+        </h1>
+        <p className="mt-6 text-base md:text-lg text-neutral-400 leading-relaxed max-w-2xl">
+          Pure Approach Investments is a private holding entity dedicated to systematic wealth accumulation. We deploy capital across a concentrated portfolio of high-performing equity strategies, automated digital assets, and high-margin commerce brands.
+        </p>
+      </main>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <Link
-          href="/page2"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Test a soft nav{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
+      {/* Portfolio Ecosystem */}
+      <section id="divisions" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900">
+        <h2 className="text-xs font-bold tracking-widest text-neutral-500 uppercase mb-12">
+          Portfolio Ecosystem
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900">
+            <h3 className="text-lg font-bold text-neutral-100">Strategic Capital</h3>
+            <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+              Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
+            </p>
+          </div>
+          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900">
+            <h3 className="text-lg font-bold text-neutral-100">Apex Digital Assets</h3>
+            <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+              Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
+            </p>
+          </div>
+          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900">
+            <h3 className="text-lg font-bold text-neutral-100">Enterprise Commerce</h3>
+            <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+              Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* The Framework */}
+      <section id="framework" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900">
+        <div className="max-w-3xl">
+          <h2 className="text-xs font-bold tracking-widest text-neutral-500 uppercase mb-6">
+            The Pure Framework
           </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            To make sure we can navigate.
+          <h3 className="text-xl md:text-2xl font-bold text-neutral-100 leading-snug">
+            Built on absolute structural discipline.
+          </h3>
+          <p className="mt-4 text-sm md:text-base text-neutral-400 leading-relaxed">
+            We believe that sustainable wealth accumulation is built on transparency, structural stability, and real, asset-backed value. Every operational division operates under an uncompromised risk framework:
           </p>
-        </Link>
+          <ul className="mt-8 space-y-4 text-sm text-neutral-400">
+            <li className="flex items-start">
+              <span className="text-neutral-500 mr-3 font-mono">[01]</span>
+              <span><strong className="text-neutral-200">Zero Debt Leverage:</strong> Funded entirely by organic equity capital to eliminate systemic risk.</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-neutral-500 mr-3 font-mono">[02]</span>
+              <span><strong className="text-neutral-200">Asset-Backed Focus:</strong> Prioritizing enterprises exchanging clear, tangible utility for revenue.</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-neutral-500 mr-3 font-mono">[03]</span>
+              <span><strong className="text-neutral-200">Ethical Frameworks:</strong> Completely aligned with clean risk-sharing principles, fully independent of conventional speculative architectures.</span>
+            </li>
+          </ul>
+        </div>
+      </section>
 
-        <a
-          href="https://vercel.com/guides/blue_green_deployments_on_vercel"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Guide{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn how to use blue-green deployments on Vercel
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates/next.js/blue-green-deployments-vercel"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Template{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore blue-green starter template for Next.js.
-          </p>
-        </a>
-      </div>
-    </main>
+      {/* Footer */}
+      <footer className="max-w-5xl mx-auto px-6 py-12 mt-12 border-t border-neutral-900 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 space-y-4 md:space-y-0">
+        <div>
+          © 2026 Pure Approach Investments (Pty) Ltd. All rights reserved.
+        </div>
+        <div className="flex space-x-6">
+          <a href="/privacy" className="hover:text-neutral-400 transition">Privacy Policy</a>
+        </div>
+      </footer>
+    </div>
   );
 }
