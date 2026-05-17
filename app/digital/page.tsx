@@ -10,7 +10,7 @@ export default function DigitalDivision() {
         {/* Prominent, large brand plaque featuring your master logo asset */}
         <div className="bg-[#f4f6f2] p-4 rounded-lg border border-neutral-200 shadow-xl flex items-center justify-center shrink-0">
           <img 
-            src="/1000317549.png" 
+            src="/apexlogo_2d4465f.png" 
             alt="Pure Approach Investments Master Logo" 
             className="h-20 sm:h-24 w-auto object-contain"
           />
