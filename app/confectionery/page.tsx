@@ -2,23 +2,18 @@ import React from 'react';
 
 export default function FrostedDivision() {
   return (
-    <div className="min-h-screen bg-[#070D14] text-slate-200 font-sans selection:bg-slate-800 selection:text-cyan-300">
-       
-      {/* Header Area with Large Logo Featured First (Unified Alignment) */}
+    <div className="min-h-screen bg-[#06111C] text-slate-200 font-sans selection:bg-slate-800 selection:text-cyan-300">
+      
+      {/* Header Area */}
       <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-cyan-500/10 gap-6">
-        
-        {/* Borderless Frosted Nostalgia Logo Element */}
-        <div className="flex items-center justify-center shrink-0">
-          <img 
-            src="/frostedlogo.jpg" 
-            alt="Frosted Nostalgia Logo" 
-            className="h-28 sm:h-32 w-auto object-contain"
-          />
+        {/* High-End Frosted Glassmorphic Header Plaque */}
+        <div className="h-20 w-64 rounded-lg border border-cyan-500/20 bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-4 shadow-2xl">
+          <span className="text-xs font-mono tracking-[0.3em] text-cyan-400 font-bold uppercase">FROSTED NOSTALGIA</span>
         </div>
 
-        {/* Dynamic sub-navigation row */}
+        {/* Navigation row */}
         <div className="w-full flex justify-between items-center mt-4">
-          <a href="/preview" className="text-xs font-bold tracking-[0.2em] text-cyan-500 hover:text-white transition font-mono">
+          <a href="/" className="text-xs font-bold tracking-[0.2em] text-cyan-500 hover:text-white transition font-mono">
             ← PURE APPROACH TERMINAL
           </a>
           <div className="text-xs tracking-widest font-mono flex items-center gap-2 bg-slate-900/80 backdrop-blur-sm px-3 py-1.5 rounded border border-cyan-500/20">
@@ -35,10 +30,9 @@ export default function FrostedDivision() {
             Heritage Assets // Division 04
           </span>
           
-          {/* Icy Platinum/Silver Gradient Title */}
+          {/* Icy Platinum Silver Gradient Title */}
           <h1 className="mt-4 text-4xl md:text-6xl tracking-[0.15em] font-serif font-light uppercase py-2
-            bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_50%,#38BDF8_75%,#0369A1_100%)] 
-            bg-clip-text text-transparent filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+            bg-gradient-to-r from-white via-slate-300 to-cyan-400 bg-clip-text text-transparent filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
             FROSTED NOSTALGIA
           </h1>
           
@@ -47,10 +41,10 @@ export default function FrostedDivision() {
           </p>
         </div>
 
-        {/* Curation Infrastructure Grid */}
+        {/* Operational Infrastructure Grid */}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          {/* Operational Module 01 */}
+          {/* Module 01 */}
           <div className="p-6 rounded-lg bg-slate-900/20 backdrop-blur-md border border-cyan-500/10 hover:border-cyan-400/30 transition duration-500 shadow-2xl">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-serif tracking-wide text-slate-100">Premium Concept Formats</h3>
@@ -67,7 +61,7 @@ export default function FrostedDivision() {
             </div>
           </div>
 
-          {/* Operational Module 02 */}
+          {/* Module 02 */}
           <div className="p-6 rounded-lg bg-slate-900/20 backdrop-blur-md border border-cyan-500/10 hover:border-cyan-400/30 transition duration-500 shadow-2xl">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-serif tracking-wide text-slate-100">Legacy Physical Sourcing</h3>
@@ -89,7 +83,7 @@ export default function FrostedDivision() {
 
       {/* Footer */}
       <footer className="max-w-5xl mx-auto px-6 py-12 border-t border-cyan-500/10 text-xs text-slate-600 font-mono text-center">
-        NODE_STATUS: SECURE // © 2026 PURE APPROACH INVESTMENTS (PTY) LTD. FROSTED NOSTALGIA DIVISION.
+        NODE_STATUS: SECURE // © 2026 PURE APPROACH INVESTMENTS (PTY) LTD.
       </footer>
     </div>
   );
