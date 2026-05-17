@@ -62,7 +62,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-lg font-bold text-neutral-100 mb-3">5. Contact Us</h2>
             <p>
-              If you have any questions about this Privacy Policy, you may contact our administrative desk at: <strong className="text-neutral-200">admin@pureapproach.org</strong>
+              If you have any questions about this Privacy Policy, you may contact our administrative desk at: <strong className="text-neutral-200">invest@pureapproach.org</strong>
             </p>
           </section>
         </div>
