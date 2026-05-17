@@ -18,8 +18,11 @@ export default function CommerceDivision() {
             Flagship Brand
           </span>
           
-          {/* Custom 3D Silver Embossed Header */}
-          <h1 className="mt-4 text-4xl md:text-6xl font-extrabold tracking-widest text-[#D1D5DB] uppercase [text-shadow:_-1px_-1px_0px_rgba(255,255,255,0.3),_1px_1px_0px_rgba(0,0,0,0.8),_2px_4px_6px_rgba(0,0,0,0.9)]">
+          {/* True 135-degree Multi-Stop Metallic Silver Embossed Header */}
+          <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-widest uppercase py-2
+            bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+            bg-clip-text text-transparent 
+            filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
             PRIMERO COLLECTION
           </h1>
           
