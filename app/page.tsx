@@ -62,7 +62,7 @@ export default function Home() {
             <div>
               <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
                 <img 
-                  src="/apexlogo_2d4465f.png" 
+                  src="/apexlogo.png" 
                   alt="Pure Apex Pulse Logo" 
                   className="h-full w-auto object-contain"
                 />
