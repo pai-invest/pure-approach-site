@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#060604] text-white font-sans selection:bg-neutral-800 selection:text-white">
       {/* Header */}
-      <header className="max-w-5xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-neutral-900/50">
+      <header className="max-w-6xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-neutral-900/50">
         <a href="/" className="flex items-center gap-4 hover:opacity-90 transition justify-center sm:justify-start">
           <div className="bg-[#f4f6f2] p-2 sm:p-2.5 border border-neutral-200 shadow-md flex items-center justify-center shrink-0">
             <img 
@@ -34,27 +34,29 @@ export default function Home() {
       </main>
 
       {/* Portfolio Ecosystem */}
-      <section id="divisions" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900/50">
+      <section id="divisions" className="max-w-6xl mx-auto px-6 py-16 border-t border-neutral-900/50">
         <h2 className="text-xs font-bold tracking-wildest text-neutral-500 uppercase mb-12">
           Portfolio Ecosystem
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        {/* Responsive Grid Configured for 4 Balanced Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           
           {/* Card 01: Strategic Capital */}
           <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
             <div>
-              <div className="h-12 w-full mb-6 flex items-center text-neutral-600 font-mono text-[10px] tracking-widest uppercase border border-neutral-900/40 bg-neutral-950 rounded px-3">
+              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
                 <img 
                   src="/pmelogo.png" 
-                  alt="Pure Apex Pulse Logo" 
+                  alt="Strategic Capital Logo" 
                   className="h-full w-auto object-contain"
                 />
               </div>
               <div className="flex justify-between items-start">
-                <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
+                <h3 className="text-base font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
                 <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
               </div>
-              <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+              <p className="mt-3 text-xs text-neutral-400 leading-relaxed">
                 Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
               </p>
             </div>
@@ -72,10 +74,10 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-between items-start">
-                <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Pure Apex Pulse - Digital Assets</h3>
+                <h3 className="text-base font-bold text-neutral-100 group-hover:text-white">Pure Apex Pulse</h3>
                 <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
               </div>
-              <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+              <p className="mt-3 text-xs text-neutral-400 leading-relaxed">
                 Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
               </p>
             </div>
@@ -85,7 +87,6 @@ export default function Home() {
           {/* Card 03: Enterprise Commerce (Primero Collection) */}
           <a href="/commerce" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
             <div>
-              {/* Live Division Logo: Primero Collection */}
               <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
                 <img 
                   src="/primerologo2.png" 
@@ -94,14 +95,35 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-between items-start">
-                <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Enterprise Commerce</h3>
+                <h3 className="text-base font-bold text-neutral-100 group-hover:text-white">Enterprise Commerce</h3>
                 <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
               </div>
-              <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+              <p className="mt-3 text-xs text-neutral-400 leading-relaxed">
                 Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
               </p>
             </div>
             <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">EXPLORE PRIMERO</div>
+          </a>
+
+          {/* Card 04: Frosted Nostalgia */}
+          <a href="/frosted" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
+            <div>
+              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
+                <img 
+                  src="/frostedlogo.png" 
+                  alt="Frosted Nostalgia Logo" 
+                  className="h-full w-auto object-contain"
+                />
+              </div>
+              <div className="flex justify-between items-start">
+                <h3 className="text-base font-bold text-neutral-100 group-hover:text-white">Frosted Nostalgia</h3>
+                <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+              </div>
+              <p className="mt-3 text-xs text-neutral-400 leading-relaxed">
+                Capitalizing on high-margin cultural resurgence, premium retro-modern physical spaces, and curated legacy consumer products.
+              </p>
+            </div>
+            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">RETRIEVE MEMORY</div>
           </a>
 
         </div>
@@ -110,7 +132,7 @@ export default function Home() {
       {/* The Framework */}
       <section id="framework" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900/50">
         <div className="max-w-3xl">
-          <h2 className="text-xs font-bold tracking-widest text-neutral-500 uppercase mb-6">
+          <h2 className="text-xs font-bold tracking-wildest text-neutral-500 uppercase mb-6">
             The Pure Framework
           </h2>
           <h3 className="text-xl md:text-2xl font-bold text-neutral-100 leading-snug">
@@ -121,15 +143,15 @@ export default function Home() {
           </p>
           <ul className="mt-8 space-y-4 text-sm text-neutral-400">
             <li className="flex items-start">
-              <span className="text-neutral-500 mr-3 font-mono">1.</span>
+              <span className="text-neutral-500 mr-3 font-mono">[01]</span>
               <span><strong className="text-neutral-200">Zero Debt Leverage:</strong> Funded entirely by organic equity capital to eliminate systemic risk.</span>
             </li>
             <li className="flex items-start">
-              <span className="text-neutral-500 mr-3 font-mono">2.</span>
+              <span className="text-neutral-500 mr-3 font-mono">[02]</span>
               <span><strong className="text-neutral-200">Asset-Backed Focus:</strong> Prioritizing enterprises exchanging clear, tangible utility for revenue.</span>
             </li>
             <li className="flex items-start">
-              <span className="text-neutral-500 mr-3 font-mono">3.</span>
+              <span className="text-neutral-500 mr-3 font-mono">[03]</span>
               <span><strong className="text-neutral-200">Ethical Frameworks:</strong> Completely aligned with clean risk-sharing principles, fully independent of conventional speculative architectures.</span>
             </li>
           </ul>
@@ -137,7 +159,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="max-w-5xl mx-auto px-6 py-12 mt-12 border-t border-neutral-900/50 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 space-y-4 md:space-y-0">
+      <footer className="max-w-6xl mx-auto px-6 py-12 mt-12 border-t border-neutral-900/50 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 space-y-4 md:space-y-0">
         <div>
           © 2026 Pure Approach Investments (Pty) Ltd. All rights reserved.
         </div>
@@ -148,4 +170,3 @@ export default function Home() {
     </div>
   );
 }
-     
