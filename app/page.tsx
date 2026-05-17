@@ -39,7 +39,6 @@ export default function Home() {
           Portfolio Ecosystem
         </h2>
         
-        {/* Responsive Grid Configured for 4 Balanced Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           
           {/* Card 01: Strategic Capital */}
@@ -106,24 +105,20 @@ export default function Home() {
           </a>
 
           {/* Card 04: Frosted Nostalgia */}
-          <a href="/frosted" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
+          <a href="/frosted" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-blue-400/40 hover:bg-slate-900/30 flex flex-col justify-between">
             <div>
-              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
-                <img 
-                  src="/frostedlogo.jpg" 
-                  alt="Frosted Nostalgia Logo" 
-                  className="h-full w-auto object-contain"
-                />
+              <div className="h-12 w-full mb-6 flex items-center justify-center rounded bg-[#0a1626] border border-blue-950/50 px-3">
+                <span className="text-[10px] font-mono tracking-widest text-blue-400 font-bold uppercase">FROSTED NOSTALGIA</span>
               </div>
               <div className="flex justify-between items-start">
-                <h3 className="text-base font-bold text-neutral-100 group-hover:text-white">Frosted Nostalgia</h3>
-                <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+                <h3 className="text-base font-bold text-neutral-100 group-hover:text-blue-300 transition">Frosted Nostalgia</h3>
+                <span className="text-xs font-mono text-neutral-600 group-hover:text-blue-400 transition">→</span>
               </div>
               <p className="mt-3 text-xs text-neutral-400 leading-relaxed">
                 Capitalizing on high-margin cultural resurgence, premium retro-modern physical spaces, and curated legacy consumer products.
               </p>
             </div>
-            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">RETRIEVE MEMORY</div>
+            <div className="mt-8 text-xs font-mono text-slate-500 group-hover:text-blue-300 transition">RETRIEVE MEMORY</div>
           </a>
 
         </div>
