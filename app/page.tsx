@@ -4,16 +4,20 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#060604] text-white font-sans selection:bg-neutral-800 selection:text-white">
       {/* Header */}
-      <header className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center border-b border-neutral-900/50">
-        <a href="/" className="flex items-center hover:opacity-90 transition">
-          {/* Elegant white plaque container to make the light logo look stunning on dark mode */}
-          <div className="bg-[#f4f6f2] p-1.5 rounded border border-neutral-200 shadow-sm flex items-center justify-center">
+      <header className="max-w-5xl mx-auto px-6 py-6 flex justify-between items-center border-b border-neutral-900/50">
+        <a href="/" className="flex items-center gap-4 hover:opacity-90 transition">
+          {/* Elegant white plaque container */}
+          <div className="bg-[#f4f6f2] p-2.5 rounded border border-neutral-200 shadow-md flex items-center justify-center shrink-0">
             <img 
               src="/pailogo2.png" 
-              alt="Pure Approach Investments" 
-              className="h-9 w-auto object-contain"
+              alt="Pure Approach Investments Logo" 
+              className="h-16 w-auto object-contain"
             />
           </div>
+          {/* Sleek bold company text */}
+          <span className="text-xs md:text-sm font-bold tracking-[0.2em] text-neutral-100 uppercase">
+            Pure Approach Investments
+          </span>
         </a>
         <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400">
           <a href="#divisions" className="hover:text-white transition">DIVISIONS</a>
