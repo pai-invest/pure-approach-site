@@ -54,7 +54,7 @@ export default function Home() {
                 Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
               </p>
             </div>
-            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">VIEW FRAMEWORK // 01</div>
+            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">VIEW FRAMEWORK</div>
           </a>
 
           {/* Card 02: Pure Apex Pulse - Digital Assets */}
@@ -75,7 +75,7 @@ export default function Home() {
                 Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
               </p>
             </div>
-            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">MONITOR PULSE // 02</div>
+            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">MONITOR PULSE</div>
           </a>
 
           {/* Card 03: Enterprise Commerce (Primero Collection) */}
@@ -97,7 +97,7 @@ export default function Home() {
                 Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
               </p>
             </div>
-            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">EXPLORE PRIMERO // 03</div>
+            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">EXPLORE PRIMERO</div>
           </a>
 
         </div>
