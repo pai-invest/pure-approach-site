@@ -4,11 +4,16 @@ export default function FrostedDivision() {
   return (
     <div className="min-h-screen bg-[#070D14] text-slate-200 font-sans selection:bg-slate-800 selection:text-cyan-300">
       
-      {/* Header Area */}
+      {/* Header Area with Large Logo Featured First (Unified Alignment) */}
       <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-cyan-500/10 gap-6">
-        {/* Placeholder Logo Plaque Space until asset is uploaded */}
-        <div className="h-28 w-48 rounded-lg border border-slate-800/40 bg-slate-950/50 backdrop-blur-md flex items-center justify-center p-4 shadow-2xl">
-          <span className="text-[10px] font-mono tracking-widest text-slate-500">[ FROSTED NOSTALGIA LOGO ]</span>
+        
+        {/* Borderless Frosted Nostalgia Logo Element */}
+        <div className="flex items-center justify-center shrink-0">
+          <img 
+            src="/frostedlogo.png" 
+            alt="Frosted Nostalgia Logo" 
+            className="h-28 sm:h-32 w-auto object-contain"
+          />
         </div>
 
         {/* Dynamic sub-navigation row */}
