@@ -44,7 +44,11 @@ export default function Home() {
           <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
             <div>
               <div className="h-12 w-full mb-6 flex items-center text-neutral-600 font-mono text-[10px] tracking-widest uppercase border border-neutral-900/40 bg-neutral-950 rounded px-3">
-                [ LOGO // STRATEGIC CAPITAL ]
+                <img 
+                  src="/pmelogo.png" 
+                  alt="Pure Apex Pulse Logo" 
+                  className="h-full w-auto object-contain"
+                />
               </div>
               <div className="flex justify-between items-start">
                 <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
