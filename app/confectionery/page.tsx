@@ -3,7 +3,7 @@ import React from 'react';
 export default function FrostedDivision() {
   return (
     <div className="min-h-screen bg-[#070D14] text-slate-200 font-sans selection:bg-slate-800 selection:text-cyan-300">
-      
+       
       {/* Header Area with Large Logo Featured First (Unified Alignment) */}
       <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-cyan-500/10 gap-6">
         
