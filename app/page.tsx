@@ -42,27 +42,27 @@ export default function Home() {
         {/* Responsive Grid for 4 Balanced Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          {/* Card 01: Strategic Capital */}
-          <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
-            <div>
-              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
-                <img 
-                  src="/pmelogo.png" 
-                  alt="Strategic Capital Logo" 
-                  className="h-full w-auto object-contain"
-                />
-              </div>
-              <div className="flex justify-between items-start">
-                <h3 className="text-base font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
-                <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
-              </div>
-              <p className="mt-3 text-xs text-neutral-400 leading-relaxed">
-                Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
-              </p>
-            </div>
-            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">VIEW FRAMEWORK</div>
-          </a>
-
+         {/* Card 01: Pi-Metrix Equities */}
+<a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
+  <div>
+    <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
+      <img 
+        src="/pmelogo.png" 
+        alt="Pi-Metrix Equities Logo" 
+        className="h-full w-auto object-contain"
+      />
+    </div>
+    <div className="flex justify-between items-start">
+      <h3 className="text-base font-bold text-neutral-100 group-hover:text-white">Pi-Metrix Equities</h3>
+      <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+    </div>
+    <p className="mt-3 text-xs text-neutral-400 leading-relaxed">
+      Operating as a pure proprietary desk deploying corporate capital through a systematic, metric-driven framework optimized for infinite compounding and capital preservation.
+    </p>
+  </div>
+  <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">ENGAGE DESK</div>
+</a>
+          
           {/* Card 02: Pure Apex Pulse - Digital Assets */}
           <a href="/digital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
             <div>
