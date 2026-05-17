@@ -6,8 +6,8 @@ export default function Home() {
       {/* Header */}
       <header className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center border-b border-neutral-900/50">
         <a href="/" className="flex items-center hover:opacity-90 transition">
-          <img 
-            src="https://images2.imgbox.com/7b/2f/D32S367w_o.png" 
+          <img
+            scr="/pailogo.png" 
             alt="Pure Approach Investments" 
             className="h-12 w-auto object-contain"
           />
