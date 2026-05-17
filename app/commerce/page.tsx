@@ -18,15 +18,31 @@ export default function CommerceDivision() {
             Flagship Brand
           </span>
           
-          {/* True 135-degree Multi-Stop Metallic Silver Embossed Header */}
-          <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-widest uppercase py-2
-            bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
-            bg-clip-text text-transparent 
-            filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
-            PRIMERO COLLECTION
+          {/* PRIMERO COLLECTION TITLE: 
+              - Custom, sleek serif font for "PRIMERO" inspired by your logo
+              - Multi-layered metallic gradient for maximum shine and embossed effect
+              - Pair with complementing silver text shadow.
+          */}
+          <h1 className="mt-4 flex flex-col md:flex-row items-baseline gap-2">
+            <span className="text-5xl md:text-7xl font-light tracking-tight [font-family:'PrimeroSerif',serif]
+              bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+              bg-clip-text text-transparent 
+              filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
+              PRIMERO
+            </span>
+            <span className="text-4xl md:text-5xl font-black tracking-widest uppercase py-2
+              bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+              bg-clip-text text-transparent 
+              filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
+              COLLECTION
+            </span>
           </h1>
           
-          <p className="mt-6 text-base text-slate-400 leading-relaxed max-w-2xl">
+          {/* BRIGHT SHINY SILVER FOR ALL PARAGRAPHS */}
+          <p className="mt-6 text-base leading-relaxed max-w-2xl
+              bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+              bg-clip-text text-transparent 
+              filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
             Bespoke leather goods and essential travel accessories engineered for the modern professional. Built on a foundation of refined minimalism, uncompromising material sourcing, and streamlined global distribution logistics.
           </p>
         </div>
@@ -40,10 +56,18 @@ export default function CommerceDivision() {
               <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: LEATHER TRAVEL ASSETS ]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
-              <h3 className="text-lg font-bold text-slate-100 tracking-wide">The Voyager Bundle</h3>
+              <h3 className="text-lg font-bold tracking-wide
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
+                The Voyager Bundle
+              </h3>
               <span className="text-xs font-mono text-slate-500">CURATED EDITION</span>
             </div>
-            <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+            <p className="mt-2 text-sm text-slate-400 leading-relaxed
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
               A seamless integration of premium travel accessories, crafted from hand-selected full-grain leather designed to age beautifully through global transit.
             </p>
           </div>
@@ -54,10 +78,18 @@ export default function CommerceDivision() {
               <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: ESSENTIAL ACCESSORIES ]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
-              <h3 className="text-lg font-bold text-slate-100 tracking-wide">The Desk & Transit Set</h3>
+              <h3 className="text-lg font-bold tracking-wide
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
+                The Desk & Transit Set
+              </h3>
               <span className="text-xs font-mono text-slate-500">DAILY UTILITY</span>
             </div>
-            <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+            <p className="mt-2 text-sm leading-relaxed
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
               Sleek, minimalist small leather goods balancing professional aesthetic demands with high-durability daily protection.
             </p>
           </div>
@@ -65,19 +97,38 @@ export default function CommerceDivision() {
 
         {/* Operational Excellence */}
         <div className="mt-32 max-w-3xl border-t border-slate-800/40 pt-16">
-          <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono mb-8">
+          <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono mb-8
+              bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+              bg-clip-text text-transparent 
+              filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
             Supply Chain & Architecture
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slate-400">
             <div>
-              <h4 className="text-slate-200 font-bold mb-2 tracking-wide">Premium Procurement</h4>
-              <p className="leading-relaxed">
+              <h4 className="font-bold mb-2 tracking-wide
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
+                Premium Procurement
+              </h4>
+              <p className="leading-relaxed
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
                 We circumvent traditional wholesale inflation by establishing direct sourcing lines with premium ethical tanneries and artisan manufacturers.
               </p>
             </div>
             <div>
-              <h4 className="text-slate-200 font-bold mb-2 tracking-wide">Kitted Logistics</h4>
-              <p className="leading-relaxed">
+              <h4 className="font-bold mb-2 tracking-wide
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
+                Kitted Logistics
+              </h4>
+              <p className="leading-relaxed
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+                bg-clip-text text-transparent 
+                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
                 By utilizing optimized bundling models and automated delivery pipelines, we ensure premium customer unboxing experiences while maintaining superior operating margins.
               </p>
             </div>
@@ -86,7 +137,10 @@ export default function CommerceDivision() {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-5xl mx-auto px-6 py-12 border-t border-slate-800/40 text-xs text-slate-500">
+      <footer className="max-w-5xl mx-auto px-6 py-12 border-t border-slate-800/40 text-xs text-slate-500
+          bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
+          bg-clip-text text-transparent 
+          filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
         © 2026 Pure Approach Investments (Pty) Ltd. Primero Collection Division.
       </footer>
     </div>
