@@ -1,17 +1,17 @@
-import React from 'react';
+ import React from 'react';
 
 export default function DigitalDivision() {
   return (
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
       
-      {/* Header Area with Large Master Logo as the First Element */}
+      {/* Header Area with Large Apex Pulse Logo as the First Element */}
       <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#10B981]/10 gap-6">
         
-        {/* Plaque container with border removed, matching the exact same spacing dimensions */}
+        {/* Plaque container featuring the newly provided official Apex Pulse asset */}
         <div className="bg-[#f4f6f2] p-4 rounded-lg shadow-xl flex items-center justify-center shrink-0">
           <img 
-            src="/apexlogo_2d4465f.png" 
-            alt="Pure Approach Investments Master Logo" 
+            src="/apexlogo.png" 
+            alt="Pure Apex Pulse Logo" 
             className="h-20 sm:h-24 w-auto object-contain"
           />
         </div>
@@ -29,7 +29,7 @@ export default function DigitalDivision() {
       </header>
 
       {/* Brand Hero */}
-      <main className="max-w-5xl mx-auto px-6 pt-16 pb-16">
+      <main className="max-w-4xl mx-auto px-6 pt-16 pb-16">
         <div className="max-w-3xl">
           <span className="text-xs font-bold tracking-[0.4em] text-[#10B981] uppercase font-mono">
             System Registry // Division 02
@@ -122,4 +122,4 @@ export default function DigitalDivision() {
     </div>
   );
 }
-
+                 
