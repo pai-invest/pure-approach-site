@@ -16,7 +16,7 @@ export default function Home() {
           </div>
           {/* Sleek bold company text */}
           <span className="text-xs md:text-sm font-bold tracking-[0.2em] text-neutral-100 uppercase">
-            Pure Approach Investments
+            Pure Approach Investments (Pty) Ltd
           </span>
         </a>
         <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400">
@@ -42,7 +42,7 @@ export default function Home() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          {/* Card 01: Strategic Capital */}
+          {/* Card 01: Strategic Capital Investments*/}
           <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
             <div className="flex justify-between items-start">
               <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
@@ -54,10 +54,10 @@ export default function Home() {
             <div className="mt-6 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">VIEW FRAMEWORK // 01</div>
           </a>
 
-          {/* Card 02: Apex Digital Assets */}
+          {/* Card 02: Pure Apex Pulse - Digital Assets */}
           <a href="/digital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
             <div className="flex justify-between items-start">
-              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Apex Digital Assets</h3>
+              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Pure Apex Pulse</h3>
               <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
             </div>
             <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
