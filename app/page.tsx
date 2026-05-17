@@ -2,11 +2,16 @@ import React from 'react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-neutral-800 selection:text-white">
+    <div className="min-h-screen bg-[#060604] text-white font-sans selection:bg-neutral-800 selection:text-white">
       {/* Header */}
-      <header className="max-w-5xl mx-auto px-6 py-8 flex justify-between items-center border-b border-neutral-900">
-        <div className="text-xs font-bold tracking-widest text-neutral-200">
-          PURE APPROACH INVESTMENTS
+      <header className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center border-b border-neutral-900/50">
+        <div className="flex items-center">
+          {/* Displays your uploaded logo file seamlessly */}
+          <img 
+            src="/1000313390.png" 
+            alt="Pure Approach Investments" 
+            className="h-12 w-auto object-contain"
+          />
         </div>
         <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400">
           <a href="#divisions" className="hover:text-white transition">DIVISIONS</a>
@@ -25,24 +30,24 @@ export default function Home() {
       </main>
 
       {/* Portfolio Ecosystem */}
-      <section id="divisions" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900">
+      <section id="divisions" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900/50">
         <h2 className="text-xs font-bold tracking-widest text-neutral-500 uppercase mb-12">
           Portfolio Ecosystem
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900">
+          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900/60">
             <h3 className="text-lg font-bold text-neutral-100">Strategic Capital</h3>
             <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
               Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
             </p>
           </div>
-          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900">
+          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900/60">
             <h3 className="text-lg font-bold text-neutral-100">Apex Digital Assets</h3>
             <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
               Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
             </p>
           </div>
-          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900">
+          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900/60">
             <h3 className="text-lg font-bold text-neutral-100">Enterprise Commerce</h3>
             <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
               Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
@@ -52,7 +57,7 @@ export default function Home() {
       </section>
 
       {/* The Framework */}
-      <section id="framework" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900">
+      <section id="framework" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900/50">
         <div className="max-w-3xl">
           <h2 className="text-xs font-bold tracking-widest text-neutral-500 uppercase mb-6">
             The Pure Framework
@@ -81,7 +86,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="max-w-5xl mx-auto px-6 py-12 mt-12 border-t border-neutral-900 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 space-y-4 md:space-y-0">
+      <footer className="max-w-5xl mx-auto px-6 py-12 mt-12 border-t border-neutral-900/50 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 space-y-4 md:space-y-0">
         <div>
           © 2026 Pure Approach Investments (Pty) Ltd. All rights reserved.
         </div>
