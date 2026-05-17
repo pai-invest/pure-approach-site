@@ -4,18 +4,20 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#060604] text-white font-sans selection:bg-neutral-800 selection:text-white">
       {/* Header */}
-      <header className="max-w-5xl mx-auto px-6 py-6 flex justify-between items-center border-b border-neutral-900/50">
-        <a href="/" className="flex items-center gap-4 hover:opacity-90 transition">
-          {/* Elegant white plaque container */}
-          <div className="bg-[#f4f6f2] p-2.5 rounded border border-neutral-200 shadow-md flex items-center justify-center shrink-0">
+      <header className="max-w-5xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-neutral-900/50">
+        <a href="/" className="flex items-center gap-4 hover:opacity-90 transition justify-center sm:justify-start">
+          <div className="bg-[#f4f6f2] p-2 sm:p-2.5 border border-neutral-200 shadow-md flex items-center justify-center shrink-0">
             <img 
               src="/pailogo2.png" 
               alt="Pure Approach Investments Logo" 
-              className="h-16 w-auto object-contain"
+              className="h-12 sm:h-16 w-auto object-contain"
             />
           </div>
+          <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-neutral-100 uppercase whitespace-nowrap">
+            Pure Approach Investments
+          </span>
         </a>
-        <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400">
+        <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400 justify-center sm:justify-end">
           <a href="#divisions" className="hover:text-white transition">DIVISIONS</a>
           <a href="#framework" className="hover:text-white transition">FRAMEWORK</a>
         </nav>
@@ -33,45 +35,69 @@ export default function Home() {
 
       {/* Portfolio Ecosystem */}
       <section id="divisions" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900/50">
-        <h2 className="text-xs font-bold tracking-widest text-neutral-500 uppercase mb-12">
+        <h2 className="text-xs font-bold tracking-wildest text-neutral-500 uppercase mb-12">
           Portfolio Ecosystem
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          {/* Card 01: Strategic Capital Investments*/}
-          <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
-              <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+          {/* Card 01: Strategic Capital */}
+          <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
+            <div>
+              <div className="h-12 w-full mb-6 flex items-center text-neutral-600 font-mono text-[10px] tracking-widest uppercase border border-neutral-900/40 bg-neutral-950 rounded px-3">
+                [ LOGO // STRATEGIC CAPITAL ]
+              </div>
+              <div className="flex justify-between items-start">
+                <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
+                <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+              </div>
+              <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+                Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
+              </p>
             </div>
-            <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
-              Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
-            </p>
-            <div className="mt-6 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">VIEW FRAMEWORK // 01</div>
+            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">VIEW FRAMEWORK // 01</div>
           </a>
 
           {/* Card 02: Pure Apex Pulse - Digital Assets */}
-          <a href="/digital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Pure Apex Pulse</h3>
-              <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+          <a href="/digital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
+            <div>
+              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
+                <img 
+                  src="/apexlogo_2d4465f.png" 
+                  alt="Pure Apex Pulse Logo" 
+                  className="h-full w-auto object-contain"
+                />
+              </div>
+              <div className="flex justify-between items-start">
+                <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Pure Apex Pulse - Digital Assets</h3>
+                <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+              </div>
+              <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+                Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
+              </p>
             </div>
-            <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
-              Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
-            </p>
-            <div className="mt-6 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">MONITOR PULSE // 02</div>
+            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">MONITOR PULSE // 02</div>
           </a>
 
-          {/* Card 03: Enterprise Commerce */}
-          <a href="/commerce" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
-            <div className="flex justify-between items-start">
-              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Enterprise Commerce</h3>
-              <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+          {/* Card 03: Enterprise Commerce (Primero Collection) */}
+          <a href="/commerce" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
+            <div>
+              {/* Live Division Logo: Primero Collection */}
+              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
+                <img 
+                  src="/primerologo.png" 
+                  alt="Primero Collection Logo" 
+                  className="h-full w-auto object-contain"
+                />
+              </div>
+              <div className="flex justify-between items-start">
+                <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Enterprise Commerce</h3>
+                <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+              </div>
+              <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
+                Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
+              </p>
             </div>
-            <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
-              Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
-            </p>
-            <div className="mt-6 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">EXPLORE PRIMERO // 03</div>
+            <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">EXPLORE PRIMERO // 03</div>
           </a>
 
         </div>
@@ -118,3 +144,4 @@ export default function Home() {
     </div>
   );
 }
+     
