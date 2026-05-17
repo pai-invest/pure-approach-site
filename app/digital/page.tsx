@@ -32,7 +32,7 @@ export default function DigitalDivision() {
       <main className="max-w-5xl mx-auto px-6 pt-16 pb-16">
         <div className="max-w-3xl">
           <span className="text-xs font-bold tracking-[0.4em] text-[#10B981] uppercase font-mono">
-            System Registry // Division 02
+            DIGITAL ASSETS
           </span>
           
           {/* Classy 24K Liquid Gold Serif Typography */}
