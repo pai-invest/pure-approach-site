@@ -5,14 +5,13 @@ export default function Home() {
     <div className="min-h-screen bg-[#060604] text-white font-sans selection:bg-neutral-800 selection:text-white">
       {/* Header */}
       <header className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center border-b border-neutral-900/50">
-        <div className="flex items-center">
-          {/* Displays your uploaded logo file seamlessly */}
+        <a href="/" className="flex items-center hover:opacity-90 transition">
           <img 
-            src="/apexlogo_2d4465f.png" 
+            src="https://images2.imgbox.com/7b/2f/D32S367w_o.png" 
             alt="Pure Approach Investments" 
             className="h-12 w-auto object-contain"
           />
-        </div>
+        </a>
         <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400">
           <a href="#divisions" className="hover:text-white transition">DIVISIONS</a>
           <a href="#framework" className="hover:text-white transition">FRAMEWORK</a>
@@ -35,24 +34,43 @@ export default function Home() {
           Portfolio Ecosystem
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900/60">
-            <h3 className="text-lg font-bold text-neutral-100">Strategic Capital</h3>
+          
+          {/* Card 01: Strategic Capital Investments */}
+          <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Strategic Capital</h3>
+              <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+            </div>
             <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
               Utilizing a disciplined barbell strategy to protect foundational capital while aggressively capturing upside momentum in high-growth global equity markets.
             </p>
-          </div>
-          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900/60">
-            <h3 className="text-lg font-bold text-neutral-100">Apex Digital Assets</h3>
+            <div className="mt-6 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">VIEW FRAMEWORK // 01</div>
+          </a>
+
+          {/* Card 02: Pure Apex Pulse - Digital Assets */}
+          <a href="/digital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Pure Apex Pulse</h3>
+              <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+            </div>
             <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
               Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
             </p>
-          </div>
-          <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-900/60">
-            <h3 className="text-lg font-bold text-neutral-100">Enterprise Commerce</h3>
+            <div className="mt-6 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">MONITOR PULSE // 02</div>
+          </a>
+
+          {/* Card 03: Enterprise Commerce */}
+          <a href="/commerce" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40">
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-bold text-neutral-100 group-hover:text-white">Enterprise Commerce</h3>
+              <span className="text-xs font-mono text-neutral-600 group-hover:text-neutral-400 transition">→</span>
+            </div>
             <p className="mt-3 text-sm text-neutral-400 leading-relaxed">
               Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
             </p>
-          </div>
+            <div className="mt-6 text-xs font-mono text-neutral-500 group-hover:text-neutral-300 transition">EXPLORE PRIMERO // 03</div>
+          </a>
+
         </div>
       </section>
 
