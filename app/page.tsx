@@ -8,7 +8,7 @@ export default function Home() {
         <div className="flex items-center">
           {/* Displays your uploaded logo file seamlessly */}
           <img 
-            src="/1000313390.png" 
+            src="/apexlogo_2d4465f.png" 
             alt="Pure Approach Investments" 
             className="h-12 w-auto object-contain"
           />
