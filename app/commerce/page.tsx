@@ -8,7 +8,7 @@ export default function CommerceDivision() {
         <a href="/preview" className="text-xs font-bold tracking-widest text-slate-400 hover:text-white transition">
           ← PURE APPROACH TERMINAL
         </a>
-        <div className="text-xs tracking-widest text-slate-500 font-mono">DIVISION // 03</div>
+        <div className="text-xs tracking-widest text-slate-500 font-mono">primerologo2.png</div>
       </header>
 
       {/* Brand Hero */}
@@ -53,7 +53,7 @@ export default function CommerceDivision() {
           {/* Collection Bundle 01 */}
           <div className="group cursor-pointer">
             <div className="aspect-[4/5] w-full bg-[#0E1A30] border border-slate-800/50 rounded-lg flex items-center justify-center p-8 transition group-hover:border-slate-700 shadow-lg">
-              <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: LEATHER TRAVEL ASSETS ]</span>
+              <span className="text-xs tracking-widest text-slate-500 font-mono">[ COMING SOON ]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
               <h3 className="text-lg font-bold tracking-wide
@@ -75,7 +75,7 @@ export default function CommerceDivision() {
           {/* Collection Bundle 02 */}
           <div className="group cursor-pointer">
             <div className="aspect-[4/5] w-full bg-[#0E1A30] border border-slate-800/50 rounded-lg flex items-center justify-center p-8 transition group-hover:border-slate-700 shadow-lg">
-              <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: ESSENTIAL ACCESSORIES ]</span>
+              <span className="text-xs tracking-widest text-slate-500 font-mono">[ COMING SOON ]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
               <h3 className="text-lg font-bold tracking-wide
