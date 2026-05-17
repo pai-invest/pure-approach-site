@@ -1,18 +1,18 @@
- import React from 'react';
+import React from 'react';
 
 export default function DigitalDivision() {
   return (
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
       
-      {/* Header Area with Large Apex Pulse Logo as the First Element */}
+      {/* Header Area */}
       <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#10B981]/10 gap-6">
         
-        {/* Plaque container featuring the newly provided official Apex Pulse asset */}
-        <div className="bg-[#f4f6f2] p-4 rounded-lg shadow-xl flex items-center justify-center shrink-0">
+        {/* Official Apex Pulse Logo filling the entire previous footprint seamlessly */}
+        <div className="flex items-center justify-center shrink-0">
           <img 
             src="/apexlogo.png" 
             alt="Pure Apex Pulse Logo" 
-            className="h-20 sm:h-24 w-auto object-contain"
+            className="h-28 sm:h-32 w-auto object-contain"
           />
         </div>
 
@@ -122,4 +122,3 @@ export default function DigitalDivision() {
     </div>
   );
 }
-                 
