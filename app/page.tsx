@@ -84,7 +84,7 @@ export default function Home() {
               {/* Live Division Logo: Primero Collection */}
               <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
                 <img 
-                  src="/primerologo1.png" 
+                  src="/primerologo1.jpg" 
                   alt="Primero Collection Logo" 
                   className="h-full w-auto object-contain"
                 />
