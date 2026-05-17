@@ -117,15 +117,15 @@ export default function Home() {
           </p>
           <ul className="mt-8 space-y-4 text-sm text-neutral-400">
             <li className="flex items-start">
-              <span className="text-neutral-500 mr-3 font-mono">[01]</span>
+              <span className="text-neutral-500 mr-3 font-mono">1.</span>
               <span><strong className="text-neutral-200">Zero Debt Leverage:</strong> Funded entirely by organic equity capital to eliminate systemic risk.</span>
             </li>
             <li className="flex items-start">
-              <span className="text-neutral-500 mr-3 font-mono">[02]</span>
+              <span className="text-neutral-500 mr-3 font-mono">2.</span>
               <span><strong className="text-neutral-200">Asset-Backed Focus:</strong> Prioritizing enterprises exchanging clear, tangible utility for revenue.</span>
             </li>
             <li className="flex items-start">
-              <span className="text-neutral-500 mr-3 font-mono">[03]</span>
+              <span className="text-neutral-500 mr-3 font-mono">3.</span>
               <span><strong className="text-neutral-200">Ethical Frameworks:</strong> Completely aligned with clean risk-sharing principles, fully independent of conventional speculative architectures.</span>
             </li>
           </ul>
