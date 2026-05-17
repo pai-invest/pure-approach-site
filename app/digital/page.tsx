@@ -7,8 +7,8 @@ export default function DigitalDivision() {
       {/* Header Area with Large Master Logo as the First Element */}
       <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#10B981]/10 gap-6">
         
-        {/* Prominent, large brand plaque featuring your master logo asset */}
-        <div className="bg-[#f4f6f2] p-4 rounded-lg border border-neutral-200 shadow-xl flex items-center justify-center shrink-0">
+        {/* Plaque container with border removed, matching the exact same spacing dimensions */}
+        <div className="bg-[#f4f6f2] p-4 rounded-lg shadow-xl flex items-center justify-center shrink-0">
           <img 
             src="/apexlogo_2d4465f.png" 
             alt="Pure Approach Investments Master Logo" 
@@ -32,7 +32,7 @@ export default function DigitalDivision() {
       <main className="max-w-5xl mx-auto px-6 pt-16 pb-16">
         <div className="max-w-3xl">
           <span className="text-xs font-bold tracking-[0.4em] text-[#10B981] uppercase font-mono">
-            DIGITAL ASSETS
+            System Registry // Division 02
           </span>
           
           {/* Classy 24K Liquid Gold Serif Typography */}
@@ -122,3 +122,4 @@ export default function DigitalDivision() {
     </div>
   );
 }
+
