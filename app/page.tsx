@@ -14,10 +14,6 @@ export default function Home() {
               className="h-16 w-auto object-contain"
             />
           </div>
-          {/* Sleek bold company text */}
-          <span className="text-xs md:text-sm font-bold tracking-[0.2em] text-neutral-100 uppercase">
-            Pure Approach Investments (Pty) Ltd
-          </span>
         </a>
         <nav className="flex space-x-6 text-xs tracking-wider text-neutral-400">
           <a href="#divisions" className="hover:text-white transition">DIVISIONS</a>
