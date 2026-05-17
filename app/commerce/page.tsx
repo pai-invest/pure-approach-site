@@ -3,26 +3,39 @@ import React from 'react';
 export default function CommerceDivision() {
   return (
     <div className="min-h-screen bg-[#0A1224] text-slate-300 font-sans selection:bg-slate-800 selection:text-white">
-      {/* Navigation */}
-      <header className="max-w-5xl mx-auto px-6 py-8 flex justify-between items-center border-b border-slate-800/40">
-        <a href="/preview" className="text-xs font-bold tracking-widest text-slate-400 hover:text-white transition">
-          ← PURE APPROACH TERMINAL
-        </a>
-        <div className="text-xs tracking-widest text-slate-500 font-mono">primerologo2.png</div>
+      
+      {/* Header Area with Large Primero Logo as the First Element (Matches Pulse & Capital Layout) */}
+      <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-slate-800/40 gap-6">
+        
+        {/* Seamless Primero Logo Integration (Borderless, no box plaque) */}
+        <div className="flex items-center justify-center shrink-0">
+          <img 
+            src="/primerologo2.png" 
+            alt="Primero Collection Logo" 
+            className="h-28 sm:h-32 w-auto object-contain"
+          />
+        </div>
+
+        {/* Dynamic sub-navigation row */}
+        <div className="w-full flex justify-between items-center mt-4">
+          <a href="/preview" className="text-xs font-bold tracking-[0.2em] text-slate-400 hover:text-white transition font-mono">
+            ← PURE APPROACH TERMINAL
+          </a>
+          <div className="text-xs tracking-widest font-mono flex items-center gap-2 bg-slate-900/40 px-3 py-1.5 rounded border border-slate-800/30">
+            <span className="w-2 h-2 rounded-full bg-slate-400 animate-pulse shadow-[0_0_10px_#94a3b8]"></span>
+            <span className="text-slate-300 font-bold font-mono">COMMERCE // DISTRIBUTION_NODE</span>
+          </div>
+        </div>
       </header>
 
       {/* Brand Hero */}
-      <main className="max-w-5xl mx-auto px-6 pt-20 pb-16">
+      <main className="max-w-4xl mx-auto px-6 pt-16 pb-16">
         <div className="max-w-3xl">
-          <span className="text-xs font-bold tracking-[0.3em] text-slate-400 uppercase font-mono">
-            Flagship Brand
+          <span className="text-xs font-bold tracking-[0.4em] text-slate-500 uppercase font-mono">
+            Flagship Brand // Division 03
           </span>
           
-          {/* PRIMERO COLLECTION TITLE: 
-              - Custom, sleek serif font for "PRIMERO" inspired by your logo
-              - Multi-layered metallic gradient for maximum shine and embossed effect
-              - Pair with complementing silver text shadow.
-          */}
+          {/* Custom 3D Silver Embossed Header Layout */}
           <h1 className="mt-4 flex flex-col md:flex-row items-baseline gap-2">
             <span className="text-5xl md:text-7xl font-light tracking-tight [font-family:'PrimeroSerif',serif]
               bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
@@ -38,8 +51,8 @@ export default function CommerceDivision() {
             </span>
           </h1>
           
-          {/* BRIGHT SHINY SILVER FOR ALL PARAGRAPHS */}
-          <p className="mt-6 text-base leading-relaxed max-w-2xl
+          {/* Bright Shiny Silver Summary Paragraph */}
+          <p className="mt-6 text-base leading-relaxed max-w-2xl font-light
               bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
               bg-clip-text text-transparent 
               filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
@@ -53,7 +66,7 @@ export default function CommerceDivision() {
           {/* Collection Bundle 01 */}
           <div className="group cursor-pointer">
             <div className="aspect-[4/5] w-full bg-[#0E1A30] border border-slate-800/50 rounded-lg flex items-center justify-center p-8 transition group-hover:border-slate-700 shadow-lg">
-              <span className="text-xs tracking-widest text-slate-500 font-mono">[ COMING SOON ]</span>
+              <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: LEATHER TRAVEL ASSETS ]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
               <h3 className="text-lg font-bold tracking-wide
@@ -64,7 +77,7 @@ export default function CommerceDivision() {
               </h3>
               <span className="text-xs font-mono text-slate-500">CURATED EDITION</span>
             </div>
-            <p className="mt-2 text-sm text-slate-400 leading-relaxed
+            <p className="mt-2 text-sm leading-relaxed font-light
                 bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
                 bg-clip-text text-transparent 
                 filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
@@ -75,7 +88,7 @@ export default function CommerceDivision() {
           {/* Collection Bundle 02 */}
           <div className="group cursor-pointer">
             <div className="aspect-[4/5] w-full bg-[#0E1A30] border border-slate-800/50 rounded-lg flex items-center justify-center p-8 transition group-hover:border-slate-700 shadow-lg">
-              <span className="text-xs tracking-widest text-slate-500 font-mono">[ COMING SOON ]</span>
+              <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: ESSENTIAL ACCESSORIES ]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
               <h3 className="text-lg font-bold tracking-wide
@@ -86,7 +99,7 @@ export default function CommerceDivision() {
               </h3>
               <span className="text-xs font-mono text-slate-500">DAILY UTILITY</span>
             </div>
-            <p className="mt-2 text-sm leading-relaxed
+            <p className="mt-2 text-sm leading-relaxed font-light
                 bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
                 bg-clip-text text-transparent 
                 filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
@@ -97,13 +110,13 @@ export default function CommerceDivision() {
 
         {/* Operational Excellence */}
         <div className="mt-32 max-w-3xl border-t border-slate-800/40 pt-16">
-          <h2 className="text-xs font-bold tracking-widest text-slate-400 uppercase font-mono mb-8
+          <h2 className="text-xs font-bold tracking-widest uppercase font-mono mb-8
               bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
               bg-clip-text text-transparent 
               filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
             Supply Chain & Architecture
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-slate-400">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
             <div>
               <h4 className="font-bold mb-2 tracking-wide
                 bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
@@ -111,7 +124,7 @@ export default function CommerceDivision() {
                 filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
                 Premium Procurement
               </h4>
-              <p className="leading-relaxed
+              <p className="leading-relaxed font-light
                 bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
                 bg-clip-text text-transparent 
                 filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
@@ -125,7 +138,7 @@ export default function CommerceDivision() {
                 filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
                 Kitted Logistics
               </h4>
-              <p className="leading-relaxed
+              <p className="leading-relaxed font-light
                 bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
                 bg-clip-text text-transparent 
                 filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
@@ -137,7 +150,7 @@ export default function CommerceDivision() {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-5xl mx-auto px-6 py-12 border-t border-slate-800/40 text-xs text-slate-500
+      <footer className="max-w-5xl mx-auto px-6 py-12 border-t border-slate-800/40 text-xs text-center
           bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
           bg-clip-text text-transparent 
           filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
