@@ -9,7 +9,7 @@ export default function Home() {
           {/* Elegant white plaque container to make the light logo look stunning on dark mode */}
           <div className="bg-[#f4f6f2] p-1.5 rounded border border-neutral-200 shadow-sm flex items-center justify-center">
             <img 
-              src="/pailogo.png" 
+              src="/pailogo2.png" 
               alt="Pure Approach Investments" 
               className="h-9 w-auto object-contain"
             />
