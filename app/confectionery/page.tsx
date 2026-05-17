@@ -10,7 +10,7 @@ export default function FrostedDivision() {
         {/* Borderless Frosted Nostalgia Logo Element */}
         <div className="flex items-center justify-center shrink-0">
           <img 
-            src="/frostedlogo.png" 
+            src="/frostedlogo.jpg" 
             alt="Frosted Nostalgia Logo" 
             className="h-28 sm:h-32 w-auto object-contain"
           />
