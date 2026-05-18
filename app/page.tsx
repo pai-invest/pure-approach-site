@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="min-h-screen selection:bg-[#426F64]/20 selection:text-[#203340] pb-24" style={{ backgroundColor: brandColors.background, color: brandColors.slate, ...corporateFont }}>
       
-      {/* Structural Header (Retained for navigation context) */}
+      {/* Structural Header */}
       <header className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-[#B9BBB7]/40">
         <a href="/" className="flex items-center gap-4 hover:opacity-80 transition justify-center sm:justify-start">
           <div className="bg-white p-2.5 border border-[#B9BBB7]/50 shadow-sm flex items-center justify-center shrink-0 rounded">
@@ -65,17 +65,17 @@ export default function Home() {
           Portfolio Ecosystem
         </h2>
         
-        {/* Grid for Cards 01 - 04 with Full-Bleed Logo Boxes */}
+        {/* Grid for Cards 01 - 04 with Scaled, Non-Clipping Boxes */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
           
           {/* Card 01: Pi-Metrix Equities */}
           <a href="/capital" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
+              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm">
                 <img 
                   src="/pmelogo.png" 
                   alt="Pi-Metrix Equities Logo" 
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -83,7 +83,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                Operating as a pure proprietary desk deploying corporate capital through a systematic, metric-driven framework optimized for infinite compounding.
+                Operating as a pure proprietary desk deploying corporate capital through a systematic, metric-driven framework optimized for infinite compounding and capital preservation.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>ENGAGE DESK</div>
@@ -92,11 +92,11 @@ export default function Home() {
           {/* Card 02: Pure Apex Pulse */}
           <a href="/digital" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
+              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm">
                 <img 
                   src="/apexlogo.png" 
                   alt="Pure Apex Pulse Logo" 
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -104,7 +104,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and content engines.
+                Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>MONITOR PULSE</div>
@@ -113,11 +113,11 @@ export default function Home() {
           {/* Card 03: Enterprise Commerce */}
           <a href="/commerce" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
+              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm">
                 <img 
                   src="/primerologo2.png" 
                   alt="Primero Collection Logo" 
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -134,11 +134,11 @@ export default function Home() {
           {/* Card 04: Frosted Nostalgia */}
           <a href="/frosted" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
+              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm">
                 <img 
                   src="/frostedlogo.jpg" 
                   alt="Frosted Nostalgia Logo" 
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -146,7 +146,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes.
+                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes since 2014.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>VIEW ARTISTRY</div>
@@ -154,15 +154,15 @@ export default function Home() {
 
         </div>
 
-        {/* Card 05: Full-Width Foundation Capstone with Full-Bleed Logo Box */}
+        {/* Card 05: Full-Width Foundation Capstone with Correct Scaling */}
         <a href="/legacy" className="group block w-full p-8 md:p-10 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mt-6">
           <div className="flex-1">
             <div className="flex flex-col md:flex-row md:items-center gap-6 mb-4">
-              <div className="h-24 w-full md:w-48 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm shrink-0">
+              <div className="h-28 w-full md:w-56 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm shrink-0">
                 <img 
                   src="/legacylogo.png" 
                   alt="Pure Legacy Foundation Logo" 
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
               <div>
@@ -171,7 +171,7 @@ export default function Home() {
               </div>
             </div>
             <p className="mt-4 text-sm md:text-base leading-relaxed max-w-3xl font-medium" style={{ color: '#5A6C77' }}>
-              Transforming corporate success into sustainable, real-world impact. We approach philanthropy with the same strategic precision that drives our investment operations.
+              Transforming corporate success into sustainable, real-world impact. We approach philanthropy with the same strategic precision that drives our investment operations, bypassing institutional layers to direct capital toward critical community needs and restoration.
             </p>
           </div>
           <div className="shrink-0 flex items-center gap-3 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>
