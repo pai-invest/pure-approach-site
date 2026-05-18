@@ -8,7 +8,6 @@ const globalFont = Playfair_Display({
 });
 
 export default function PureLegacyFoundation() {
-  // Adjusted gradient to look rich against the darker green background
   const legacyGradientStyle = {
     backgroundImage: 'linear-gradient(135deg, #0A1C40 0%, #0D2B5E 40%, #10B981 100%)',
     WebkitBackgroundClip: 'text',
@@ -16,26 +15,27 @@ export default function PureLegacyFoundation() {
   };
 
   return (
-    /* The Background is now a noticeably darker, rich sage green: #9CB4A3 */
-    <div className={`min-h-screen bg-[#9CB4A3] text-[#0F1C14] ${globalFont.className} selection:bg-[#1E3A8A] selection:text-white pb-24`}>
+    /* The Background is now a brighter, more vibrant green: #C6F6D5 */
+    <div className={`min-h-screen bg-[#C6F6D5] text-[#0F1C14] ${globalFont.className} selection:bg-[#1E3A8A] selection:text-white pb-24`}>
       
       {/* Foundation Top Navigation */}
       <header className="max-w-6xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#0F1C14]/10 gap-6">
-        <div className="flex items-center justify-center shrink-0 bg-[#E8EFEA] p-5 rounded-xl border border-[#0F1C14]/10 shadow-lg">
-          {/* THE LOGO PATH: Locked exactly to /legacylogo.png */}
+        
+        {/* THE LOGO WRAPPER: White box removed, logo floats naturally with a drop shadow */}
+        <div className="flex items-center justify-center shrink-0">
           <img 
             src="/legacylogo.png" 
             alt="Pure Legacy Foundation Logo" 
-            className="h-32 sm:h-40 w-auto object-contain"
+            className="h-40 sm:h-48 w-auto object-contain drop-shadow-2xl"
           />
         </div>
 
         <div className="w-full flex justify-between items-center mt-6">
-          <a href="/" className="text-sm font-bold tracking-[0.2em] text-[#0A1C40] hover:text-[#D4AF37] transition uppercase">
+          <a href="/" className="text-sm font-bold tracking-[0.2em] text-[#0A1C40] hover:text-[#10B981] transition uppercase">
             ← Pure Approach Terminal
           </a>
-          <div className="text-xs tracking-widest flex items-center gap-2 bg-[#E8EFEA] px-4 py-2 rounded shadow-sm border border-[#0F1C14]/5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+          <div className="text-xs tracking-widest flex items-center gap-2 bg-white/90 px-4 py-2 rounded shadow-sm border border-[#0F1C14]/5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span className="text-[#0A1C40] font-bold uppercase tracking-widest">Impact Node // Live</span>
           </div>
         </div>
@@ -53,7 +53,7 @@ export default function PureLegacyFoundation() {
             Pure Legacy Foundation
           </h1>
           
-          <div className="mt-12 border-l-4 border-[#D4AF37] pl-8 py-4 bg-gradient-to-r from-[#E8EFEA]/40 to-transparent">
+          <div className="mt-12 border-l-4 border-[#D4AF37] pl-8 py-4 bg-gradient-to-r from-white/40 to-transparent">
             <p className="text-xl md:text-2xl font-semibold tracking-wide italic leading-relaxed text-[#0A1C40]">
               "True prosperity is realized when corporate success directly drives community restoration."
             </p>
@@ -98,7 +98,7 @@ export default function PureLegacyFoundation() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <div className="p-10 rounded-xl bg-[#E8EFEA] border border-[#0F1C14]/5 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-[#0F1C14]/10 flex flex-col justify-start">
+            <div className="p-10 rounded-xl bg-white/80 border border-white hover:border-[#D4AF37] transition duration-500 shadow-lg shadow-[#0F1C14]/5 flex flex-col justify-start backdrop-blur-sm">
               <div className="text-xs text-[#10B981] mb-6 tracking-[0.2em] uppercase font-bold border-b border-[#0F1C14]/10 pb-2 inline-block w-max">Vector_01</div>
               <h3 className="text-2xl font-bold mb-4 text-[#0A1C40]">Direct Relief</h3>
               <p className="text-base text-[#1A2E22] leading-relaxed font-medium">
@@ -106,7 +106,7 @@ export default function PureLegacyFoundation() {
               </p>
             </div>
 
-            <div className="p-10 rounded-xl bg-[#E8EFEA] border border-[#0F1C14]/5 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-[#0F1C14]/10 flex flex-col justify-start">
+            <div className="p-10 rounded-xl bg-white/80 border border-white hover:border-[#D4AF37] transition duration-500 shadow-lg shadow-[#0F1C14]/5 flex flex-col justify-start backdrop-blur-sm">
               <div className="text-xs text-[#10B981] mb-6 tracking-[0.2em] uppercase font-bold border-b border-[#0F1C14]/10 pb-2 inline-block w-max">Vector_02</div>
               <h3 className="text-2xl font-bold mb-4 text-[#0A1C40]">Restoration</h3>
               <p className="text-base text-[#1A2E22] leading-relaxed font-medium">
@@ -114,7 +114,7 @@ export default function PureLegacyFoundation() {
               </p>
             </div>
 
-            <div className="p-10 rounded-xl bg-[#E8EFEA] border border-[#0F1C14]/5 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-[#0F1C14]/10 flex flex-col justify-start">
+            <div className="p-10 rounded-xl bg-white/80 border border-white hover:border-[#D4AF37] transition duration-500 shadow-lg shadow-[#0F1C14]/5 flex flex-col justify-start backdrop-blur-sm">
               <div className="text-xs text-[#10B981] mb-6 tracking-[0.2em] uppercase font-bold border-b border-[#0F1C14]/10 pb-2 inline-block w-max">Vector_03</div>
               <h3 className="text-2xl font-bold mb-4 text-[#0A1C40]">Strategic Impact</h3>
               <p className="text-base text-[#1A2E22] leading-relaxed font-medium">
