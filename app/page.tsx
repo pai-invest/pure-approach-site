@@ -52,17 +52,17 @@ export default function Home() {
           Portfolio Ecosystem
         </h2>
         
-        {/* Grid for Cards 01 - 04 with Enlarged, Centered Logo Boxes */}
+        {/* Grid for Cards 01 - 04 with Full-Bleed Logo Boxes */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
           
           {/* Card 01: Pi-Metrix Equities */}
           <a href="/capital" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-4 shadow-sm">
+              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
                 <img 
                   src="/pmelogo.png" 
                   alt="Pi-Metrix Equities Logo" 
-                  className="h-16 w-auto object-contain object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -79,11 +79,11 @@ export default function Home() {
           {/* Card 02: Pure Apex Pulse */}
           <a href="/digital" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-4 shadow-sm">
+              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
                 <img 
                   src="/apexlogo.png" 
                   alt="Pure Apex Pulse Logo" 
-                  className="h-16 w-auto object-contain object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -100,11 +100,11 @@ export default function Home() {
           {/* Card 03: Enterprise Commerce */}
           <a href="/commerce" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-4 shadow-sm">
+              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
                 <img 
                   src="/primerologo2.png" 
                   alt="Primero Collection Logo" 
-                  className="h-16 w-auto object-contain object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -121,11 +121,11 @@ export default function Home() {
           {/* Card 04: Frosted Nostalgia */}
           <a href="/frosted" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-4 shadow-sm">
+              <div className="h-24 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
                 <img 
                   src="/frostedlogo.jpg" 
                   alt="Frosted Nostalgia Logo" 
-                  className="h-16 w-auto object-contain object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -141,15 +141,15 @@ export default function Home() {
 
         </div>
 
-        {/* Card 05: Full-Width Foundation Capstone (Sizing Matrix Unified) */}
+        {/* Card 05: Full-Width Foundation Capstone with Full-Bleed Logo Box */}
         <a href="/legacy" className="group block w-full p-8 md:p-10 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mt-6">
           <div className="flex-1">
             <div className="flex flex-col md:flex-row md:items-center gap-6 mb-4">
-              <div className="h-24 w-full md:w-48 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-4 shadow-sm shrink-0">
+              <div className="h-24 w-full md:w-48 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm shrink-0">
                 <img 
                   src="/legacylogo.png" 
                   alt="Pure Legacy Foundation Logo" 
-                  className="h-16 w-auto object-contain object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <div>
