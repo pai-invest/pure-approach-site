@@ -7,10 +7,11 @@ export default function Home() {
       <header className="max-w-6xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-neutral-900/50">
         <a href="/" className="flex items-center gap-4 hover:opacity-90 transition justify-center sm:justify-start">
           <div className="bg-[#f4f6f2] p-2 sm:p-2.5 border border-neutral-200 shadow-md flex items-center justify-center shrink-0">
+            {/* Main Header Logo Scaled Up slightly to balance the new grid */}
             <img 
               src="/pailogo2.png" 
               alt="Pure Approach Investments Logo" 
-              className="h-12 sm:h-16 w-auto object-contain"
+              className="h-16 sm:h-20 w-auto object-contain"
             />
           </div>
           <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-neutral-100 uppercase whitespace-nowrap">
@@ -45,7 +46,8 @@ export default function Home() {
           {/* Card 01: Pi-Metrix Equities */}
           <a href="/capital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
             <div>
-              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
+              {/* Scaled to h-20 to match Legacy */}
+              <div className="h-20 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-3 py-2">
                 <img 
                   src="/pmelogo.png" 
                   alt="Pi-Metrix Equities Logo" 
@@ -66,7 +68,8 @@ export default function Home() {
           {/* Card 02: Pure Apex Pulse - Digital Assets */}
           <a href="/digital" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
             <div>
-              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
+              {/* Scaled to h-20 to match Legacy */}
+              <div className="h-20 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-3 py-2">
                 <img 
                   src="/apexlogo.png" 
                   alt="Pure Apex Pulse Logo" 
@@ -87,7 +90,8 @@ export default function Home() {
           {/* Card 03: Enterprise Commerce (Primero Collection) */}
           <a href="/commerce" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-neutral-700 hover:bg-neutral-900/40 flex flex-col justify-between">
             <div>
-              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-2 py-1">
+              {/* Scaled to h-20 to match Legacy */}
+              <div className="h-20 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-[#060604] border border-neutral-900/30 px-3 py-2">
                 <img 
                   src="/primerologo2.png" 
                   alt="Primero Collection Logo" 
@@ -108,9 +112,10 @@ export default function Home() {
           {/* Card 04: Frosted Nostalgia */}
           <a href="/frosted" className="group block p-6 rounded-lg bg-neutral-950 border border-neutral-900/60 transition duration-300 hover:border-amber-500/30 hover:bg-amber-950/5 flex flex-col justify-between">
             <div>
-              <div className="h-12 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-black border border-neutral-900/40 px-2 py-1">
+              {/* Scaled to h-20 to match Legacy */}
+              <div className="h-20 w-full mb-6 flex items-center justify-start overflow-hidden rounded bg-black border border-neutral-900/40 px-3 py-2">
                 <img 
-                  src="/frostedlogo.png" 
+                  src="/frostedlogo.jpg" 
                   alt="Frosted Nostalgia Logo" 
                   className="h-full w-auto object-contain"
                 />
@@ -132,6 +137,7 @@ export default function Home() {
         <a href="/legacy" className="group block w-full p-8 md:p-10 rounded-lg bg-gradient-to-br from-[#050f0a] to-neutral-950 border border-[#D4AF37]/30 transition duration-500 hover:border-[#D4AF37]/60 shadow-lg hover:shadow-blue-900/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mt-6">
           <div className="flex-1">
             <div className="flex items-center gap-6 mb-4">
+              {/* Legacy Logo Container (Already h-20) */}
               <div className="h-20 w-auto flex items-center justify-center overflow-hidden rounded bg-white/5 border border-[#3B82F6]/30 px-3 py-2">
                 <img 
                   src="/legacylogo.png" 
