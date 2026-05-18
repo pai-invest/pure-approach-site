@@ -24,7 +24,7 @@ export default function PureLegacyFoundation() {
           {/* THE LOGO PATH: Exact match to your public folder file */}
           <img 
             src="/legacylogo.png" 
-            alt="Pure Legacy Foundation Logo" 
+            alt="legacylogo.png" 
             className="h-32 sm:h-40 w-auto object-contain"
           />
         </div>
