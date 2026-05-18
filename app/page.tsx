@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="min-h-screen selection:bg-[#426F64]/20 selection:text-[#203340] pb-24" style={{ backgroundColor: brandColors.background, color: brandColors.slate, ...corporateFont }}>
       
-      {/* Header */}
+      {/* Structural Header (Retained for navigation context) */}
       <header className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-[#B9BBB7]/40">
         <a href="/" className="flex items-center gap-4 hover:opacity-80 transition justify-center sm:justify-start">
           <div className="bg-white p-2.5 border border-[#B9BBB7]/50 shadow-sm flex items-center justify-center shrink-0 rounded">
@@ -36,14 +36,27 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <main className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center sm:text-left">
-        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight uppercase" style={{ color: brandColors.slate }}>
-          Orchestrating High-Growth Capital & Scalable Digital Architecture.
-        </h1>
-        <p className="mt-6 text-base md:text-lg leading-relaxed max-w-3xl font-medium" style={{ color: '#5A6C77' }}>
-          Pure Approach Investments is a private holding entity dedicated to systematic wealth accumulation. We deploy capital across a concentrated portfolio of high-performing equity strategies, automated digital assets, artisanal ventures, and targeted social impact frameworks.
-        </p>
+      {/* Dominant Hero Section */}
+      <main className="max-w-7xl mx-auto px-6 pt-24 pb-20 text-center flex flex-col items-center gap-16">
+        
+        {/* Dominant "Cinema-Style" Logo Container */}
+        <div className="w-full flex justify-center p-6 border-2 border-[#B9BBB7]/20 rounded-xl bg-white shadow-[0_35px_60px_-15px_rgba(32,51,64,0.1)] transition-all duration-700 hover:shadow-[0_35px_60px_-15px_rgba(66,111,100,0.15)]">
+          <img 
+            src="/pailogo2.png" 
+            alt="Pure Approach Investments (Pty) Ltd Dominant Corporate Mark" 
+            className="w-full h-auto max-w-6xl max-h-[65vh] object-contain object-center"
+          />
+        </div>
+
+        {/* Legal Corporate Name Headline */}
+        <div className="flex flex-col gap-2 items-center">
+          <span className="text-xs font-semibold tracking-[0.4em] uppercase" style={{ color: brandColors.silver }}>CORPORATE OPERATIONS // GROUP HUB</span>
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight uppercase" style={{ color: brandColors.slate }}>
+            Pure Approach Investments (Pty) Ltd
+          </h1>
+          <div className="h-1 w-24 rounded-full mt-4" style={{ backgroundColor: brandColors.teal }}></div>
+        </div>
+
       </main>
 
       {/* Portfolio Ecosystem */}
@@ -70,7 +83,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                Operating as a pure proprietary desk deploying corporate capital through a systematic, metric-driven framework optimized for infinite compounding and capital preservation.
+                Operating as a pure proprietary desk deploying corporate capital through a systematic, metric-driven framework optimized for infinite compounding.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>ENGAGE DESK</div>
@@ -91,7 +104,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
+                Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and content engines.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>MONITOR PULSE</div>
@@ -133,7 +146,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes since 2014.
+                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>VIEW ARTISTRY</div>
@@ -158,7 +171,7 @@ export default function Home() {
               </div>
             </div>
             <p className="mt-4 text-sm md:text-base leading-relaxed max-w-3xl font-medium" style={{ color: '#5A6C77' }}>
-              Transforming corporate success into sustainable, real-world impact. We approach philanthropy with the same strategic precision that drives our investment operations, bypassing institutional layers to direct capital toward critical community needs and restoration.
+              Transforming corporate success into sustainable, real-world impact. We approach philanthropy with the same strategic precision that drives our investment operations.
             </p>
           </div>
           <div className="shrink-0 flex items-center gap-3 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>
@@ -192,7 +205,7 @@ export default function Home() {
             </li>
             <li className="flex items-start p-4 rounded-xl bg-white border border-[#B9BBB7]/40 shadow-sm">
               <span className="mr-3 font-bold" style={{ color: brandColors.teal }}>[03]</span>
-              <span style={{ color: '#5A6C77' }}><strong style={{ color: brandColors.slate }}>Ethical Frameworks:</strong> Completely aligned with clean risk-sharing principles, fully independent of conventional speculative architectures.</span>
+              <span style={{ color: '#5A6C77' }}><strong style={{ color: brandColors.slate }}>Ethical Frameworks:</strong> Completely aligned with clean risk-sharing principles, fully independent of speculative architectures.</span>
             </li>
           </ul>
         </div>
