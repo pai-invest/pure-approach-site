@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="min-h-screen selection:bg-[#426F64]/20 selection:text-[#203340] pb-24" style={{ backgroundColor: brandColors.background, color: brandColors.slate, ...corporateFont }}>
       
-      {/* Structural Header */}
+      {/* Structural Header with Unified Logo Presence */}
       <header className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-[#B9BBB7]/40">
         <a href="/" className="flex items-center gap-4 hover:opacity-80 transition justify-center sm:justify-start">
           <div className="bg-white p-2.5 border border-[#B9BBB7]/50 shadow-sm flex items-center justify-center shrink-0 rounded">
@@ -36,27 +36,14 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Dominant Hero Section */}
-      <main className="max-w-7xl mx-auto px-6 pt-24 pb-20 text-center flex flex-col items-center gap-16">
-        
-        {/* Dominant "Cinema-Style" Logo Container */}
-        <div className="w-full flex justify-center p-6 border-2 border-[#B9BBB7]/20 rounded-xl bg-white shadow-[0_35px_60px_-15px_rgba(32,51,64,0.1)] transition-all duration-700 hover:shadow-[0_35px_60px_-15px_rgba(66,111,100,0.15)]">
-          <img 
-            src="/pailogo2.png" 
-            alt="Pure Approach Investments (Pty) Ltd Dominant Corporate Mark" 
-            className="w-full h-auto max-w-6xl max-h-[65vh] object-contain object-center"
-          />
-        </div>
-
-        {/* Legal Corporate Name Headline */}
-        <div className="flex flex-col gap-2 items-center">
-          <span className="text-xs font-semibold tracking-[0.4em] uppercase" style={{ color: brandColors.silver }}>CORPORATE OPERATIONS // GROUP HUB</span>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight uppercase" style={{ color: brandColors.slate }}>
-            Pure Approach Investments (Pty) Ltd
-          </h1>
-          <div className="h-1 w-24 rounded-full mt-4" style={{ backgroundColor: brandColors.teal }}></div>
-        </div>
-
+      {/* Hero Section - Information Restored */}
+      <main className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center sm:text-left">
+        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight uppercase" style={{ color: brandColors.slate }}>
+          Orchestrating High-Growth Capital & Scalable Digital Architecture.
+        </h1>
+        <p className="mt-8 text-base md:text-xl leading-relaxed max-w-3xl font-medium" style={{ color: '#5A6C77' }}>
+          Pure Approach Investments is a private holding entity dedicated to systematic wealth accumulation. We deploy capital across a concentrated portfolio of high-performing equity strategies, automated digital assets, artisanal ventures, and targeted social impact frameworks.
+        </p>
       </main>
 
       {/* Portfolio Ecosystem */}
@@ -131,14 +118,14 @@ export default function Home() {
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>EXPLORE PRIMERO</div>
           </a>
 
-          {/* Card 04: Frosted Nostalgia */}
+          {/* Card 04: Frosted Nostalgia (Full-Bleed Unification) */}
           <a href="/frosted" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm">
+              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
                 <img 
                   src="/frostedlogo.jpg" 
                   alt="Frosted Nostalgia Logo" 
-                  className="w-full h-full object-contain object-center"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -146,7 +133,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes since 2014.
+                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>VIEW ARTISTRY</div>
@@ -154,7 +141,7 @@ export default function Home() {
 
         </div>
 
-        {/* Card 05: Full-Width Foundation Capstone with Correct Scaling */}
+        {/* Card 05: Full-Width Foundation Capstone */}
         <a href="/legacy" className="group block w-full p-8 md:p-10 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mt-6">
           <div className="flex-1">
             <div className="flex flex-col md:flex-row md:items-center gap-6 mb-4">
