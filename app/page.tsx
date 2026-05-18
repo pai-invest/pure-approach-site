@@ -163,7 +163,7 @@ export default function Home() {
           </div>
         </a>
 
-      </section>        </div>
+      </div>
       </section>
 
       {/* The Framework */}
