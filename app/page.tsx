@@ -16,21 +16,24 @@ export default function Home() {
   return (
     <div className="min-h-screen selection:bg-[#426F64]/20 selection:text-[#203340] pb-24" style={{ backgroundColor: brandColors.background, color: brandColors.slate, ...corporateFont }}>
       
-      {/* Structural Header with Unified Logo Presence */}
-      <header className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center border-b border-[#B9BBB7]/40">
-        <a href="/" className="flex items-center gap-4 hover:opacity-80 transition justify-center sm:justify-start">
-          <div className="bg-white p-2.5 border border-[#B9BBB7]/50 shadow-sm flex items-center justify-center shrink-0 rounded">
+      {/* Centralized, Premium Header Stack */}
+      <header className="max-w-7xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center justify-center gap-6 border-b border-[#B9BBB7]/40">
+        <a href="/" className="flex flex-col items-center gap-4 hover:opacity-80 transition text-center">
+          {/* Increased Size & Centered White Branding Panel */}
+          <div className="bg-white p-4 border border-[#B9BBB7]/50 shadow-md flex items-center justify-center shrink-0 rounded-xl">
             <img 
               src="/pailogo2.png" 
               alt="Pure Approach Investments Logo" 
-              className="h-16 sm:h-20 w-auto object-contain object-center"
+              className="h-28 sm:h-36 w-auto object-contain object-center"
             />
           </div>
-          <span className="text-sm sm:text-base font-bold tracking-[0.2em] uppercase whitespace-nowrap" style={{ color: brandColors.slate }}>
+          <span className="text-base sm:text-lg font-extrabold tracking-[0.25em] uppercase whitespace-nowrap mt-2" style={{ color: brandColors.slate }}>
             Pure Approach Investments
           </span>
         </a>
-        <nav className="flex space-x-8 text-xs tracking-widest justify-center sm:justify-end font-bold uppercase" style={{ color: '#6A7C87' }}>
+        
+        {/* Balanced Centered Navigation Row */}
+        <nav className="flex space-x-8 text-xs tracking-widest justify-center font-bold uppercase mt-2" style={{ color: '#6A7C87' }}>
           <a href="#divisions" className="hover:text-[#426F64] transition duration-300">DIVISIONS</a>
           <a href="#framework" className="hover:text-[#426F64] transition duration-300">FRAMEWORK</a>
         </nav>
@@ -118,7 +121,7 @@ export default function Home() {
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>EXPLORE PRIMERO</div>
           </a>
 
-          {/* Card 04: Frosted Nostalgia (Perfect Size & Aspect Matching) */}
+          {/* Card 04: Frosted Nostalgia */}
           <a href="/frosted" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
               <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm">
