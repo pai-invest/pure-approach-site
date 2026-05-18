@@ -22,7 +22,7 @@ export default function PureLegacyFoundation() {
       <header className="max-w-6xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-emerald-900/10 gap-6">
         <div className="flex items-center justify-center shrink-0 bg-white p-4 rounded-xl border border-emerald-100 shadow-[0_10px_30px_rgba(16,185,129,0.1)]">
           <img 
-            src="/Pure Legacy Logo .png" 
+            src="/legacylogo.png" 
             alt="Pure Legacy Foundation Logo" 
             className="h-32 sm:h-40 w-auto object-contain"
           />
