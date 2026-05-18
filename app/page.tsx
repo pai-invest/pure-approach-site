@@ -126,8 +126,44 @@ export default function Home() {
             </div>
             <div className="mt-8 text-xs font-mono text-neutral-500 group-hover:text-amber-400 transition">VIEW ARTISTRY</div>
           </a>
-
+{/* Portfolio Ecosystem */}
+      <section id="divisions" className="max-w-6xl mx-auto px-6 py-16 border-t border-neutral-900/50">
+        <h2 className="text-xs font-bold tracking-wildest text-neutral-500 uppercase mb-12">
+          Portfolio Ecosystem
+        </h2>
+        
+        {/* Existing 4-Card Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+           {/* ... Your 4 existing division cards (PME, Apex, Primero, Frosted) stay exactly as they are here ... */}
         </div>
+
+        {/* The 5th Division: Full-Width Foundation Capstone */}
+        <a href="/legacy" className="group block w-full p-8 md:p-10 rounded-lg bg-gradient-to-br from-[#050f0a] to-neutral-950 border border-emerald-500/20 transition duration-500 hover:border-emerald-400/50 shadow-lg hover:shadow-emerald-900/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+          <div className="flex-1">
+            <div className="flex items-center gap-6 mb-4">
+              <div className="h-16 w-auto flex items-center justify-center overflow-hidden rounded bg-white/5 border border-emerald-500/30 px-3 py-2">
+                <img 
+                  src="/legacylogo.png" 
+                  alt="Pure Legacy Foundation Logo" 
+                  className="h-full w-auto object-contain"
+                />
+              </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-emerald-300 transition">Pure Legacy Foundation</h3>
+                <span className="text-xs font-mono tracking-widest text-emerald-500 mt-1 block">SOCIAL RESPONSIBILITY DIVISION</span>
+              </div>
+            </div>
+            <p className="mt-4 text-sm md:text-base text-emerald-50/60 leading-relaxed max-w-3xl">
+              Transforming corporate success into sustainable, real-world impact. We approach philanthropy with the same strategic precision that drives our investment operations, bypassing institutional layers to direct capital toward critical community needs and restoration.
+            </p>
+          </div>
+          <div className="shrink-0 flex items-center gap-3 text-sm font-mono text-emerald-400 group-hover:text-emerald-200 transition">
+            <span>VIEW IMPACT</span>
+            <span className="text-lg">→</span>
+          </div>
+        </a>
+
+      </section>        </div>
       </section>
 
       {/* The Framework */}
