@@ -8,34 +8,35 @@ const globalFont = Playfair_Display({
 });
 
 export default function PureLegacyFoundation() {
-  // Adjusted gradient to look rich against the slightly darker green background
+  // Adjusted gradient to look rich against the darker green background
   const legacyGradientStyle = {
-    backgroundImage: 'linear-gradient(135deg, #1E3A8A 0%, #10B981 40%, #D4AF37 100%)',
+    backgroundImage: 'linear-gradient(135deg, #0A1C40 0%, #0D2B5E 40%, #10B981 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
   };
 
   return (
-    <div className={`min-h-screen bg-[#DCECE3] text-slate-800 ${globalFont.className} selection:bg-emerald-300 selection:text-emerald-900 pb-24`}>
+    /* The Background is now a noticeably darker, rich sage green: #9CB4A3 */
+    <div className={`min-h-screen bg-[#9CB4A3] text-[#0F1C14] ${globalFont.className} selection:bg-[#1E3A8A] selection:text-white pb-24`}>
       
       {/* Foundation Top Navigation */}
-      <header className="max-w-6xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-emerald-900/10 gap-6">
-        <div className="flex items-center justify-center shrink-0 bg-white p-4 rounded-xl border border-emerald-100 shadow-[0_10px_30px_rgba(16,185,129,0.1)]">
-          {/* THE LOGO PATH: Exact match to your public folder file */}
+      <header className="max-w-6xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#0F1C14]/10 gap-6">
+        <div className="flex items-center justify-center shrink-0 bg-[#E8EFEA] p-5 rounded-xl border border-[#0F1C14]/10 shadow-lg">
+          {/* THE LOGO PATH: Locked exactly to /legacylogo.png */}
           <img 
             src="/legacylogo.png" 
-            alt="legacylogo.png" 
+            alt="Pure Legacy Foundation Logo" 
             className="h-32 sm:h-40 w-auto object-contain"
           />
         </div>
 
-        <div className="w-full flex justify-between items-center mt-4">
-          <a href="/" className="text-sm font-bold tracking-[0.2em] text-[#1E3A8A] hover:text-[#10B981] transition uppercase">
+        <div className="w-full flex justify-between items-center mt-6">
+          <a href="/" className="text-sm font-bold tracking-[0.2em] text-[#0A1C40] hover:text-[#D4AF37] transition uppercase">
             ← Pure Approach Terminal
           </a>
-          <div className="text-xs tracking-widest flex items-center gap-2 bg-white px-3 py-1.5 rounded border border-emerald-200 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="text-slate-700 font-bold uppercase">Impact_Node // Live</span>
+          <div className="text-xs tracking-widest flex items-center gap-2 bg-[#E8EFEA] px-4 py-2 rounded shadow-sm border border-[#0F1C14]/5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            <span className="text-[#0A1C40] font-bold uppercase tracking-widest">Impact Node // Live</span>
           </div>
         </div>
       </header>
@@ -45,15 +46,15 @@ export default function PureLegacyFoundation() {
         
         {/* Manifest Header */}
         <div className="max-w-4xl">
-          <span className="text-sm font-bold tracking-[0.4em] text-emerald-700 uppercase block mb-4">
+          <span className="text-sm font-bold tracking-[0.4em] text-[#0A1C40] uppercase block mb-4">
             Social Responsibility // Division 05
           </span>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight drop-shadow-sm" style={legacyGradientStyle}>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight drop-shadow-sm mb-2" style={legacyGradientStyle}>
             Pure Legacy Foundation
           </h1>
           
-          <div className="mt-12 border-l-4 border-[#D4AF37] pl-6 py-4 bg-gradient-to-r from-emerald-200/40 to-transparent">
-            <p className="text-xl md:text-2xl font-medium tracking-wide italic leading-relaxed text-[#1E3A8A]">
+          <div className="mt-12 border-l-4 border-[#D4AF37] pl-8 py-4 bg-gradient-to-r from-[#E8EFEA]/40 to-transparent">
+            <p className="text-xl md:text-2xl font-semibold tracking-wide italic leading-relaxed text-[#0A1C40]">
               "True prosperity is realized when corporate success directly drives community restoration."
             </p>
           </div>
@@ -61,19 +62,19 @@ export default function PureLegacyFoundation() {
 
         {/* Vision & Philosophy Section */}
         <section className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-16">
-          <div className="space-y-6 text-lg md:text-xl leading-relaxed text-slate-700 font-normal">
+          <div className="space-y-6 text-lg md:text-xl leading-relaxed text-[#1A2E22] font-medium">
             <h2 className="text-sm font-bold tracking-[0.3em] text-[#D4AF37] uppercase mb-4">
               Our Vision
             </h2>
             <p>
-              At the <strong className="font-bold text-[#1E3A8A]">Pure Legacy Foundation</strong>, we believe that true wealth is measured not just by the returns we generate, but by the legacy of positive change we leave behind. 
+              At the <strong className="font-bold text-[#0A1C40]">Pure Legacy Foundation</strong>, we believe that true wealth is measured not just by the returns we generate, but by the legacy of positive change we leave behind. 
             </p>
             <p>
               Operating as the dedicated social responsibility division of Pure Approach Investments (Pty) Ltd, the Foundation serves as our vehicle for purposed philanthropy—transforming market success into sustainable, real-world impact.
             </p>
           </div>
 
-          <div className="space-y-6 text-lg md:text-xl leading-relaxed text-slate-700 font-normal">
+          <div className="space-y-6 text-lg md:text-xl leading-relaxed text-[#1A2E22] font-medium">
             <h2 className="text-sm font-bold tracking-[0.3em] text-[#D4AF37] uppercase mb-4">
               Pure Returns, Lasting Impact
             </h2>
@@ -87,36 +88,36 @@ export default function PureLegacyFoundation() {
         </section>
 
         {/* Execution Grid - What We Do */}
-        <section className="mt-24 pt-16 border-t border-emerald-900/10">
-          <h2 className="text-sm font-bold tracking-[0.3em] text-[#1E3A8A] uppercase mb-6 text-center">
+        <section className="mt-24 pt-16 border-t border-[#0F1C14]/10">
+          <h2 className="text-sm font-bold tracking-[0.3em] text-[#0A1C40] uppercase mb-6 text-center">
             Operational Focus: What We Do
           </h2>
-          <p className="text-center text-lg text-slate-700 max-w-3xl mx-auto mb-16 font-normal">
+          <p className="text-center text-lg text-[#1A2E22] max-w-3xl mx-auto mb-16 font-medium">
             The Pure Legacy Foundation acts with precision and agility to direct corporate funding toward critical community needs, crisis relief, and long-term restoration initiatives. By bypassing institutional layers, we ensure that capital flows directly to where it is needed most.
           </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <div className="p-8 rounded-xl bg-white border border-emerald-100 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-emerald-900/5 flex flex-col justify-start">
-              <div className="text-xs text-emerald-600 mb-4 tracking-widest uppercase font-bold">[Vector_01]</div>
-              <h3 className="text-2xl font-bold mb-4 text-[#1E3A8A]">Direct Relief</h3>
-              <p className="text-base text-slate-600 leading-relaxed font-normal">
+            <div className="p-10 rounded-xl bg-[#E8EFEA] border border-[#0F1C14]/5 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-[#0F1C14]/10 flex flex-col justify-start">
+              <div className="text-xs text-[#10B981] mb-6 tracking-[0.2em] uppercase font-bold border-b border-[#0F1C14]/10 pb-2 inline-block w-max">Vector_01</div>
+              <h3 className="text-2xl font-bold mb-4 text-[#0A1C40]">Direct Relief</h3>
+              <p className="text-base text-[#1A2E22] leading-relaxed font-medium">
                 Providing immediate, essential support, food security, and supplies to vulnerable communities and grassroots organizations operating on the front lines.
               </p>
             </div>
 
-            <div className="p-8 rounded-xl bg-white border border-emerald-100 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-emerald-900/5 flex flex-col justify-start">
-              <div className="text-xs text-emerald-600 mb-4 tracking-widest uppercase font-bold">[Vector_02]</div>
-              <h3 className="text-2xl font-bold mb-4 text-[#1E3A8A]">Restoration</h3>
-              <p className="text-base text-slate-600 leading-relaxed font-normal">
+            <div className="p-10 rounded-xl bg-[#E8EFEA] border border-[#0F1C14]/5 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-[#0F1C14]/10 flex flex-col justify-start">
+              <div className="text-xs text-[#10B981] mb-6 tracking-[0.2em] uppercase font-bold border-b border-[#0F1C14]/10 pb-2 inline-block w-max">Vector_02</div>
+              <h3 className="text-2xl font-bold mb-4 text-[#0A1C40]">Restoration</h3>
+              <p className="text-base text-[#1A2E22] leading-relaxed font-medium">
                 Funding sustainable initiatives aimed at restoring dignity, renewing local infrastructure, and empowering individuals to rebuild their futures.
               </p>
             </div>
 
-            <div className="p-8 rounded-xl bg-white border border-emerald-100 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-emerald-900/5 flex flex-col justify-start">
-              <div className="text-xs text-emerald-600 mb-4 tracking-widest uppercase font-bold">[Vector_03]</div>
-              <h3 className="text-2xl font-bold mb-4 text-[#1E3A8A]">Strategic Impact</h3>
-              <p className="text-base text-slate-600 leading-relaxed font-normal">
+            <div className="p-10 rounded-xl bg-[#E8EFEA] border border-[#0F1C14]/5 hover:border-[#D4AF37] transition duration-500 shadow-xl shadow-[#0F1C14]/10 flex flex-col justify-start">
+              <div className="text-xs text-[#10B981] mb-6 tracking-[0.2em] uppercase font-bold border-b border-[#0F1C14]/10 pb-2 inline-block w-max">Vector_03</div>
+              <h3 className="text-2xl font-bold mb-4 text-[#0A1C40]">Strategic Impact</h3>
+              <p className="text-base text-[#1A2E22] leading-relaxed font-medium">
                 Allocating targeted corporate sponsorships to registered public benefit causes that align with our core values of clarity, impact, and transparency.
               </p>
             </div>
@@ -126,7 +127,7 @@ export default function PureLegacyFoundation() {
 
       </main>
 
-      <footer className="max-w-6xl mx-auto px-6 py-12 mt-24 border-t border-emerald-900/10 text-xs text-center tracking-widest text-slate-500 uppercase font-bold">
+      <footer className="max-w-6xl mx-auto px-6 py-12 mt-24 border-t border-[#0F1C14]/10 text-xs text-center tracking-widest text-[#0A1C40] uppercase font-bold">
         © 2026 PURE LEGACY FOUNDATION. THE SOCIAL RESPONSIBILITY DIVISION OF PURE APPROACH INVESTMENTS (PTY) LTD.
       </footer>
     </div>
