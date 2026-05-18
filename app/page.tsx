@@ -36,7 +36,7 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Hero Section - Information Restored */}
+      {/* Hero Section */}
       <main className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center sm:text-left">
         <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight uppercase" style={{ color: brandColors.slate }}>
           Orchestrating High-Growth Capital & Scalable Digital Architecture.
@@ -52,7 +52,7 @@ export default function Home() {
           Portfolio Ecosystem
         </h2>
         
-        {/* Grid for Cards 01 - 04 with Scaled, Non-Clipping Boxes */}
+        {/* Grid for Cards 01 - 04 with Completely Balanced Box Frameworks */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
           
           {/* Card 01: Pi-Metrix Equities */}
@@ -118,14 +118,14 @@ export default function Home() {
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>EXPLORE PRIMERO</div>
           </a>
 
-          {/* Card 04: Frosted Nostalgia (Full-Bleed Unification) */}
+          {/* Card 04: Frosted Nostalgia (Perfect Size & Aspect Matching) */}
           <a href="/frosted" className="group block p-6 rounded-xl bg-white border border-[#B9BBB7]/40 transition duration-500 hover:border-[#426F64] hover:shadow-xl flex flex-col justify-between">
             <div>
-              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-0 shadow-sm">
+              <div className="h-28 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-2 shadow-sm">
                 <img 
                   src="/frostedlogo.jpg" 
                   alt="Frosted Nostalgia Logo" 
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
@@ -133,7 +133,7 @@ export default function Home() {
                 <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
               <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
-                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes.
+                An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes since 2014.
               </p>
             </div>
             <div className="mt-8 text-xs font-bold tracking-widest uppercase transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.silver }}>VIEW ARTISTRY</div>
