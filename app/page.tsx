@@ -9,31 +9,32 @@ export default function Home() {
     silver: '#B9BBB7'
   };
 
-  const corporateFont = {
-    fontFamily: "'Montserrat', 'Inter', 'Helvetica Neue', sans-serif",
+  // Pure Times New Roman Typography Mapping
+  const timesNewRomanFont = {
+    fontFamily: "'Times New Roman', Times, serif",
   };
 
   return (
-    <div className="min-h-screen selection:bg-[#426F64]/20 selection:text-[#203340] pb-24" style={{ backgroundColor: brandColors.background, color: brandColors.slate, ...corporateFont }}>
+    <div className="min-h-screen selection:bg-[#426F64]/20 selection:text-[#203340] pb-24" style={{ backgroundColor: brandColors.background, color: brandColors.slate, ...timesNewRomanFont }}>
       
-      {/* Centralized, Premium Header Stack */}
+      {/* Centralized Header Stack */}
       <header className="max-w-7xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center justify-center gap-6 border-b border-[#B9BBB7]/40">
         <a href="/" className="flex flex-col items-center gap-4 hover:opacity-80 transition text-center">
-          {/* Increased Size & Centered White Branding Panel */}
-          <div className="bg-white p-4 border border-[#B9BBB7]/50 shadow-md flex items-center justify-center shrink-0 rounded-xl">
+          {/* Box removed, logo enlarged significantly */}
+          <div className="flex items-center justify-center shrink-0">
             <img 
               src="/pailogo2.png" 
               alt="Pure Approach Investments Logo" 
-              className="h-28 sm:h-36 w-auto object-contain object-center"
+              className="h-40 sm:h-52 w-auto object-contain object-center"
             />
           </div>
-          <span className="text-base sm:text-lg font-extrabold tracking-[0.25em] uppercase whitespace-nowrap mt-2" style={{ color: brandColors.slate }}>
+          <span className="text-xl sm:text-2xl font-bold tracking-wider uppercase mt-2" style={{ color: brandColors.slate }}>
             Pure Approach Investments
           </span>
         </a>
         
-        {/* Balanced Centered Navigation Row */}
-        <nav className="flex space-x-8 text-xs tracking-widest justify-center font-bold uppercase mt-2" style={{ color: '#6A7C87' }}>
+        {/* Centered Navigation Row */}
+        <nav className="flex space-x-8 text-sm tracking-widest justify-center font-bold uppercase mt-2" style={{ color: '#6A7C87' }}>
           <a href="#divisions" className="hover:text-[#426F64] transition duration-300">DIVISIONS</a>
           <a href="#framework" className="hover:text-[#426F64] transition duration-300">FRAMEWORK</a>
         </nav>
@@ -41,21 +42,21 @@ export default function Home() {
 
       {/* Hero Section */}
       <main className="max-w-5xl mx-auto px-6 pt-20 pb-16 text-center sm:text-left">
-        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight uppercase" style={{ color: brandColors.slate }}>
+        <h1 className="text-3xl md:text-5xl font-bold tracking-wide leading-tight uppercase" style={{ color: brandColors.slate }}>
           Orchestrating High-Growth Capital & Scalable Digital Architecture.
         </h1>
-        <p className="mt-8 text-base md:text-xl leading-relaxed max-w-3xl font-medium" style={{ color: '#5A6C77' }}>
+        <p className="mt-8 text-lg md:text-2xl leading-relaxed max-w-3xl" style={{ color: '#5A6C77' }}>
           Pure Approach Investments is a private holding entity dedicated to systematic wealth accumulation. We deploy capital across a concentrated portfolio of high-performing equity strategies, automated digital assets, artisanal ventures, and targeted social impact frameworks.
         </p>
       </main>
 
       {/* Portfolio Ecosystem */}
       <section id="divisions" className="max-w-7xl mx-auto px-6 py-16 border-t border-[#B9BBB7]/40">
-        <h2 className="text-xs font-bold tracking-[0.3em] uppercase mb-12" style={{ color: brandColors.teal }}>
+        <h2 className="text-sm font-bold tracking-[0.3em] uppercase mb-12" style={{ color: brandColors.teal }}>
           Portfolio Ecosystem
         </h2>
         
-        {/* Grid for Cards 01 - 04 with Completely Balanced Box Frameworks */}
+        {/* Grid for Cards 01 - 04 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
           
           {/* Card 01: Pi-Metrix Equities */}
@@ -69,10 +70,10 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-base font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Pi-Metrix Equities</h3>
-                <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
+                <h3 className="text-lg font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Pi-Metrix Equities</h3>
+                <span className="text-xs text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: '#6A7C87' }}>
                 Operating as a pure proprietary desk deploying corporate capital through a systematic, metric-driven framework optimized for infinite compounding and capital preservation.
               </p>
             </div>
@@ -90,10 +91,10 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-base font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Pure Apex Pulse</h3>
-                <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
+                <h3 className="text-lg font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Pure Apex Pulse</h3>
+                <span className="text-xs text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: '#6A7C87' }}>
                 Focused on the optimization, acquisition, and scaling of high-margin web properties, custom software utilities, and programmatic content engines.
               </p>
             </div>
@@ -111,10 +112,10 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-base font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Enterprise Commerce</h3>
-                <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
+                <h3 className="text-lg font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Enterprise Commerce</h3>
+                <span className="text-xs text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: '#6A7C87' }}>
                 Sourcing and building high-end physical products and bespoke luxury collections backed by streamlined global distribution logistics.
               </p>
             </div>
@@ -132,10 +133,10 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-base font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Frosted Nostalgia</h3>
-                <span className="text-xs font-mono text-neutral-400 group-hover:text-[#426F64] transition">→</span>
+                <h3 className="text-lg font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Frosted Nostalgia</h3>
+                <span className="text-xs text-neutral-400 group-hover:text-[#426F64] transition">→</span>
               </div>
-              <p className="mt-2 text-xs leading-relaxed font-medium" style={{ color: '#6A7C87' }}>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: '#6A7C87' }}>
                 An artisanal, home-based custom cake studio designing luxury bespoke confectionery art, signature recipes, and handcrafted milestone cakes since 2014.
               </p>
             </div>
@@ -157,10 +158,10 @@ export default function Home() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold tracking-wide transition duration-300 group-hover:text-[#426F64]" style={{ color: brandColors.slate }}>Pure Legacy Foundation</h3>
-                <span className="text-xs font-mono tracking-widest mt-1.5 block font-bold uppercase" style={{ color: brandColors.teal }}>SOCIAL RESPONSIBILITY DIVISION</span>
+                <span className="text-xs tracking-widest mt-1.5 block font-bold uppercase" style={{ color: brandColors.teal }}>SOCIAL RESPONSIBILITY DIVISION</span>
               </div>
             </div>
-            <p className="mt-4 text-sm md:text-base leading-relaxed max-w-3xl font-medium" style={{ color: '#5A6C77' }}>
+            <p className="mt-4 text-base leading-relaxed max-w-3xl" style={{ color: '#5A6C77' }}>
               Transforming corporate success into sustainable, real-world impact. We approach philanthropy with the same strategic precision that drives our investment operations, bypassing institutional layers to direct capital toward critical community needs and restoration.
             </p>
           </div>
@@ -178,13 +179,13 @@ export default function Home() {
           <h2 className="text-xs font-bold tracking-[0.3em] uppercase mb-6" style={{ color: brandColors.teal }}>
             The Pure Framework
           </h2>
-          <h3 className="text-xl md:text-2xl font-extrabold leading-snug" style={{ color: brandColors.slate }}>
+          <h3 className="text-xl md:text-2xl font-bold leading-snug" style={{ color: brandColors.slate }}>
             Built on absolute structural discipline.
           </h3>
-          <p className="mt-4 text-sm md:text-base leading-relaxed font-medium" style={{ color: '#5A6C77' }}>
+          <p className="mt-4 text-sm md:text-base leading-relaxed" style={{ color: '#5A6C77' }}>
             We believe that sustainable wealth accumulation is built on transparency, structural stability, and real, asset-backed value. Every operational division operates under an uncompromised risk framework:
           </p>
-          <ul className="mt-8 space-y-4 text-sm font-medium">
+          <ul className="mt-8 space-y-4 text-sm">
             <li className="flex items-start p-4 rounded-xl bg-white border border-[#B9BBB7]/40 shadow-sm">
               <span className="mr-3 font-bold" style={{ color: brandColors.teal }}>[01]</span>
               <span style={{ color: '#5A6C77' }}><strong style={{ color: brandColors.slate }}>Zero Debt Leverage:</strong> Funded entirely by organic equity capital to eliminate systemic risk.</span>
