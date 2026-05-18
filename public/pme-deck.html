@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Urbanist:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* CORE REWRITE FOR STACKED SLIDES */
         * { box-sizing: border-box; }
         p { margin: 0; margin-bottom: 12px; }
 
@@ -23,7 +22,7 @@
             align-items: center;
         }
 
-        /* Slide Window Layout */
+        /* Fixed Presentation Base Canvas with Scaling Safeguards */
         .slide-container {
             position: absolute;
             width: 1280px;
@@ -37,12 +36,14 @@
             font-family: 'Urbanist', sans-serif;
             padding: 60px;
             border: 2px solid #d4af37;
-            cursor: pointer; /* Indicates it's clickable */
+            cursor: pointer;
             
-            /* Hidden by default, controlled via active class */
+            /* Responsive aspect scaling transforms */
+            transform-origin: center center;
+            
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
             z-index: 1;
         }
 
@@ -98,17 +99,29 @@
         .section-title-layout h2 { font-size: 72px; }
         .section-title-layout hr { border: 0; height: 4px; background: #D4AF37; width: 120px; margin: 30px auto; }
 
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; items: center; }
         .two-column.tiled > div { background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(212, 175, 55, 0.3); padding: 40px; border-radius: 4px; }
-        .image-wrapper { border: 3px solid #D4AF37; height: 400px; overflow: hidden; width: 100%; }
-        .image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Fixed Picture Frame Sizing Layer */
+        .image-wrapper { 
+            border: 3px solid #D4AF37; 
+            height: 380px; 
+            width: 100%; 
+            overflow: hidden; 
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+        .image-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
         .tile-container { display: flex; gap: 30px; width: 100%; }
         .tile { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(212, 175, 55, 0.4); flex: 1; padding: 40px; text-align: center; }
         .tile .icon { font-size: 54px; color: #D4AF37; margin-bottom: 25px; }
         .number-layout .number { font-size: 180px; font-weight: 700; color: #D4AF37; font-family: 'Cinzel', serif; line-height: 1; }
 
-        /* DATA VIZ */
+        /* DATA MARKUP */
         .chart-container { width: 100%; display: flex; flex-direction: column; gap: 20px; }
         .bar { display: flex; align-items: center; gap: 25px; }
         .bar .label { flex: 0 0 280px; text-align: right; font-weight: 600; color: #D4AF37; font-size: 22px; }
@@ -127,9 +140,11 @@
 
         .bleed-image-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0 !important; align-items: start; }
         .bleed-image-layout .content-container { padding: 80px; }
-        .bleed-image-layout img { width: 100%; height: 720px; object-fit: cover; border-left: 5px solid #d4af37; }
+        
+        .bleed-image-wrapper { width: 100%; height: 720px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); padding: 60px; border-left: 5px solid #d4af37; }
+        .bleed-image-wrapper img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* Navigation HUD Bar at the bottom */
+        /* Navigation Display */
         .deck-hud {
             position: absolute;
             bottom: 20px;
@@ -192,7 +207,7 @@
                     <p>Every allocation is a calculated geometric probability, removing the toxicity of human emotion from the trading desk.</p>
                 </div>
                 <div class="image-wrapper">
-                    <img src="http://googleusercontent.com/image_collection/image_retrieval/1809950611141858808" alt="Abstract gold pi symbol on rich crimson background">
+                    <img src="/pmelogo.png" alt="Pi-Metrix Equities Gold and Red Division Logo">
                 </div>
             </div>
         </div>
@@ -316,8 +331,8 @@
             <p>Our trading desk runs as a streamlined, low-friction digital engine. Utilizing institution-grade brokerage architecture, we ensure structural precision in every transaction.</p>
             <p>By mapping every entry to pre-defined metrics, PME maintains an institutional-grade compliance profile with zero operational bloat.</p>
         </div>
-        <div class="image-container">
-            <img src="http://googleusercontent.com/image_collection/image_retrieval/10390759881832901623" alt="Gold and red luxury institutional workspace abstract">
+        <div class="bleed-image-wrapper">
+            <img src="/pmelogo.png" alt="Pi-Metrix Equities Gold and Red Division Logo Side View">
         </div>
     </div>
 
@@ -338,26 +353,36 @@
         const hud = document.getElementById('deckHud');
         let currentSlideIndex = 0;
 
+        // Auto-Aspect Canvas Scaling Computations
+        function rescalePresentationDeck() {
+            const baseWidth = 1280;
+            const baseHeight = 720;
+            
+            // Query dimensions of the current window viewport frame
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            // Compute the absolute limiting scale vectors
+            const scaleX = windowWidth / baseWidth;
+            const scaleY = windowHeight / baseHeight;
+            const absoluteScale = Math.min(scaleX, scaleY, 1); // Caps scaling at normal 100% resolution
+            
+            slides.forEach(slide => {
+                slide.style.transform = `scale(${absoluteScale})`;
+            });
+        }
+
         function updateSlidePosition(newIndex) {
-            // Remove active status from old node
             slides[currentSlideIndex].classList.remove('active');
-            
-            // Safety bounds loop management
             currentSlideIndex = (newIndex + slides.length) % slides.length;
-            
-            // Activate new node view
             slides[currentSlideIndex].classList.add('active');
-            
-            // Synchronize HUD readouts
             hud.textContent = `NODE_SLIDE: ${currentSlideIndex + 1} // ${slides.length}`;
         }
 
-        // Click Action: Advancing when user interacts with the canvas frame
         document.body.addEventListener('click', () => {
             updateSlidePosition(currentSlideIndex + 1);
         });
 
-        // Keyboard Action: Listening for Arrow Key vectors from your MacBook
         window.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ') {
                 updateSlidePosition(currentSlideIndex + 1);
@@ -365,6 +390,10 @@
                 updateSlidePosition(currentSlideIndex - 1);
             }
         });
+
+        // Initialize aspect calculations on boot and window frame resizing events
+        window.addEventListener('resize', rescalePresentationDeck);
+        rescalePresentationDeck();
     </script>
 
 </body>
