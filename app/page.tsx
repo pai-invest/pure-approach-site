@@ -129,4 +129,71 @@ export default function Home() {
         </div>
 
         {/* The 5th Division: Full-Width Foundation Capstone */}
-        <a href
+        <a href="/legacy" className="group block w-full p-8 md:p-10 rounded-lg bg-gradient-to-br from-[#050f0a] to-neutral-950 border border-[#D4AF37]/30 transition duration-500 hover:border-[#D4AF37]/60 shadow-lg hover:shadow-blue-900/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mt-6">
+          <div className="flex-1">
+            <div className="flex items-center gap-6 mb-4">
+              <div className="h-20 w-auto flex items-center justify-center overflow-hidden rounded bg-white/5 border border-[#3B82F6]/30 px-3 py-2">
+                <img 
+                  src="/legacylogo.png" 
+                  alt="Pure Legacy Foundation Logo" 
+                  className="h-full w-auto object-contain"
+                />
+              </div>
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[#D4AF37] transition font-serif">Pure Legacy Foundation</h3>
+                <span className="text-xs font-mono tracking-widest text-[#60A5FA] mt-1 block">SOCIAL RESPONSIBILITY DIVISION</span>
+              </div>
+            </div>
+            <p className="mt-4 text-sm md:text-base text-blue-50/70 leading-relaxed max-w-3xl">
+              Transforming corporate success into sustainable, real-world impact. We approach philanthropy with the same strategic precision that drives our investment operations, bypassing institutional layers to direct capital toward critical community needs and restoration.
+            </p>
+          </div>
+          <div className="shrink-0 flex items-center gap-3 text-sm font-mono text-[#D4AF37] group-hover:text-yellow-200 transition">
+            <span>VIEW IMPACT</span>
+            <span className="text-lg">→</span>
+          </div>
+        </a>
+
+      </section>
+
+      {/* The Framework */}
+      <section id="framework" className="max-w-5xl mx-auto px-6 py-16 border-t border-neutral-900/50">
+        <div className="max-w-3xl">
+          <h2 className="text-xs font-bold tracking-wildest text-neutral-500 uppercase mb-6">
+            The Pure Framework
+          </h2>
+          <h3 className="text-xl md:text-2xl font-bold text-neutral-100 leading-snug">
+            Built on absolute structural discipline.
+          </h3>
+          <p className="mt-4 text-sm md:text-base text-neutral-400 leading-relaxed">
+            We believe that sustainable wealth accumulation is built on transparency, structural stability, and real, asset-backed value. Every operational division operates under an uncompromised risk framework:
+          </p>
+          <ul className="mt-8 space-y-4 text-sm text-neutral-400">
+            <li className="flex items-start">
+              <span className="text-neutral-500 mr-3 font-mono">[01]</span>
+              <span><strong className="text-neutral-200">Zero Debt Leverage:</strong> Funded entirely by organic equity capital to eliminate systemic risk.</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-neutral-500 mr-3 font-mono">[02]</span>
+              <span><strong className="text-neutral-200">Asset-Backed Focus:</strong> Prioritizing enterprises exchanging clear, tangible utility for revenue.</span>
+            </li>
+            <li className="flex items-start">
+              <span className="text-neutral-500 mr-3 font-mono">[03]</span>
+              <span><strong className="text-neutral-200">Ethical Frameworks:</strong> Completely aligned with clean risk-sharing principles, fully independent of conventional speculative architectures.</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="max-w-6xl mx-auto px-6 py-12 mt-12 border-t border-neutral-900/50 flex flex-col md:flex-row justify-between items-center text-xs text-neutral-600 space-y-4 md:space-y-0">
+        <div>
+          © 2026 Pure Approach Investments (Pty) Ltd. All rights reserved.
+        </div>
+        <div className="flex space-x-6">
+          <a href="/privacy" className="hover:text-neutral-400 transition">Privacy Policy</a>
+        </div>
+      </footer>
+    </div>
+  );
+}
