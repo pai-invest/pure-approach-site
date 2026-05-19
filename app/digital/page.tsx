@@ -1,16 +1,7 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function DigitalDivision() {
-  // State for the free micro-utility calculator
-  const [monthlyIncome, setMonthlyIncome] = useState<number | ''>('');
-  
-  // Rough calculation logic (Assuming 45% max marginal vs 27% corporate rate)
-  const annualIncome = Number(monthlyIncome) * 12;
-  const personalTax = annualIncome * 0.45;
-  const corporateTax = annualIncome * 0.27;
-  const lostCapital = personalTax - corporateTax;
-
   return (
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
       
@@ -50,135 +41,40 @@ export default function DigitalDivision() {
           </p>
         </div>
 
-        {/* Tech Matrix / Operational Grid */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/20 hover:border-[#F5D36B]/40 transition duration-500 shadow-2xl">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-serif tracking-wide text-[#F5D36B]">Programmatic Media Pipelines</h3>
-              <span className="px-2 py-0.5 text-[10px] font-mono tracking-wider bg-[#032213] text-[#10B981] border border-[#10B981]/30 rounded">
-                SYS_ACTIVE
-              </span>
-            </div>
-            <p className="mt-3 text-sm text-[#F5D36B]/70 font-light leading-relaxed">
-              Deploying light, edge-optimized content networks designed for mathematical keyword capture. These assets convert global search volume into persistent, high-margin transactional flow.
-            </p>
-            <div className="mt-6 pt-4 border-t border-[#10B981]/10 grid grid-cols-2 gap-4 text-xs font-mono text-[#10B981]">
-              <div>CAPACITY: <span className="text-[#FFFDF0] font-bold">MAX_EFFICIENCY</span></div>
-              <div>MONETIZATION: <span className="text-[#FFFDF0] font-bold">PROGRAMMATIC</span></div>
-            </div>
-          </div>
-
-          <div className="p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/20 hover:border-[#F5D36B]/40 transition duration-500 shadow-2xl">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-serif tracking-wide text-[#F5D36B]">Custom Software Utilities</h3>
-              <span className="px-2 py-0.5 text-[10px] font-mono tracking-wider bg-[#04381F] text-[#F5D36B] border border-[#F5D36B]/20 rounded">
-                NODE_SCALING
-              </span>
-            </div>
-            <p className="mt-3 text-sm text-[#F5D36B]/70 font-light leading-relaxed">
-              Engineering proprietary serverless micro-SaaS and transactional web interfaces that eliminate workflow inefficiencies and yield automated recurring margins.
-            </p>
-            <div className="mt-6 pt-4 border-t border-[#10B981]/10 grid grid-cols-2 gap-4 text-xs font-mono text-[#10B981]">
-              <div>INFRASTRUCTURE: <span className="text-[#FFFDF0] font-bold">DECOUPLED</span></div>
-              <div>DEBT LEVERAGE: <span className="text-[#FFFDF0] font-bold">0.00%</span></div>
-            </div>
-          </div>
-        </div>
-
-        {/* --- NEW SECTION: THE APEX VAULT (SOFTWARE POSITIONING) --- */}
-        <div className="mt-24 border-t border-[#10B981]/20 pt-16">
-          <div className="text-center mb-12">
-            <h2 className="text-xs font-bold tracking-[0.4em] uppercase font-mono mb-4 text-[#10B981]">The Apex Vault</h2>
-            <h3 className="text-3xl font-serif tracking-wide uppercase text-[#F5D36B]">
-              Engineered Systems for Capital Efficiency
-            </h3>
-            <p className="mt-4 text-sm font-light text-[#F5D36B]/70 max-w-2xl mx-auto leading-relaxed">
-              Bypass the technical debt of retail software. Pure Apex Pulse licenses the exact, mechanical tracking architectures and proprietary frameworks utilized internally by our corporate desk.
-            </p>
-          </div>
-
-          <div className="bg-[#021A0E] border border-[#10B981]/20 rounded-xl p-8 shadow-2xl flex flex-col md:flex-row gap-8 items-center relative overflow-hidden group hover:border-[#F5D36B]/40 transition duration-500">
-            <div className="flex-1 z-10">
-              <span className="text-[10px] font-mono tracking-widest uppercase mb-3 block text-[#10B981]">CLOUD-HOSTED TREASURY DASHBOARD</span>
-              <h4 className="text-2xl font-serif tracking-wide uppercase mb-4 text-[#FFFDF0] drop-shadow-md">
-                The Global Swing Matrix
-              </h4>
-              <p className="text-sm font-light leading-relaxed mb-6 text-[#F5D36B]/80">
-                Institutional-grade structural discipline for the independent investor. A proprietary web application engineered to track up to 29 distinct US equity entry tranches, calculate precise percentage-based profit exits, and enforce uncompromised risk management across dual-currency portfolios.
-              </p>
-              <ul className="space-y-3 text-xs font-mono text-[#F5D36B]/90 mb-8">
-                <li className="flex items-center gap-3">
-                  <span className="text-[#10B981] text-lg">▹</span> Automated +9% Exit & Stop-Loss Target Generation
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="text-[#10B981] text-lg">▹</span> Multi-Tranche US Equity Ledger
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="text-[#10B981] text-lg">▹</span> Private Client Authentication & Secure Access
-                </li>
-              </ul>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-6">
-                <span className="text-2xl font-serif text-[#FFFDF0]">$99.00 <span className="text-sm text-[#10B981]/60 font-mono">/ LIFETIME</span></span>
-                <button className="px-6 py-3 text-xs font-bold font-mono tracking-widest uppercase transition-all duration-300 bg-[#F5D36B] text-[#032213] hover:bg-[#FFFDF0] shadow-[0_0_15px_rgba(245,211,107,0.2)] rounded-sm">
-                  PURCHASE SECURE LICENSE
-                </button>
-              </div>
-              <p className="mt-6 text-[10px] font-mono text-[#10B981]/60 leading-relaxed uppercase">
-                *Secure authentication credentials provisioned immediately upon transaction clearance. Zero local installation required.
-              </p>
-            </div>
+        {/* --- SYSTEM DIRECTORY (NEW NAVIGATION HUB) --- */}
+        <div className="mt-20 border-t border-[#10B981]/20 pt-16">
+          <h2 className="text-xs font-bold tracking-[0.4em] uppercase font-mono mb-8 text-[#10B981]">
+            Active Deployment Nodes
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            {/* Visual Placeholder for Web App */}
-            <div className="w-full md:w-1/3 aspect-square bg-[#032213] border border-[#10B981]/30 rounded flex flex-col shadow-inner relative z-10 group-hover:border-[#10B981]/60 transition duration-500 overflow-hidden">
-               <div className="w-full h-6 bg-[#021A0E] border-b border-[#10B981]/20 flex items-center px-3 gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-[#10B981]/50"></div>
-                  <div className="w-2 h-2 rounded-full bg-[#F5D36B]/50"></div>
-                  <div className="w-2 h-2 rounded-full bg-[#FFFDF0]/50"></div>
-               </div>
-               <div className="flex-1 flex flex-col items-center justify-center p-4">
-                  <span className="block text-4xl mb-4 text-[#10B981] opacity-80">💻</span>
-                  <span className="text-[10px] font-bold font-mono tracking-widest uppercase text-[#F5D36B]">MATRIX_OS</span>
-                  <span className="text-[8px] font-mono tracking-widest uppercase text-[#10B981]/60 mt-1">LIVE TERMINAL</span>
-               </div>
+            {/* Link to The Vault */}
+            <div className="p-8 rounded-xl bg-[#021A0E] border border-[#10B981]/20 hover:border-[#F5D36B]/50 transition duration-500 shadow-2xl flex flex-col relative group overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F5D36B] to-[#D4AF37] opacity-0 group-hover:opacity-100 transition duration-500"></div>
+              <span className="text-[10px] font-mono tracking-widest uppercase mb-3 text-[#10B981]">SECURE PORTAL</span>
+              <h3 className="text-2xl font-serif tracking-wide text-[#FFFDF0] mb-3">The Apex Vault</h3>
+              <p className="text-sm text-[#F5D36B]/70 font-light leading-relaxed flex-1 mb-8">
+                Access proprietary, cloud-hosted tracking architectures and mechanical financial frameworks utilized internally by our corporate desk.
+              </p>
+              <a href="/digital/vault" className="inline-flex items-center justify-between px-6 py-3 bg-[#032213] border border-[#10B981]/30 hover:border-[#F5D36B] text-[#F5D36B] hover:text-[#FFFDF0] text-xs font-mono font-bold tracking-widest transition-all duration-300">
+                ENTER VAULT <span className="text-[#10B981] text-lg leading-none group-hover:translate-x-1 transition-transform">→</span>
+              </a>
             </div>
-          </div>
-        </div>
 
-        {/* --- FREE MICRO-UTILITY --- */}
-        <div className="mt-24 border-t border-[#10B981]/20 pt-16">
-          <div className="text-center mb-12">
-            <h2 className="text-xs font-bold tracking-[0.4em] uppercase font-mono mb-4 text-[#10B981]">Free Micro-Utility</h2>
-            <h3 className="text-2xl font-serif tracking-wide uppercase text-[#F5D36B]">
-              Corporate Transition ROI Calculator
-            </h3>
-            <p className="mt-4 text-sm font-light text-[#F5D36B]/70 max-w-2xl mx-auto">
-              Determine the exact point at which independent professionals bleed capital to personal income tax frameworks versus corporate holding structures.
-            </p>
-          </div>
+            {/* Link to Free Calculator */}
+            <div className="p-8 rounded-xl bg-[#021A0E] border border-[#10B981]/20 hover:border-[#10B981]/60 transition duration-500 shadow-2xl flex flex-col relative group overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-[#10B981] opacity-0 group-hover:opacity-100 transition duration-500"></div>
+              <span className="text-[10px] font-mono tracking-widest uppercase mb-3 text-[#10B981]">PUBLIC MICRO-UTILITY</span>
+              <h3 className="text-2xl font-serif tracking-wide text-[#FFFDF0] mb-3">Arbitrage ROI Calculator</h3>
+              <p className="text-sm text-[#F5D36B]/70 font-light leading-relaxed flex-1 mb-8">
+                Determine the exact mathematical threshold where independent professionals bleed capital to personal income tax frameworks.
+              </p>
+              <a href="/digital/calculator" className="inline-flex items-center justify-between px-6 py-3 bg-[#032213] border border-[#10B981]/30 hover:border-[#10B981] text-[#F5D36B] hover:text-[#FFFDF0] text-xs font-mono font-bold tracking-widest transition-all duration-300">
+                INITIALIZE TOOL <span className="text-[#10B981] text-lg leading-none group-hover:translate-x-1 transition-transform">→</span>
+              </a>
+            </div>
 
-          <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20 shadow-2xl max-w-lg mx-auto">
-            <label className="block text-xs font-mono font-bold uppercase tracking-widest mb-3 text-[#10B981]">
-              Estimated Monthly Revenue (ZAR)
-            </label>
-            <input 
-              type="number" 
-              placeholder="e.g. 150000"
-              value={monthlyIncome}
-              onChange={(e) => setMonthlyIncome(Number(e.target.value))}
-              className="w-full p-4 mb-6 border border-[#10B981]/30 rounded bg-[#032213] focus:outline-none focus:border-[#F5D36B] text-xl font-serif text-center text-[#FFFDF0] placeholder-[#10B981]/30 transition-colors"
-            />
-
-            {typeof monthlyIncome === 'number' && monthlyIncome > 0 && (
-              <div className="p-6 bg-[#032213] border border-[#10B981]/40 rounded text-center transition-all duration-500">
-                <span className="block text-[10px] font-mono tracking-widest uppercase mb-2 text-[#F5D36B]/70">Estimated Annual Capital Lost</span>
-                <span className="block text-3xl font-serif tracking-wide mb-3 text-[#FFFDF0] drop-shadow-[0_0_8px_rgba(255,253,240,0.3)]">
-                  R {lostCapital.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </span>
-                <p className="text-[10px] font-mono leading-relaxed text-[#10B981]/60">
-                  *CALCULATION COMPARES STANDARD 45% MAXIMUM MARGINAL INDIVIDUAL TAX AGAINST A 27% CORPORATE TAX RATE OVER 12 MONTHS. PURELY INFORMATIONAL.
-                </p>
-              </div>
-            )}
           </div>
         </div>
 
