@@ -123,7 +123,8 @@ export default function PureApexPulse() {
             style={{ color: brandColors.slate, ...timesNewRomanFont }}
           />
 
-          {monthlyIncome > 0 && (
+          {/* The fix: explicitly check that it is a number before comparing to 0 */}
+          {typeof monthlyIncome === 'number' && monthlyIncome > 0 && (
             <div className="p-6 bg-[#203340] rounded-lg text-white text-center transition-all duration-500">
               <span className="block text-xs font-bold tracking-widest uppercase mb-2 text-[#B9BBB7]">Estimated Annual Capital Lost</span>
               <span className="block text-4xl font-bold tracking-wide mb-4 text-[#426F64]">
