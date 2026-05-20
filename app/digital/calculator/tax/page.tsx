@@ -33,10 +33,17 @@ export default function FreeTaxEstimator() {
   return (
     <div className="min-h-screen bg-[#0A1128] text-[#E2E8F0] font-sans selection:bg-[#1C2541] flex flex-col">
       
+      {/* 1. Compliance Disclaimer Banner */}
+      <div className="bg-[#EF4444]/10 border-b border-[#EF4444]/20 py-2 text-center">
+        <p className="text-[10px] uppercase tracking-widest text-[#EF4444] font-bold">
+          PUBLIC SIMULATION MODE // ENTERPRISE DATA AUDIT REQUIRED
+        </p>
+      </div>
+
       {/* Navigation & Status Header */}
       <header className="max-w-4xl mx-auto w-full px-6 pt-12 pb-8 border-b border-[#94A3B8]/20">
         <div className="flex justify-between items-center mb-12">
-          <a href="/digital/calculators" className="text-xs font-bold tracking-[0.2em] text-[#94A3B8] hover:text-[#FFFFFF] transition font-mono uppercase">
+          <a href="/digital/calculator" className="text-xs font-bold tracking-[0.2em] text-[#94A3B8] hover:text-[#FFFFFF] transition font-mono uppercase">
             ← Return to Public Utilities
           </a>
           <div className="text-xs tracking-widest font-mono flex items-center gap-2 bg-[#1C2541]/50 px-3 py-1.5 rounded border border-[#94A3B8]/20">
@@ -55,7 +62,6 @@ export default function FreeTaxEstimator() {
 
       <main className="max-w-4xl mx-auto w-full px-6 py-12 flex-1">
         
-        {/* Operational Mandate */}
         <section className="bg-[#111C3A] p-6 border border-[#E2E8F0]/10 rounded-xl mb-12">
           <p className="text-sm font-light text-[#94A3B8] leading-relaxed">
             This utility provides a rapid estimate of your tax burden. It compares the SARS progressive bracket system (Individual) against a standard 27% corporate tax rate combined with a 20% dividend extraction drag.
@@ -63,8 +69,6 @@ export default function FreeTaxEstimator() {
         </section>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          {/* Inputs */}
           <section className="bg-[#111C3A] p-8 rounded border border-[#94A3B8]/20 shadow-xl">
             <h3 className="text-xs font-mono mb-6 text-[#FFFFFF] tracking-widest uppercase border-b border-[#94A3B8]/20 pb-4">Financial Baseline</h3>
             
@@ -83,9 +87,7 @@ export default function FreeTaxEstimator() {
             </div>
           </section>
 
-          {/* Telemetry Dashboard */}
           <section className="space-y-6">
-            
             <div className="bg-[#111C3A] border border-[#94A3B8]/20 rounded p-6">
               <h4 className="text-sm font-serif text-[#E2E8F0] mb-1">Individual Tax Burden</h4>
               <p className="text-[10px] font-mono text-[#94A3B8] uppercase mb-4">SARS Progressive Scale</p>
@@ -97,26 +99,21 @@ export default function FreeTaxEstimator() {
               <p className="text-[10px] font-mono text-[#94A3B8] uppercase mb-4">27% CIT + 20% Full Dividend Extraction</p>
               <p className="text-3xl font-bold text-[#EF4444]">- R {results.estimatedCorpBurden.toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
             </div>
-
           </section>
         </div>
 
-        {/* Upsell to Premium Vault */}
-        <div className="mt-16 bg-[#111C3A] border border-[#F5D36B]/30 rounded-xl p-8 text-center relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F5D36B] to-[#B38F24]"></div>
-          <h2 className="text-lg font-serif text-[#FFFFFF] tracking-wide mb-2">Generate the Official Governance Audit</h2>
-          <p className="text-xs text-[#94A3B8] font-mono tracking-widest uppercase mb-6">Targeted Cash Extraction // PDF Export</p>
-          <p className="text-sm font-light text-[#E2E8F0] max-w-2xl mx-auto mb-8">
-            This public tool forces a 100% dividend payout. In reality, you only extract what you need. Unlock the full **Tax Efficiency Matrix** to model targeted lifestyle extractions, view the side-by-side structural comparison, and generate a print-ready Governance Audit PDF.
+        {/* 2. Conversion Bridge */}
+        <div className="mt-16 bg-[#021A0E] border border-[#F5D36B]/30 rounded-xl p-10 text-center shadow-2xl">
+          <h2 className="text-xl font-serif text-[#FFFDF0] mb-4">GENERATE OFFICIAL GOVERNANCE AUDIT</h2>
+          <p className="text-sm text-[#F5D36B]/70 max-w-lg mx-auto mb-8 leading-relaxed">
+            This public tool uses generalized tax brackets. To model targeted lifestyle extractions, calculate true corporate friction, and generate a print-ready Governance Audit PDF, bridge to the Secure Vault.
           </p>
-          <a href="/digital/vault" className="inline-block bg-[#F5D36B] text-[#0A1128] px-8 py-3 font-bold uppercase tracking-widest text-xs hover:bg-[#FFFFFF] transition shadow-[0_0_15px_rgba(245,211,107,0.15)]">
-            Access The Vault
+          <a href="/digital/vault" className="inline-block bg-[#F5D36B] text-[#032213] px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-[#FFFFFF] transition">
+            Unlock Full Architecture
           </a>
         </div>
-
       </main>
 
-      {/* Footer */}
       <footer className="max-w-4xl mx-auto w-full px-6 py-8 border-t border-[#94A3B8]/10 text-[9px] font-mono text-[#94A3B8]/40 text-center uppercase tracking-widest">
         PUBLIC UTILITY // ESTIMATIONS DO NOT CONSTITUTE TAX ADVICE // © 2026 PURE APPROACH INVESTMENTS (PTY) LTD.
       </footer>
