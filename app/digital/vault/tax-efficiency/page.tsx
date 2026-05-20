@@ -2,11 +2,9 @@
 import React, { useState } from 'react';
 
 export default function TaxEfficiencyMatrix() {
-  // Financial State
   const [revenue, setRevenue] = useState<number>(1500000);
   const [expenses, setExpenses] = useState<number>(300000);
 
-  // Structural Audit Logic
   const calculateAudit = () => {
     const netProfit = Math.max(0, revenue - expenses);
     
@@ -46,12 +44,19 @@ export default function TaxEfficiencyMatrix() {
 
       <main className="max-w-5xl mx-auto px-6 py-16 space-y-12">
         
-        {/* Comparative Telemetry */}
+        {/* Purpose Section */}
+        <section className="bg-[#021A0E] p-8 border border-[#10B981]/20 rounded-lg">
+            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#FFFDF0] mb-4">Operational Mandate: System Purpose</h2>
+            <p className="text-sm font-light text-[#F5D36B]/80 leading-relaxed">
+                This matrix is a proprietary structural audit engine designed to quantify the tax drag incurred by Sole Proprietor versus Corporate Entity (Pty Ltd) structures. It calculates the variance between progressive individual income tax and the dual-layer corporate tax burden (27% CIT + 20% Dividend Withholding Tax) to inform optimal capital extraction.
+            </p>
+        </section>
+
+        {/* Telemetry Section */}
         <section className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1 bg-[#021A0E] p-6 border border-[#10B981]/20 rounded">
             <label className="block text-[9px] uppercase tracking-widest mb-2 text-[#10B981]">Gross Revenue</label>
             <input type="number" value={revenue} onChange={(e) => setRevenue(Number(e.target.value))} className="w-full bg-transparent border-b border-[#10B981]/30 focus:border-[#F5D36B] outline-none py-2 text-xl text-[#FFFDF0]" />
-            
             <label className="block text-[9px] uppercase tracking-widest mt-6 mb-2 text-[#10B981]">Expenses</label>
             <input type="number" value={expenses} onChange={(e) => setExpenses(Number(e.target.value))} className="w-full bg-transparent border-b border-[#10B981]/30 focus:border-[#F5D36B] outline-none py-2 text-xl text-[#FFFDF0]" />
           </div>
@@ -72,12 +77,19 @@ export default function TaxEfficiencyMatrix() {
           </div>
         </section>
 
+        {/* Technical Protocol Section */}
+        <section className="bg-[#021A0E] p-8 border border-[#10B981]/20 rounded-lg">
+            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#FFFDF0] mb-6">Technical Protocol: How to Use</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">1. Input Baseline Data</span>Define your total Gross Revenue and total annual Operating Expenses to establish your Net Taxable Profit baseline.</div>
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">2. Analyze the Delta</span>Compare the "Sole Proprietor Drag" against your "Corporate Efficiency." A negative delta indicates potential tax leakage that warrants a structural transition.</div>
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">3. Export for Review</span>Utilize the audit generator to create a static record of these projections to present to your tax practitioner during IRP6 provisional tax planning.</div>
+            </div>
+        </section>
+
         {/* Export & Compliance Bridge */}
-        <section className="bg-[#021A0E] p-8 border border-[#F5D36B]/20 rounded-lg text-center">
+        <section className="p-8 border border-[#F5D36B]/20 rounded-lg text-center">
             <h2 className="text-lg font-serif mb-4 text-[#F5D36B]">Finalize Governance Audit</h2>
-            <p className="text-sm text-[#F5D36B]/70 mb-8 max-w-lg mx-auto">
-                This is your live structural audit. Export this data as a formal Governance Audit PDF for review against your current IRP6 tax submissions.
-            </p>
             <button onClick={() => window.print()} className="bg-[#F5D36B] text-[#032213] px-8 py-3 font-bold uppercase text-xs tracking-widest hover:bg-[#FFFDF0] transition">
                 Export Audit PDF
             </button>
