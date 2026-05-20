@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 
 export default function PremiumVault() {
-  const [revenue, setRevenue] = useState<number | ''>('');
-  const [expenses, setExpenses] = useState<number | ''>('');
-  const [extraction, setExtraction] = useState<number | ''>('');
+  const [revenue, setRevenue] = useState<number | ''>(1800000);
+  const [expenses, setExpenses] = useState<number | ''>(400000);
+  const [extraction, setExtraction] = useState<number | ''>(600000);
 
   const calculateEfficiency = () => {
     const rev = Number(revenue) || 0;
@@ -29,90 +29,65 @@ export default function PremiumVault() {
     const dividendTax = actualGrossDividend * 0.20;
     const totalCorpBurden = corpTax + dividendTax;
 
-    return { netProfit, indTax, corpTax, dividendTax, totalCorpBurden, gain: Math.max(0, indTax - totalCorpBurden) };
+    return { 
+      netProfit, indTax, corpTax, dividendTax, totalCorpBurden, 
+      gain: Math.max(0, indTax - totalCorpBurden),
+      efficiencyRatio: indTax > 0 ? ((indTax - totalCorpBurden) / indTax) * 100 : 0
+    };
   };
 
   const results = calculateEfficiency();
-  const isActive = Number(revenue) > 0;
 
   return (
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
       <header className="max-w-6xl mx-auto px-6 py-12 border-b border-[#10B981]/10 flex justify-between items-center">
-        <img src="/apexlogo.png" className="h-20 w-auto opacity-90" />
-        <div className="text-xs tracking-widest font-mono border border-[#F5D36B]/30 px-3 py-1.5 bg-[#F5D36B]/10">VAULT // SECURE_ACCESS</div>
+        <img src="/apexlogo.png" className="h-20 w-auto" />
+        <div className="text-xs tracking-widest font-mono border border-[#F5D36B]/30 px-3 py-1.5">VAULT // SECURE_NODE</div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-12 bg-[#021A0E] border border-[#F5D36B]/20 p-8 rounded-xl mb-6">
-           <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-4">Operational Mandate</h2>
-           <p className="text-sm font-light text-[#F5D36B]/80 leading-relaxed max-w-4xl">
-             This Tax Efficiency Matrix is a simple diagnostic tool. Its purpose is to show you how much more cash you could keep by using a more efficient business structure compared to paying taxes in your personal name. <strong>You are interacting with a mathematical simulation</strong>—it is not an automated tax filer, nor does it provide legal or tax advice. By using this tool, you agree that it is meant for structural planning in consultation with your own tax advisor.
-           </p>
+        {/* Input Console */}
+        <div className="lg:col-span-4 bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
+          <h2 className="text-sm font-bold tracking-widest uppercase text-[#10B981] mb-6">Execution Parameters</h2>
+          {['Revenue', 'Expenses', 'Extraction'].map((field) => (
+            <div key={field} className="mb-6">
+              <label className="block text-[10px] font-mono uppercase tracking-widest mb-2 text-[#10B981]/60">{field} (ZAR)</label>
+              <input type="number" value={field === 'Revenue' ? revenue : field === 'Expenses' ? expenses : extraction} onChange={(e) => field === 'Revenue' ? setRevenue(Number(e.target.value)) : field === 'Expenses' ? setExpenses(Number(e.target.value)) : setExtraction(Number(e.target.value))} className="w-full p-4 bg-[#032213] border border-[#10B981]/30 text-[#FFFDF0] font-serif text-lg rounded" />
+            </div>
+          ))}
         </div>
 
-        <div className="lg:col-span-5 space-y-6">
-          <h1 className="text-3xl font-serif uppercase text-[#FFFDF0]">Tax Efficiency Matrix</h1>
+        {/* Executive Dashboard */}
+        <div className="lg:col-span-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-[#032213] p-6 border border-[#F5D36B]/30 rounded-lg text-center">
+              <span className="block text-[9px] font-mono uppercase text-[#F5D36B]/60 mb-2">Efficiency Gain</span>
+              <span className="text-2xl text-[#10B981] font-serif">R {results.gain.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+            </div>
+            <div className="bg-[#032213] p-6 border border-[#10B981]/30 rounded-lg text-center">
+              <span className="block text-[9px] font-mono uppercase text-[#F5D36B]/60 mb-2">Efficiency Ratio</span>
+              <span className="text-2xl text-[#FFFDF0] font-serif">{results.efficiencyRatio.toFixed(1)}%</span>
+            </div>
+            <div className="bg-[#032213] p-6 border border-[#10B981]/30 rounded-lg text-center">
+              <span className="block text-[9px] font-mono uppercase text-[#F5D36B]/60 mb-2">Structure Health</span>
+              <span className="text-2xl text-[#F5D36B] font-serif">{results.efficiencyRatio > 15 ? 'OPTIMIZED' : 'SUB-OPTIMAL'}</span>
+            </div>
+          </div>
+
+          {/* Visual Breakdown */}
           <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
-            {['Revenue', 'Expenses', 'Extraction'].map((field) => (
-              <div key={field} className="mb-4">
-                <label className="block text-[10px] font-mono font-bold uppercase tracking-widest mb-2 text-[#10B981]">{field} (ZAR)</label>
-                <input type="number" onChange={(e) => field === 'Revenue' ? setRevenue(Number(e.target.value)) : field === 'Expenses' ? setExpenses(Number(e.target.value)) : setExtraction(Number(e.target.value))} className="w-full p-4 border border-[#10B981]/30 rounded bg-[#032213] text-lg font-serif text-[#FFFDF0]" />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className={`lg:col-span-7 transition-opacity duration-700 ${isActive ? 'opacity-100' : 'opacity-30'}`}>
-          <div className="bg-[#032213] p-8 rounded-xl border border-[#F5D36B]/40 text-center mb-8">
-            <span className="block text-[10px] font-mono tracking-widest uppercase mb-3 text-[#F5D36B]/80">TOTAL TAX EFFICIENCY GAIN</span>
-            <span className="block text-5xl font-serif text-[#10B981]">R {results.gain.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-[#021A0E] p-6 rounded-lg border border-[#10B981]/10">
-              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Paying in Personal Name</h3>
-              <div className="text-sm font-light text-[#F5D36B]/70 flex justify-between"><span>SARS Progressive Tax</span><span className="text-[#EF4444]">R {results.indTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
-            </div>
-            <div className="bg-[#021A0E] p-6 rounded-lg border border-[#F5D36B]/20">
-              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-6">Using Business Structure</h3>
-              <div className="space-y-4 text-sm font-light text-[#F5D36B]/70">
-                <div className="flex justify-between"><span>Corp Tax (27%)</span><span className="text-[#FFFDF0]">R {results.corpTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
-                <div className="flex justify-between"><span>Dividend Tax (20%)</span><span className="text-[#FFFDF0]">R {results.dividendTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-12 mt-12 bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
-          <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">How to use this tool</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
-            <div>
-              <span className="block text-[#FFFDF0] font-bold mb-2">1. Your Business Numbers</span>
-              Input your total annual income and your total business costs. The tool calculates your clear profit, just like a simple profit-and-loss sheet.
-            </div>
-            <div>
-              <span className="block text-[#FFFDF0] font-bold mb-2">2. Your Take-Home Pay</span>
-              Enter the amount of cash you actually need to pull out of the business to pay for your lifestyle. This simulates your dividend needs.
-            </div>
-            <div>
-              <span className="block text-[#FFFDF0] font-bold mb-2">3. Tax Efficiency Diagnosis</span>
-              We compare two paths: paying tax personally versus through your company. The 'Efficiency Gain' is the extra money you keep by choosing the better path.
+            <h3 className="text-xs font-mono uppercase tracking-widest text-[#10B981] mb-8">Structural Comparative Analysis</h3>
+            <div className="space-y-6">
+              {[ {label: 'Individual Tax Burden', val: results.indTax, color: 'bg-red-500'}, {label: 'Corporate Tax Burden', val: results.totalCorpBurden, color: 'bg-emerald-500'} ].map((item) => (
+                <div key={item.label}>
+                  <div className="flex justify-between text-[10px] font-mono text-[#F5D36B]/60 mb-2"><span>{item.label}</span><span>R {item.val.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></div>
+                  <div className="w-full h-2 bg-[#032213] rounded-full overflow-hidden"><div className={`${item.color} h-full`} style={{width: `${Math.min(100, (item.val/results.indTax)*100)}%`}}></div></div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </main>
-
-      <footer className="mt-20 border-t border-[#10B981]/10 py-8 px-6 text-[9px] font-mono text-[#10B981]/40 text-center uppercase leading-loose">
-        <p>
-          OPERATIONAL MANDATE: PROPRIETARY FINANCIAL DIAGNOSTIC TOOL. 
-          <br/>
-          THIS SYSTEM IS A MATHEMATICAL SIMULATION AND DOES NOT CONSTITUTE PROFESSIONAL FINANCIAL, TAX, OR LEGAL ADVICE.
-          <br/>
-          ALL STRUCTURAL DECISIONS REQUIRE INDEPENDENT VERIFICATION BY A CERTIFIED TAX PRACTITIONER. 
-          <br/>
-          © 2026 PURE APPROACH INVESTMENTS (PTY) LTD. ALL RIGHTS RESERVED.
-        </p>
-      </footer>
     </div>
   );
 }
