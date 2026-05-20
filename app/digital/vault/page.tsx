@@ -13,7 +13,6 @@ export default function PremiumVault() {
     
     const netProfit = Math.max(0, rev - exp);
 
-    // Timeline A: SARS Progressive Tax (Current Year)
     let indTax = 0;
     if (netProfit <= 237100) indTax = netProfit * 0.18;
     else if (netProfit <= 370500) indTax = 42678 + (netProfit - 237100) * 0.26;
@@ -23,13 +22,10 @@ export default function PremiumVault() {
     else if (netProfit <= 1817000) indTax = 251258 + (netProfit - 857900) * 0.41;
     else indTax = 644489 + (netProfit - 1817000) * 0.45;
     
-    indTax = Math.max(0, indTax - 17224); // Deduct Primary Rebate
+    indTax = Math.max(0, indTax - 17224);
 
-    // Timeline B: Corporate Structure (27% Flat + 20% DWT)
     const corpTax = netProfit * 0.27;
     const maxAvailablePostTax = Math.max(0, netProfit - corpTax);
-    
-    // Dividend Gross-Up: To receive X net, we must declare X / (1 - 0.2)
     const requiredGrossDividend = targetNetCash / 0.8;
     const actualGrossDividend = Math.min(requiredGrossDividend, maxAvailablePostTax);
     const dividendTax = actualGrossDividend * 0.20;
@@ -54,8 +50,6 @@ export default function PremiumVault() {
       <main className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-5 space-y-6">
           <h1 className="text-3xl font-serif uppercase text-[#FFFDF0]">Arbitrage Matrix</h1>
-          <p className="text-sm text-[#F5D36B]/70 font-light">Input figures to diagnose structural tax bleed.</p>
-          
           <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
             {['Revenue', 'Expenses', 'Extraction'].map((field) => (
               <div key={field} className="mb-4">
@@ -79,13 +73,31 @@ export default function PremiumVault() {
                 <div className="flex justify-between"><span>SARS Progressive Tax</span><span className="text-[#EF4444]">R {results.indTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
               </div>
             </div>
-
             <div className="bg-[#021A0E] p-6 rounded-lg border border-[#F5D36B]/20">
               <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-6">Timeline B: Corporate</h3>
               <div className="space-y-4 text-sm font-light text-[#F5D36B]/70">
                 <div className="flex justify-between"><span>Corp Tax (27%)</span><span className="text-[#FFFDF0]">R {results.corpTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
                 <div className="flex justify-between"><span>Dividend Tax (20%)</span><span className="text-[#FFFDF0]">R {results.dividendTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* --- TECHNICAL PROTOCOL SECTION --- */}
+        <div className="lg:col-span-12 mt-12 bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
+          <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Technical Protocol: How to Use</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
+            <div>
+              <span className="block text-[#FFFDF0] font-bold mb-2">1. Input Configuration</span>
+              Input your annual top-line revenue and total business deductions. The system generates your 'Net Taxable Profit' by subtracting operating costs, mirroring a standard P&L structure.
+            </div>
+            <div>
+              <span className="block text-[#FFFDF0] font-bold mb-2">2. Extraction Modeling</span>
+              Define your 'Target Cash Extraction'. This models the dividend cycle required to fund your lifestyle, automatically calculating the 20% Dividend Withholding Tax (DWT) via a gross-up mechanism.
+            </div>
+            <div>
+              <span className="block text-[#FFFDF0] font-bold mb-2">3. Arbitrage Diagnosis</span>
+              The matrix performs a dual-timeline stress test. Timeline A maps your profit through the SARS progressive bracket system. Timeline B applies the 27% corporate flat rate plus DWT. The resulting Arbitrage is your net retained liquidity.
             </div>
           </div>
         </div>
