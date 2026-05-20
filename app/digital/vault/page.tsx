@@ -30,7 +30,7 @@ export default function PremiumVault() {
 
   return (
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] p-8 font-sans print:bg-white print:text-black">
-      {/* Jurisdiction Warning */}
+      {/* 1. JURISDICTIONAL HARDENING */}
       <div className="bg-[#EF4444]/10 border-b border-[#EF4444]/20 py-2 text-center print:hidden">
         <p className="text-[10px] uppercase tracking-widest text-[#EF4444] font-bold">JURISDICTION RESTRICTED: SOUTH AFRICA (SARS) PROTOCOLS ONLY</p>
       </div>
@@ -44,7 +44,16 @@ export default function PremiumVault() {
       </header>
 
       <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 mt-12">
-        {/* Mandate & Inputs */}
+        
+        {/* 2. OPERATIONAL MANDATE (PURPOSE) */}
+        <section className="md:col-span-12 bg-[#021A0E] p-8 border border-[#F5D36B]/20 rounded-xl print:hidden">
+            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-2">Operational Mandate: System Purpose</h2>
+            <p className="text-sm font-light text-[#F5D36B]/80 leading-relaxed">
+                This matrix is a proprietary financial diagnostic tool designed to compare the tax burden of a Sole Proprietorship against a Corporate (Pty Ltd) structure. It provides structural clarity for independent professionals navigating SARS progressive tax brackets and corporate double-taxation mechanics. <strong>This is a mathematical simulation</strong> and does not constitute professional tax advice.
+            </p>
+        </section>
+
+        {/* 3. INPUTS */}
         <section className="md:col-span-4 space-y-8">
             <div className="bg-[#021A0E] p-8 border border-[#10B981]/20 rounded-xl print:hidden">
                 <h3 className="text-xs font-mono mb-6 text-[#10B981]">OPERATIONAL INPUTS</h3>
@@ -57,13 +66,13 @@ export default function PremiumVault() {
             </div>
         </section>
 
-        {/* Comparative Audit */}
+        {/* 4. COMPARATIVE AUDIT */}
         <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             <section className="p-8 border border-[#10B981]/30 bg-[#021A0E] rounded-xl print:border-black">
                 <h2 className="text-sm font-bold uppercase mb-6 text-[#10B981]">Sole Proprietor Path</h2>
                 <div className="space-y-4 font-mono text-sm">
                     <div className="flex justify-between"><span>Gross Profit</span><span>R {res.netProfit.toLocaleString()}</span></div>
-                    <div className="flex justify-between text-[#EF4444]"><span>SARS Tax</span><span>- R {res.solePropTax.toLocaleString()}</span></div>
+                    <div className="flex justify-between text-[#EF4444]"><span>Estimated SARS Tax</span><span>- R {res.solePropTax.toLocaleString()}</span></div>
                     <div className="pt-4 border-t border-[#10B981]/20 flex justify-between font-bold text-lg text-[#FFFDF0]"><span>Net Retained</span><span>R {(res.netProfit - res.solePropTax).toLocaleString()}</span></div>
                 </div>
             </section>
@@ -77,16 +86,16 @@ export default function PremiumVault() {
             </section>
         </div>
 
-        {/* Strategic Protocol & Verdict */}
+        {/* 5. STRATEGIC PROTOCOL (HOW TO USE) */}
         <section className="md:col-span-12 bg-[#021A0E] p-8 border border-[#10B981]/20 rounded-xl print:border-black">
-            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Strategic Verdict</h2>
-            <p className="text-sm font-light italic text-[#F5D36B]/90 mb-8">{res.diff > 0 ? "Strategic Recommendation: The corporate structure is superior. Formalize your incorporation to capture the R " + res.diff.toLocaleString() + " efficiency gain." : "Strategic Recommendation: Your current extraction is triggering excessive tax drag. Suggest optimizing by reducing dividend dependency."}</p>
-            
-            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6 border-t border-[#10B981]/20 pt-6">Technical Protocol: How to Use</h2>
+            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Technical Protocol: Next Steps</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
-                <div><span className="block text-[#FFFDF0] font-bold mb-2">1. Data Entry</span>Input total revenue and business-related deductions (insurance, rent, depreciation, equipment).</div>
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">1. Data Entry</span>Input total revenue and business-related deductions (e.g., insurance, rent, depreciation).</div>
                 <div><span className="block text-[#FFFDF0] font-bold mb-2">2. Extraction</span>Enter the net cash required for your personal lifestyle to model dividend requirements.</div>
-                <div><span className="block text-[#FFFDF0] font-bold mb-2">3. Diagnosis</span>Compare the two paths. The 'Efficiency Gain' is your net liquidity retained by selecting the optimal structure.</div>
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">3. Verdict</span>Review the Strategic Verdict below. The 'Efficiency Gain' represents your potential liquidity retention.</div>
+            </div>
+            <div className="mt-8 pt-6 border-t border-[#10B981]/20">
+                <p className="text-sm font-light italic text-[#F5D36B]/90">{res.diff > 0 ? "Strategic Verdict: The corporate structure is currently superior. Formalize your incorporation to capture the R " + res.diff.toLocaleString() + " efficiency gain." : "Strategic Verdict: Your dividend extraction is triggering excessive tax drag. Suggest optimizing by reducing dividend dependency or salary blending."}</p>
             </div>
         </section>
       </main>
