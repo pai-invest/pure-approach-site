@@ -6,7 +6,6 @@ export default function PremiumVault() {
   const [expenses, setExpenses] = useState<number | ''>('');
   const [extraction, setExtraction] = useState<number | ''>('');
 
-  // ... (Calculation logic remains identical to the previous version)
   const calculateArbitrage = () => {
     const rev = Number(revenue) || 0;
     const exp = Number(expenses) || 0;
@@ -37,25 +36,22 @@ export default function PremiumVault() {
   const isActive = Number(revenue) > 0;
 
   return (
-    <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans">
+    <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
       <header className="max-w-6xl mx-auto px-6 py-12 border-b border-[#10B981]/10 flex justify-between items-center">
         <img src="/apexlogo.png" className="h-20 w-auto opacity-90" />
         <div className="text-xs tracking-widest font-mono border border-[#F5D36B]/30 px-3 py-1.5 bg-[#F5D36B]/10">VAULT // SECURE_ACCESS</div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-        
-        {/* --- NEW OPERATIONAL MANDATE PANEL --- */}
-        <div className="lg:col-span-12 bg-[#021A0E] border border-[#F5D36B]/20 p-8 rounded-xl mb-6">
+        {/* Operational Mandate */}
+        <div className="lg:col-span-12 bg-[#021A0E] border border-[#F5D36B]/20 p-8 rounded-xl">
            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-4">Operational Mandate</h2>
            <p className="text-sm font-light text-[#F5D36B]/80 leading-relaxed max-w-4xl">
              The Arbitrage Matrix is a proprietary financial diagnostic tool. Its purpose is to provide a deterministic model comparing your current individual tax burden against an optimized corporate holding structure. <strong>Users are interacting with a mathematical simulation</strong>—it is not an automated tax filer, nor does it provide personalized legal or tax advice. By operating this console, you acknowledge that this tool is intended to provide structural clarity to facilitate your own informed business decisions in consultation with your tax practitioner.
            </p>
         </div>
 
-        {/* ... (Rest of the Input/Dashboard columns remain the same) ... */}
-        
-        {/* Left Column: Input Console */}
+        {/* Input Console */}
         <div className="lg:col-span-5 space-y-6">
           <h1 className="text-3xl font-serif uppercase text-[#FFFDF0]">Arbitrage Matrix</h1>
           <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
@@ -68,18 +64,40 @@ export default function PremiumVault() {
           </div>
         </div>
 
-        {/* Right Column: Execution Dashboard */}
+        {/* Execution Dashboard */}
         <div className={`lg:col-span-7 transition-opacity duration-700 ${isActive ? 'opacity-100' : 'opacity-30'}`}>
-           {/* ... (Results grid same as previous) ... */}
-        </div>
+          <div className="bg-[#032213] p-8 rounded-xl border border-[#F5D36B]/40 text-center mb-8">
+            <span className="block text-[10px] font-mono tracking-widest uppercase mb-3 text-[#F5D36B]/80">NET CAPITAL RETAINED (THE ARBITRAGE)</span>
+            <span className="block text-5xl font-serif text-[#10B981]">R {results.arbitrage.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+          </div>
 
-        {/* Technical Protocol Panel (As before) */}
-        <div className="lg:col-span-12 mt-12 bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
-          <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Technical Protocol: How to Use</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
-             {/* (Instruction columns same as previous) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-[#021A0E] p-6 rounded-lg border border-[#10B981]/10">
+              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Timeline A: Individual</h3>
+              <div className="text-sm font-light text-[#F5D36B]/70 flex justify-between"><span>SARS Progressive Tax</span><span className="text-[#EF4444]">R {results.indTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
+            </div>
+            <div className="bg-[#021A0E] p-6 rounded-lg border border-[#F5D36B]/20">
+              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-6">Timeline B: Corporate</h3>
+              <div className="space-y-4 text-sm font-light text-[#F5D36B]/70">
+                <div className="flex justify-between"><span>Corp Tax (27%)</span><span className="text-[#FFFDF0]">R {results.corpTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
+                <div className="flex justify-between"><span>Dividend Tax (20%)</span><span className="text-[#FFFDF0]">R {results.dividendTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* Permanent Footer Component */}
+        <footer className="lg:col-span-12 mt-20 border-t border-[#10B981]/10 py-8 px-6 text-[9px] font-mono text-[#10B981]/40 text-center uppercase leading-loose">
+          <p>
+            OPERATIONAL MANDATE: PROPRIETARY FINANCIAL DIAGNOSTIC TOOL. 
+            <br/>
+            THIS SYSTEM IS A MATHEMATICAL SIMULATION AND DOES NOT CONSTITUTE PROFESSIONAL FINANCIAL, TAX, OR LEGAL ADVICE.
+            <br/>
+            ALL STRUCTURAL DECISIONS REQUIRE INDEPENDENT VERIFICATION BY A CERTIFIED TAX PRACTITIONER. 
+            <br/>
+            © 2026 PURE APPROACH INVESTMENTS (PTY) LTD. ALL RIGHTS RESERVED.
+          </p>
+        </footer>
       </main>
     </div>
   );
