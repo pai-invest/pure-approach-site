@@ -1,8 +1,8 @@
-<div className="bg-[#EF4444]/10 border-b border-[#EF4444]/20 py-2 text-center">
-    <p className="text-[10px] uppercase tracking-widest text-[#EF4444] font-bold">PUBLIC SIMULATION MODE // ENTERPRISE DATA AUDIT REQUIRED</p>
-</div>use client";
 import React, { useState } from 'react';
 
+<div className="bg-[#EF4444]/10 border-b border-[#EF4444]/20 py-2 text-center">
+    <p className="text-[10px] uppercase tracking-widest text-[#EF4444] font-bold">PUBLIC SIMULATION MODE // ENTERPRISE DATA AUDIT REQUIRED</p>
+</div>
 export default function PurificationMatrix() {
   const [dividendIncome, setDividendIncome] = useState<number>(15000);
   const [nonCompliantRatio, setNonCompliantRatio] = useState<number>(4.5); // Standard average % for mixed-source
