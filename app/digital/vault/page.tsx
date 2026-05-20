@@ -2,29 +2,29 @@
 import React from 'react';
 
 export default function VaultMasterDashboard() {
-  // We introduce 'isLocked' and 'price' to manage the paywall state.
+  // Override: isLocked set to 'false' for admin access.
   const vaultAssets = [
     {
       id: "tax-efficiency",
       title: "Tax Efficiency Matrix",
       tag: "GOVERNANCE // SARS",
       description: "Proprietary structural audit engine comparing Sole Proprietor versus Corporate Entity (Pty Ltd) tax drag.",
-      status: "PAYWALL_ACTIVE",
-      isLocked: true,
+      status: "SYS_ONLINE",
+      isLocked: false,
       price: "R 1,800",
       link: "/digital/vault/tax-efficiency",
-      checkoutLink: "#" // Replace with your Paystack/Stripe payment link
+      checkoutLink: "#" 
     },
     {
       id: "global-swing",
       title: "Global Swing Matrix",
       tag: "TRADING // ALLOCATION",
       description: "Algorithmic tracking system for Barbell capital allocation and automated percentage swing execution.",
-      status: "PAYWALL_ACTIVE",
-      isLocked: true,
+      status: "SYS_ONLINE",
+      isLocked: false,
       price: "R 2,500",
       link: "/digital/vault/global-swing",
-      checkoutLink: "#" // Replace with your Paystack/Stripe payment link
+      checkoutLink: "#" 
     }
   ];
 
@@ -38,8 +38,8 @@ export default function VaultMasterDashboard() {
             ← RETURN TO PULSE TERMINAL
           </a>
           <div className="text-xs tracking-widest font-mono flex items-center gap-2 bg-[#04381F]/50 px-3 py-1.5 rounded border border-[#10B981]/20">
-            <span className="w-2 h-2 rounded-full bg-[#EF4444] animate-pulse shadow-[0_0_10px_#EF4444]"></span>
-            <span className="text-[#F5D36B] font-bold">AUTH_REQUIRED</span>
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-[0_0_10px_#10B981]"></span>
+            <span className="text-[#F5D36B] font-bold">ACCESS_GRANTED</span>
           </div>
         </div>
 
@@ -54,14 +54,13 @@ export default function VaultMasterDashboard() {
       {/* Asset Grid */}
       <main className="max-w-5xl mx-auto px-6 py-16">
         <h2 className="text-xs font-bold tracking-[0.3em] uppercase font-mono mb-8 text-[#F5D36B]">
-          Encrypted Architectures
+          Unlocked Architectures
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {vaultAssets.map((asset) => (
             <div key={asset.id} className={`p-8 rounded-lg bg-[#021A0E] border ${asset.isLocked ? 'border-[#EF4444]/30' : 'border-[#10B981]/20'} hover:border-[#F5D36B]/40 transition duration-500 shadow-2xl flex flex-col justify-between relative overflow-hidden`}>
               
-              {/* Optional UI: Background Lock Watermark for locked assets */}
               {asset.isLocked && (
                 <div className="absolute -right-8 -bottom-8 opacity-5 text-9xl">
                   🔒
