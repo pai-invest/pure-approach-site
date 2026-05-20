@@ -6,7 +6,6 @@ export default function PublicSwingCalculator() {
   const [ticker, setTicker] = useState<string>("SPY");
   const [entryPrice, setEntryPrice] = useState<number>(500);
 
-  // Core Algorithmic Logic (Simplified for Public Use)
   const shares = entryPrice > 0 ? Math.floor(investment / entryPrice) : 0;
   const actualInvested = shares * entryPrice;
   
@@ -19,11 +18,18 @@ export default function PublicSwingCalculator() {
   return (
     <div className="min-h-screen bg-[#0A1128] text-[#E2E8F0] font-sans selection:bg-[#1C2541] flex flex-col">
       
+      {/* 1. Compliance Banner */}
+      <div className="bg-[#EF4444]/10 border-b border-[#EF4444]/20 py-2 text-center">
+        <p className="text-[10px] uppercase tracking-widest text-[#EF4444] font-bold">
+          PUBLIC SIMULATION MODE // ENTERPRISE DATA AUDIT REQUIRED
+        </p>
+      </div>
+
       {/* Navigation & Status Header */}
       <header className="max-w-4xl mx-auto w-full px-6 pt-12 pb-8 border-b border-[#94A3B8]/20">
         <div className="flex justify-between items-center mb-12">
-          <a href="/digital" className="text-xs font-bold tracking-[0.2em] text-[#94A3B8] hover:text-[#FFFFFF] transition font-mono uppercase">
-            ← Return to Pulse Terminal
+          <a href="/digital/calculator" className="text-xs font-bold tracking-[0.2em] text-[#94A3B8] hover:text-[#FFFFFF] transition font-mono uppercase">
+            ← Return to Public Utilities
           </a>
           <div className="text-xs tracking-widest font-mono flex items-center gap-2 bg-[#1C2541]/50 px-3 py-1.5 rounded border border-[#94A3B8]/20">
             <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-[0_0_8px_#10B981]"></span>
@@ -41,7 +47,6 @@ export default function PublicSwingCalculator() {
 
       <main className="max-w-4xl mx-auto w-full px-6 py-12 flex-1">
         
-        {/* Operational Mandate */}
         <section className="bg-[#111C3A] p-6 border border-[#E2E8F0]/10 rounded-xl mb-12">
           <p className="text-sm font-light text-[#94A3B8] leading-relaxed">
             This public utility mathematically isolates the exact exit points for the **9% Global Swing** and **12% Profit Swing** frameworks. Input your allocated capital to map out automated execution targets and strip emotional bias from your trading exits.
@@ -49,8 +54,6 @@ export default function PublicSwingCalculator() {
         </section>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
-          {/* Inputs */}
           <section className="bg-[#111C3A] p-8 rounded border border-[#94A3B8]/20 shadow-xl">
             <h3 className="text-xs font-mono mb-6 text-[#FFFFFF] tracking-widest uppercase border-b border-[#94A3B8]/20 pb-4">Trade Parameters</h3>
             
@@ -68,9 +71,7 @@ export default function PublicSwingCalculator() {
             </div>
           </section>
 
-          {/* Telemetry Dashboard */}
           <section className="space-y-6">
-            
             <div className="bg-[#1C2541] border border-[#94A3B8]/20 rounded p-6 flex justify-between items-center">
               <div>
                 <span className="text-[9px] uppercase tracking-widest text-[#94A3B8]">Position Sizing</span>
@@ -93,7 +94,6 @@ export default function PublicSwingCalculator() {
                   </div>
                 </div>
               </div>
-
               <div>
                 <h4 className="text-sm font-serif text-[#E2E8F0] mb-1">12% Profit Swing Target</h4>
                 <div className="flex justify-between items-end mt-2">
@@ -105,26 +105,21 @@ export default function PublicSwingCalculator() {
                 </div>
               </div>
             </div>
-
           </section>
         </div>
 
-        {/* Upsell to Premium Vault */}
-        <div className="mt-16 bg-[#111C3A] border border-[#F5D36B]/30 rounded-xl p-8 text-center relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#F5D36B] to-[#B38F24]"></div>
-          <h2 className="text-lg font-serif text-[#FFFFFF] tracking-wide mb-2">Upgrade to the Full Global Swing Matrix</h2>
-          <p className="text-xs text-[#94A3B8] font-mono tracking-widest uppercase mb-6">Barbell Strategy Engine // Persistent Trade Ledger</p>
-          <p className="text-sm font-light text-[#E2E8F0] max-w-2xl mx-auto mb-8">
-            Stop tracking trades on scattered spreadsheets. The full Matrix automatically splits your capital into an 80% defensive core, limits position sizing, and logs every active swing into a permanent state-managed ledger. 
+        {/* 2. Conversion Bridge */}
+        <div className="mt-16 bg-[#021A0E] border border-[#F5D36B]/30 rounded-xl p-10 text-center shadow-2xl">
+          <h2 className="text-xl font-serif text-[#FFFDF0] mb-4">DEPLOY ENTERPRISE TELEMETRY</h2>
+          <p className="text-sm text-[#F5D36B]/70 max-w-lg mx-auto mb-8 leading-relaxed">
+            This public tool is a simulation. To gain persistent trade ledgers, Barbell capital deployment automation, and formal exit-point tracking, bridge to the Secure Vault.
           </p>
-          <a href="/digital/vault" className="inline-block bg-[#F5D36B] text-[#0A1128] px-8 py-3 font-bold uppercase tracking-widest text-xs hover:bg-[#FFFFFF] transition shadow-[0_0_15px_rgba(245,211,107,0.15)]">
-            Access The Vault
+          <a href="/digital/vault" className="inline-block bg-[#F5D36B] text-[#032213] px-10 py-4 font-bold uppercase tracking-widest text-xs hover:bg-[#FFFFFF] transition">
+            Unlock Full Architecture
           </a>
         </div>
-
       </main>
 
-      {/* Footer */}
       <footer className="max-w-4xl mx-auto w-full px-6 py-8 border-t border-[#94A3B8]/10 text-[9px] font-mono text-[#94A3B8]/40 text-center uppercase tracking-widest">
         PUBLIC UTILITY // © 2026 PURE APPROACH INVESTMENTS (PTY) LTD.
       </footer>
