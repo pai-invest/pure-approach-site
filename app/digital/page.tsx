@@ -52,16 +52,18 @@ export default function DigitalDivision() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Asset Framework 01 */}
-          <div className="p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/20 hover:border-[#F5D36B]/40 transition duration-500 shadow-2xl">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-serif tracking-wide text-[#F5D36B]">Programmatic Media Pipelines</h3>
-              <span className="px-2 py-0.5 text-[10px] font-mono tracking-wider bg-[#032213] text-[#10B981] border border-[#10B981]/30 rounded">
-                SYS_ACTIVE
-              </span>
+          <div className="p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/20 hover:border-[#F5D36B]/40 transition duration-500 shadow-2xl flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-serif tracking-wide text-[#F5D36B]">Programmatic Media Pipelines</h3>
+                <span className="px-2 py-0.5 text-[10px] font-mono tracking-wider bg-[#032213] text-[#10B981] border border-[#10B981]/30 rounded">
+                  SYS_ACTIVE
+                </span>
+              </div>
+              <p className="mt-3 text-sm text-[#F5D36B]/70 font-light leading-relaxed">
+                Deploying light, edge-optimized content networks designed for mathematical keyword capture. These assets convert global search volume into persistent, high-margin transactional flow.
+              </p>
             </div>
-            <p className="mt-3 text-sm text-[#F5D36B]/70 font-light leading-relaxed">
-              Deploying light, edge-optimized content networks designed for mathematical keyword capture. These assets convert global search volume into persistent, high-margin transactional flow.
-            </p>
             <div className="mt-6 pt-4 border-t border-[#10B981]/10 grid grid-cols-2 gap-4 text-xs font-mono text-[#10B981]">
               <div>CAPACITY: <span className="text-[#FFFDF0] font-bold">MAX_EFFICIENCY</span></div>
               <div>MONETIZATION: <span className="text-[#FFFDF0] font-bold">PROGRAMMATIC</span></div>
@@ -69,19 +71,34 @@ export default function DigitalDivision() {
           </div>
 
           {/* Asset Framework 02 */}
-          <div className="p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/20 hover:border-[#F5D36B]/40 transition duration-500 shadow-2xl">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-serif tracking-wide text-[#F5D36B]">Custom Software Utilities</h3>
-              <span className="px-2 py-0.5 text-[10px] font-mono tracking-wider bg-[#04381F] text-[#F5D36B] border border-[#F5D36B]/20 rounded">
-                NODE_SCALING
-              </span>
+          <div className="p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/20 hover:border-[#F5D36B]/40 transition duration-500 shadow-2xl flex flex-col justify-between">
+            <div>
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-serif tracking-wide text-[#F5D36B]">Custom Software Utilities</h3>
+                <span className="px-2 py-0.5 text-[10px] font-mono tracking-wider bg-[#04381F] text-[#F5D36B] border border-[#F5D36B]/20 rounded">
+                  NODE_SCALING
+                </span>
+              </div>
+              <p className="mt-3 text-sm text-[#F5D36B]/70 font-light leading-relaxed">
+                Engineering proprietary serverless micro-SaaS and transactional web interfaces that eliminate workflow inefficiencies and yield automated recurring margins.
+              </p>
             </div>
-            <p className="mt-3 text-sm text-[#F5D36B]/70 font-light leading-relaxed">
-              Engineering proprietary serverless micro-SaaS and transactional web interfaces that eliminate workflow inefficiencies and yield automated recurring margins.
-            </p>
-            <div className="mt-6 pt-4 border-t border-[#10B981]/10 grid grid-cols-2 gap-4 text-xs font-mono text-[#10B981]">
-              <div>INFRASTRUCTURE: <span className="text-[#FFFDF0] font-bold">DECOUPLED</span></div>
-              <div>DEBT LEVERAGE: <span className="text-[#FFFDF0] font-bold">0.00%</span></div>
+            
+            <div>
+              <div className="mt-6 pt-4 border-t border-[#10B981]/10 grid grid-cols-2 gap-4 text-xs font-mono text-[#10B981]">
+                <div>INFRASTRUCTURE: <span className="text-[#FFFDF0] font-bold">DECOUPLED</span></div>
+                <div>DEBT LEVERAGE: <span className="text-[#FFFDF0] font-bold">0.00%</span></div>
+              </div>
+              
+              {/* --- NEW ASSET REGISTRY LINKS ADDED HERE --- */}
+              <div className="mt-6 flex gap-4">
+                <a href="/digital/calculator" className="flex-1 text-center px-4 py-2 border border-[#10B981]/30 hover:border-[#10B981] text-[#10B981] text-[10px] uppercase tracking-widest font-mono transition">
+                  Public Calculator
+                </a>
+                <a href="/digital/vault" className="flex-1 flex items-center justify-center px-4 py-2 bg-[#F5D36B] text-[#032213] text-[10px] uppercase tracking-widest font-mono font-bold hover:bg-[#FFFDF0] transition shadow-[0_0_15px_rgba(245,211,107,0.15)]">
+                  Access Vault
+                </a>
+              </div>
             </div>
           </div>
 
