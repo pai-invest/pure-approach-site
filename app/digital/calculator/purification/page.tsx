@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 
-<div className="bg-[#EF4444]/10 border-b border-[#EF4444]/20 py-2 text-center">
-    <p className="text-[10px] uppercase tracking-widest text-[#EF4444] font-bold">PUBLIC SIMULATION MODE // ENTERPRISE DATA AUDIT REQUIRED</p>
-</div>
 export default function PurificationMatrix() {
   const [dividendIncome, setDividendIncome] = useState<number>(15000);
   const [nonCompliantRatio, setNonCompliantRatio] = useState<number>(4.5); // Standard average % for mixed-source
@@ -20,8 +17,18 @@ export default function PurificationMatrix() {
 
   return (
     <div className="min-h-screen bg-[#0A1128] text-[#E2E8F0] font-sans selection:bg-[#1C2541] flex flex-col">
+      return (
+    <div className="min-h-screen bg-[#0A1128] text-[#E2E8F0] font-sans selection:bg-[#1C2541] flex flex-col">
       
-      {/* Navigation & Status Header */}
+      {/* ADD THIS BANNER HERE */}
+      <div className="bg-[#EF4444]/10 border-b border-[#EF4444]/20 py-2 text-center">
+        <p className="text-[10px] uppercase tracking-widest text-[#EF4444] font-bold">
+          PUBLIC SIMULATION MODE // ENTERPRISE DATA AUDIT REQUIRED
+        </p>
+      </div>
+
+      <header className="max-w-4xl mx-auto w-full px-6 pt-12 pb-8 border-b border-[#94A3B8]/20">
+      {/* ... rest of your header ... */}      {/* Navigation & Status Header */}
       <header className="max-w-4xl mx-auto w-full px-6 pt-12 pb-8 border-b border-[#94A3B8]/20">
         <div className="flex justify-between items-center mb-12">
           <a href="/digital/calculator" className="text-xs font-bold tracking-[0.2em] text-[#94A3B8] hover:text-[#FFFFFF] transition font-mono uppercase">
