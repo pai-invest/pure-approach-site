@@ -8,7 +8,7 @@ export default function PublicUtilitiesHub() {
       title: "Swing Telemetry Demo",
       tag: "PUBLIC // TRADING",
       description: "Mathematically isolate your 9% and 12% global swing exit targets based on a base capital input.",
-      link: "/digital/calculators/swing"
+      link: "/digital/calculator/swing"
     },
     {
       id: "tax-estimator",
