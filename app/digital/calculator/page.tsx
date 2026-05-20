@@ -8,14 +8,16 @@ export default function PublicUtilitiesHub() {
       title: "Swing Telemetry Demo",
       tag: "PUBLIC // TRADING",
       description: "Mathematically isolate your 9% and 12% global swing exit targets based on a base capital input.",
-      link: "/digital/calculator/swing"
+      // Updated to singular:
+      link: "/digital/calculator/swing" 
     },
     {
       id: "tax-estimator",
       title: "Tax Drag Estimator",
       tag: "PUBLIC // GOVERNANCE",
       description: "A lightweight structural calculator to estimate baseline progressive tax versus corporate dividend friction.",
-      link: "/digital/calculators/tax"
+      // Updated to singular:
+      link: "/digital/calculator/tax" 
     }
   ];
 
