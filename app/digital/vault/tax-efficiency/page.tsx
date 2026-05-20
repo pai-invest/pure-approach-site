@@ -1,14 +1,17 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function TaxEfficiencyMatrix() {
   const [revenue, setRevenue] = useState<number>(1500000);
   const [expenses, setExpenses] = useState<number>(300000);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => { setIsClient(true); }, []);
 
   const calculateAudit = () => {
     const netProfit = Math.max(0, revenue - expenses);
     
-    // SARS 2026/27 Progressive Tax Bracket Implementation
+    // SARS Progressive Tax Calculation (2026/27)
     let indTax = 0;
     if (netProfit <= 237100) indTax = netProfit * 0.18;
     else if (netProfit <= 370500) indTax = 42678 + (netProfit - 237100) * 0.26;
@@ -18,41 +21,30 @@ export default function TaxEfficiencyMatrix() {
     else if (netProfit <= 1817000) indTax = 251258 + (netProfit - 857900) * 0.41;
     else indTax = 644489 + (netProfit - 1817000) * 0.45;
     
-    const estimatedSolePropTax = Math.max(0, indTax - 17224);
-
-    // Corporate Flat Tax + Assumed Dividend Withholding Tax (DWT)
+    const solePropTax = Math.max(0, indTax - 17224);
     const corpTax = netProfit * 0.27;
-    const retainedAfterCorpTax = netProfit - corpTax;
-    const dwt = retainedAfterCorpTax * 0.20;
-    const estimatedCorpBurden = corpTax + dwt;
-
-    return { netProfit, estimatedSolePropTax, estimatedCorpBurden };
+    const dwt = (netProfit - corpTax) * 0.20;
+    
+    return { netProfit, solePropTax, corpBurden: corpTax + dwt, efficiencyDelta: solePropTax - (corpTax + dwt) };
   };
 
   const results = calculateAudit();
 
   return (
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
-      
-      {/* Governance Header */}
       <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 border-b border-[#10B981]/10">
-        <h1 className="text-3xl font-serif text-[#FFFDF0] uppercase tracking-wide">Tax Efficiency Matrix</h1>
-        <p className="text-[#10B981] font-mono text-xs mt-2 uppercase tracking-widest">
-          STRUCTURAL AUDIT // CORPORATE VS. INDIVIDUAL
-        </p>
+        <h1 className="text-3xl font-serif text-[#FFFDF0] uppercase tracking-wide">Tax Efficiency Matrix [PRO]</h1>
+        <p className="text-[#10B981] font-mono text-xs mt-2 uppercase tracking-widest">ENTERPRISE GOVERNANCE // AUDIT ENGINE V.2026</p>
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-16 space-y-12">
-        
-        {/* Purpose Section */}
         <section className="bg-[#021A0E] p-8 border border-[#10B981]/20 rounded-lg">
             <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#FFFDF0] mb-4">Operational Mandate: System Purpose</h2>
             <p className="text-sm font-light text-[#F5D36B]/80 leading-relaxed">
-                This matrix is a proprietary structural audit engine designed to quantify the tax drag incurred by Sole Proprietor versus Corporate Entity (Pty Ltd) structures. It calculates the variance between progressive individual income tax and the dual-layer corporate tax burden (27% CIT + 20% Dividend Withholding Tax) to inform optimal capital extraction.
+                The Matrix is designed for high-net-worth directors to identify the precise point of structural tax friction. By comparing personal progressive liabilities against corporate extraction, this tool dictates when to trigger a business restructuring or initiate dividend purification protocols.
             </p>
         </section>
 
-        {/* Telemetry Section */}
         <section className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1 bg-[#021A0E] p-6 border border-[#10B981]/20 rounded">
             <label className="block text-[9px] uppercase tracking-widest mb-2 text-[#10B981]">Gross Revenue</label>
@@ -68,30 +60,28 @@ export default function TaxEfficiencyMatrix() {
             </div>
             <div className="bg-[#021A0E] p-6 border border-[#EF4444]/30">
               <span className="text-[9px] uppercase tracking-widest text-[#EF4444]">Sole Proprietor Drag</span>
-              <p className="text-2xl font-bold mt-2 text-[#FFFDF0]">R {results.estimatedSolePropTax.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+              <p className="text-2xl font-bold mt-2 text-[#FFFDF0]">R {results.solePropTax.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
             </div>
             <div className="bg-[#021A0E] p-6 border border-[#10B981]/30">
-              <span className="text-[9px] uppercase tracking-widest text-[#10B981]">Corporate Efficiency</span>
-              <p className="text-2xl font-bold mt-2 text-[#FFFDF0]">R {results.estimatedCorpBurden.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
+              <span className="text-[9px] uppercase tracking-widest text-[#10B981]">Efficiency Delta</span>
+              <p className={`text-2xl font-bold mt-2 ${results.efficiencyDelta > 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>R {results.efficiencyDelta.toLocaleString(undefined, {maximumFractionDigits: 0})}</p>
             </div>
           </div>
         </section>
 
-        {/* Technical Protocol Section */}
         <section className="bg-[#021A0E] p-8 border border-[#10B981]/20 rounded-lg">
             <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#FFFDF0] mb-6">Technical Protocol: How to Use</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
-                <div><span className="block text-[#FFFDF0] font-bold mb-2">1. Input Baseline Data</span>Define your total Gross Revenue and total annual Operating Expenses to establish your Net Taxable Profit baseline.</div>
-                <div><span className="block text-[#FFFDF0] font-bold mb-2">2. Analyze the Delta</span>Compare the "Sole Proprietor Drag" against your "Corporate Efficiency." A negative delta indicates potential tax leakage that warrants a structural transition.</div>
-                <div><span className="block text-[#FFFDF0] font-bold mb-2">3. Export for Review</span>Utilize the audit generator to create a static record of these projections to present to your tax practitioner during IRP6 provisional tax planning.</div>
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">1. Input Baseline Data</span>Enter your annual Gross Revenue and Expenses. The Matrix instantly calculates your Net Taxable Profit.</div>
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">2. Analyze the Delta</span>The "Efficiency Delta" represents the annual capital you currently forfeit to inefficient tax structures. Positive values denote direct savings potential.</div>
+                <div><span className="block text-[#FFFDF0] font-bold mb-2">3. Execute Audit</span>Generate your formal Audit PDF to formalize the transition strategy with your accountant.</div>
             </div>
         </section>
 
-        {/* Export & Compliance Bridge */}
         <section className="p-8 border border-[#F5D36B]/20 rounded-lg text-center">
-            <h2 className="text-lg font-serif mb-4 text-[#F5D36B]">Finalize Governance Audit</h2>
-            <button onClick={() => window.print()} className="bg-[#F5D36B] text-[#032213] px-8 py-3 font-bold uppercase text-xs tracking-widest hover:bg-[#FFFDF0] transition">
-                Export Audit PDF
+            <h2 className="text-lg font-serif mb-4 text-[#F5D36B]">Execute Governance Audit</h2>
+            <button onClick={() => isClient && window.print()} className="bg-[#F5D36B] text-[#032213] px-10 py-4 font-bold uppercase text-xs tracking-widest hover:bg-[#FFFDF0] transition">
+                Export Formal Audit PDF
             </button>
         </section>
       </main>
