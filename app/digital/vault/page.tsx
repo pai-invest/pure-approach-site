@@ -25,6 +25,17 @@ export default function VaultMasterDashboard() {
       price: "R 2,500",
       link: "/digital/vault/global-swing",
       checkoutLink: "#" 
+    },
+    {
+      id: "purification-ledger",
+      title: "Purification Ledger",
+      tag: "Purification",
+      description: "Algorithmic tracking system for Barbell capital allocation and automated percentage swing execution.",
+      status: "SYS_ONLINE",
+      isLocked: false,
+      price: "R 2,500",
+      link: "/digital/vault/purification-ledger",
+      checkoutLink: "#" 
     }
   ];
 
