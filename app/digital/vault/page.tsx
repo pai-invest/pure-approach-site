@@ -2,16 +2,14 @@
 import React, { useState } from 'react';
 
 export default function PremiumVault() {
-  const [revenue, setRevenue] = useState<number | ''>(1800000);
-  const [expenses, setExpenses] = useState<number | ''>(400000);
-  const [extraction, setExtraction] = useState<number | ''>(600000);
+  const [revenue, setRevenue] = useState<number>(1800000);
+  const [expenses, setExpenses] = useState<number>(400000);
+  const [extraction, setExtraction] = useState<number>(600000);
 
   const calculateEfficiency = () => {
-    const rev = Number(revenue) || 0;
-    const exp = Number(expenses) || 0;
-    const targetNetCash = Number(extraction) || 0; 
-    const netProfit = Math.max(0, rev - exp);
+    const netProfit = Math.max(0, revenue - expenses);
 
+    // SARS Progressive Tax Calculation
     let indTax = 0;
     if (netProfit <= 237100) indTax = netProfit * 0.18;
     else if (netProfit <= 370500) indTax = 42678 + (netProfit - 237100) * 0.26;
@@ -24,67 +22,68 @@ export default function PremiumVault() {
 
     const corpTax = netProfit * 0.27;
     const maxAvailablePostTax = Math.max(0, netProfit - corpTax);
-    const requiredGrossDividend = targetNetCash / 0.8;
-    const actualGrossDividend = Math.min(requiredGrossDividend, maxAvailablePostTax);
+    const actualGrossDividend = Math.min(extraction / 0.8, maxAvailablePostTax);
     const dividendTax = actualGrossDividend * 0.20;
     const totalCorpBurden = corpTax + dividendTax;
 
-    return { 
-      netProfit, indTax, corpTax, dividendTax, totalCorpBurden, 
-      gain: Math.max(0, indTax - totalCorpBurden),
-      efficiencyRatio: indTax > 0 ? ((indTax - totalCorpBurden) / indTax) * 100 : 0
-    };
+    return { netProfit, indTax, corpTax, dividendTax, totalCorpBurden, gain: Math.max(0, indTax - totalCorpBurden) };
   };
 
   const results = calculateEfficiency();
 
   return (
-    <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
-      <header className="max-w-6xl mx-auto px-6 py-12 border-b border-[#10B981]/10 flex justify-between items-center">
-        <img src="/apexlogo.png" className="h-20 w-auto" />
-        <div className="text-xs tracking-widest font-mono border border-[#F5D36B]/30 px-3 py-1.5">VAULT // SECURE_NODE</div>
+    <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F]">
+      {/* Executive Header */}
+      <header className="max-w-7xl mx-auto px-8 py-10 flex justify-between items-center border-b border-[#10B981]/20">
+        <div className="flex items-center gap-4">
+          <img src="/apexlogo.png" className="h-16" />
+          <div>
+            <h1 className="text-xl font-serif text-[#FFFDF0]">TAX EFFICIENCY MATRIX</h1>
+            <p className="text-[10px] font-mono tracking-widest text-[#10B981]">GOVERNANCE // 2026_VERSION</p>
+          </div>
+        </div>
+        <button className="bg-[#10B981] text-[#032213] px-6 py-3 font-bold text-xs uppercase tracking-widest hover:bg-[#FFFDF0]">Export Executive PDF</button>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Input Console */}
-        <div className="lg:col-span-4 bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
-          <h2 className="text-sm font-bold tracking-widest uppercase text-[#10B981] mb-6">Execution Parameters</h2>
-          {['Revenue', 'Expenses', 'Extraction'].map((field) => (
-            <div key={field} className="mb-6">
-              <label className="block text-[10px] font-mono uppercase tracking-widest mb-2 text-[#10B981]/60">{field} (ZAR)</label>
-              <input type="number" value={field === 'Revenue' ? revenue : field === 'Expenses' ? expenses : extraction} onChange={(e) => field === 'Revenue' ? setRevenue(Number(e.target.value)) : field === 'Expenses' ? setExpenses(Number(e.target.value)) : setExtraction(Number(e.target.value))} className="w-full p-4 bg-[#032213] border border-[#10B981]/30 text-[#FFFDF0] font-serif text-lg rounded" />
-            </div>
-          ))}
+      <main className="max-w-7xl mx-auto px-8 py-12 grid grid-cols-12 gap-12">
+        {/* Input & Strategic Analysis */}
+        <div className="col-span-4 space-y-8">
+           <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
+             <h3 className="text-xs font-mono mb-6 text-[#10B981]">OPERATIONAL INPUTS</h3>
+             {['Revenue', 'Expenses', 'Extraction'].map((field) => (
+                <div key={field} className="mb-6">
+                  <label className="block text-[9px] uppercase tracking-widest mb-2 text-[#10B981]/60">{field} (ZAR)</label>
+                  <input type="number" value={field === 'Revenue' ? revenue : field === 'Expenses' ? expenses : extraction} onChange={(e) => field === 'Revenue' ? setRevenue(Number(e.target.value)) : field === 'Expenses' ? setExpenses(Number(e.target.value)) : setExtraction(Number(e.target.value))} className="w-full p-3 bg-[#032213] border border-[#10B981]/30 text-[#FFFDF0] font-serif" />
+                </div>
+             ))}
+           </div>
+           
+           {/* Governance Insights */}
+           <div className="p-6 bg-[#021A0E] border border-[#F5D36B]/20 rounded-xl">
+             <h3 className="text-[10px] font-bold uppercase tracking-widest text-[#F5D36B] mb-4">Structural Analysis</h3>
+             <p className="text-xs text-[#F5D36B]/70 leading-relaxed font-light italic">
+                {results.gain > 50000 ? "Your current profit threshold qualifies for significant corporate tax arbitrage." : "Your current extraction levels indicate sub-optimal tax drag. Consider increasing corporate retention."}
+             </p>
+           </div>
         </div>
 
-        {/* Executive Dashboard */}
-        <div className="lg:col-span-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-[#032213] p-6 border border-[#F5D36B]/30 rounded-lg text-center">
-              <span className="block text-[9px] font-mono uppercase text-[#F5D36B]/60 mb-2">Efficiency Gain</span>
-              <span className="text-2xl text-[#10B981] font-serif">R {results.gain.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-            </div>
-            <div className="bg-[#032213] p-6 border border-[#10B981]/30 rounded-lg text-center">
-              <span className="block text-[9px] font-mono uppercase text-[#F5D36B]/60 mb-2">Efficiency Ratio</span>
-              <span className="text-2xl text-[#FFFDF0] font-serif">{results.efficiencyRatio.toFixed(1)}%</span>
-            </div>
-            <div className="bg-[#032213] p-6 border border-[#10B981]/30 rounded-lg text-center">
-              <span className="block text-[9px] font-mono uppercase text-[#F5D36B]/60 mb-2">Structure Health</span>
-              <span className="text-2xl text-[#F5D36B] font-serif">{results.efficiencyRatio > 15 ? 'OPTIMIZED' : 'SUB-OPTIMAL'}</span>
-            </div>
+        {/* Dashboard Visualization */}
+        <div className="col-span-8">
+          <div className="grid grid-cols-2 gap-8 mb-12">
+             <div className="p-8 border border-[#10B981]/30 bg-[#032213]">
+                <span className="text-[10px] uppercase text-[#10B981]">Total Efficiency Gain</span>
+                <p className="text-4xl text-[#FFFDF0] font-serif mt-2">R {results.gain.toLocaleString()}</p>
+             </div>
+             <div className="p-8 border border-[#F5D36B]/30 bg-[#032213]">
+                <span className="text-[10px] uppercase text-[#F5D36B]">Effective Tax Rate (Corp)</span>
+                <p className="text-4xl text-[#FFFDF0] font-serif mt-2">{( (results.totalCorpBurden/results.netProfit)*100 ).toFixed(1)}%</p>
+             </div>
           </div>
-
-          {/* Visual Breakdown */}
-          <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
-            <h3 className="text-xs font-mono uppercase tracking-widest text-[#10B981] mb-8">Structural Comparative Analysis</h3>
-            <div className="space-y-6">
-              {[ {label: 'Individual Tax Burden', val: results.indTax, color: 'bg-red-500'}, {label: 'Corporate Tax Burden', val: results.totalCorpBurden, color: 'bg-emerald-500'} ].map((item) => (
-                <div key={item.label}>
-                  <div className="flex justify-between text-[10px] font-mono text-[#F5D36B]/60 mb-2"><span>{item.label}</span><span>R {item.val.toLocaleString(undefined, {maximumFractionDigits: 0})}</span></div>
-                  <div className="w-full h-2 bg-[#032213] rounded-full overflow-hidden"><div className={`${item.color} h-full`} style={{width: `${Math.min(100, (item.val/results.indTax)*100)}%`}}></div></div>
-                </div>
-              ))}
-            </div>
+          
+          <div className="h-64 w-full bg-[#021A0E] border border-[#10B981]/20 p-8 flex items-end gap-4">
+             {/*  */}
+             <div className="flex-1 bg-[#EF4444]/20 h-[80%] border-t border-[#EF4444]"></div>
+             <div className="flex-1 bg-[#10B981]/20 h-[40%] border-t border-[#10B981]"></div>
           </div>
         </div>
       </main>
