@@ -23,11 +23,18 @@ export default function PremiumVault() {
     const actualGrossDividend = Math.min(extraction / 0.8, maxAvailablePostTax);
     const dividendTax = actualGrossDividend * 0.20;
     const totalCorpBurden = corpTax + dividendTax;
+    const gain = indTax - totalCorpBurden;
 
-    return { netProfit, indTax, corpTax, dividendTax, totalCorpBurden, gain: Math.max(0, indTax - totalCorpBurden) };
+    return { netProfit, indTax, corpTax, dividendTax, totalCorpBurden, gain };
   };
 
   const results = calculateEfficiency();
+
+  const getRecommendation = () => {
+    if (results.gain > 100000) return "OPTIMIZED: Your corporate structure is performing efficiently. Continue maximizing corporate-level retention for long-term capital compounding.";
+    if (results.gain > 0) return "MARGINAL: Your efficiency gain is positive but modest. Review your extraction strategy to ensure you are not over-drawing dividends.";
+    return "SUB-OPTIMAL: Your current dividend extraction is triggering excessive tax drag. Strategy: Reduce dividend dependency; increase corporate expense optimization or salary-vs-dividend blending.";
+  };
 
   return (
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F]">
@@ -47,15 +54,13 @@ export default function PremiumVault() {
       </header>
 
       <main className="max-w-7xl mx-auto px-8 py-12 grid grid-cols-12 gap-12">
-        {/* Mandate & Purpose */}
         <div className="col-span-12 bg-[#021A0E] border border-[#F5D36B]/20 p-8 rounded-xl mb-6">
-           <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-4">Operational Mandate</h2>
+           <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-4">Strategic Governance Mandate</h2>
            <p className="text-sm font-light text-[#F5D36B]/80 leading-relaxed max-w-4xl">
-             This Tax Efficiency Matrix is a proprietary financial diagnostic tool. Its purpose is to model how much cash you could retain by using a more efficient corporate business structure compared to personal tax filing. <strong>Users are interacting with a mathematical simulation</strong>—it is not an automated tax filer, nor does it provide legal or tax advice. 
+             This matrix provides a deterministic diagnosis of your structural tax health. By comparing individual progressive tax burdens against corporate double-taxation dynamics, we identify the exact "Efficiency Gain." <br/><strong>Users:</strong> Results are simulations. Consult your tax practitioner for final structural implementation.
            </p>
         </div>
 
-        {/* Inputs */}
         <div className="col-span-4 space-y-8">
            <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
              <h3 className="text-xs font-mono mb-6 text-[#10B981]">OPERATIONAL INPUTS</h3>
@@ -68,7 +73,6 @@ export default function PremiumVault() {
            </div>
         </div>
 
-        {/* Dashboard */}
         <div className="col-span-8">
           <div className="grid grid-cols-2 gap-8 mb-12">
              <div className="p-8 border border-[#10B981]/30 bg-[#032213]">
@@ -80,19 +84,20 @@ export default function PremiumVault() {
                 <p className="text-4xl text-[#FFFDF0] font-serif mt-2">{( (results.totalCorpBurden/results.netProfit)*100 ).toFixed(1)}%</p>
              </div>
           </div>
-          <div className="h-64 w-full bg-[#021A0E] border border-[#10B981]/20 p-8 flex items-end gap-4">
-             <div className="flex-1 bg-[#EF4444]/20 h-[80%] border-t border-[#EF4444]"></div>
-             <div className="flex-1 bg-[#10B981]/20 h-[40%] border-t border-[#10B981]"></div>
+
+          {/* New Strategic Recommendations Panel */}
+          <div className="bg-[#10B981]/10 border border-[#10B981]/30 p-8 rounded-xl mb-12">
+            <h3 className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#10B981] mb-3">Strategic Recommendation</h3>
+            <p className="text-sm text-[#FFFDF0] font-light leading-relaxed">{getRecommendation()}</p>
           </div>
         </div>
 
-        {/* How-To Protocol */}
         <div className="col-span-12 mt-12 bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
-          <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Technical Protocol: How to use</h2>
+          <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Technical Protocol: Next Steps</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
-            <div><span className="block text-[#FFFDF0] font-bold mb-2">1. Data Entry</span>Input total revenue and business-related deductions (e.g., insurance, rent, depreciation, equipment).</div>
-            <div><span className="block text-[#FFFDF0] font-bold mb-2">2. Extraction</span>Enter the net cash required for your personal lifestyle. This models your dividend requirements.</div>
-            <div><span className="block text-[#FFFDF0] font-bold mb-2">3. Diagnosis</span>Compare personal tax burden vs corporate tax. The 'Efficiency Gain' is your net liquidity retained.</div>
+            <div><span className="block text-[#FFFDF0] font-bold mb-2">1. Validate Assets</span>Review your deductible expenses to ensure all operational costs are fully captured for maximum relief.</div>
+            <div><span className="block text-[#FFFDF0] font-bold mb-2">2. Adjust Liquidity</span>If your recommendation is 'Sub-Optimal', adjust your Target Cash Extraction downwards to lower tax drag.</div>
+            <div><span className="block text-[#FFFDF0] font-bold mb-2">3. Implement Structure</span>Engage a tax practitioner to formalize your corporate holding entity based on these verified structural projections.</div>
           </div>
         </div>
       </main>
