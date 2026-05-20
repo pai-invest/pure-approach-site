@@ -6,7 +6,7 @@ export default function PremiumVault() {
   const [expenses, setExpenses] = useState<number | ''>('');
   const [extraction, setExtraction] = useState<number | ''>('');
 
-  const calculateArbitrage = () => {
+  const calculateEfficiency = () => {
     const rev = Number(revenue) || 0;
     const exp = Number(expenses) || 0;
     const targetNetCash = Number(extraction) || 0; 
@@ -29,10 +29,10 @@ export default function PremiumVault() {
     const dividendTax = actualGrossDividend * 0.20;
     const totalCorpBurden = corpTax + dividendTax;
 
-    return { netProfit, indTax, corpTax, dividendTax, totalCorpBurden, arbitrage: Math.max(0, indTax - totalCorpBurden) };
+    return { netProfit, indTax, corpTax, dividendTax, totalCorpBurden, gain: Math.max(0, indTax - totalCorpBurden) };
   };
 
-  const results = calculateArbitrage();
+  const results = calculateEfficiency();
   const isActive = Number(revenue) > 0;
 
   return (
@@ -43,17 +43,15 @@ export default function PremiumVault() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
-        {/* Operational Mandate */}
-        <div className="lg:col-span-12 bg-[#021A0E] border border-[#F5D36B]/20 p-8 rounded-xl">
+        <div className="lg:col-span-12 bg-[#021A0E] border border-[#F5D36B]/20 p-8 rounded-xl mb-6">
            <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-4">Operational Mandate</h2>
            <p className="text-sm font-light text-[#F5D36B]/80 leading-relaxed max-w-4xl">
-             The Arbitrage Matrix is a proprietary financial diagnostic tool. Its purpose is to provide a deterministic model comparing your current individual tax burden against an optimized corporate holding structure. <strong>Users are interacting with a mathematical simulation</strong>—it is not an automated tax filer, nor does it provide personalized legal or tax advice. By operating this console, you acknowledge that this tool is intended to provide structural clarity to facilitate your own informed business decisions in consultation with your tax practitioner.
+             This Tax Efficiency Matrix is a simple diagnostic tool. Its purpose is to show you how much more cash you could keep by using a more efficient business structure compared to paying taxes in your personal name. <strong>You are interacting with a mathematical simulation</strong>—it is not an automated tax filer, nor does it provide legal or tax advice. By using this tool, you agree that it is meant for structural planning in consultation with your own tax advisor.
            </p>
         </div>
 
-        {/* Input Console */}
         <div className="lg:col-span-5 space-y-6">
-          <h1 className="text-3xl font-serif uppercase text-[#FFFDF0]">Arbitrage Matrix</h1>
+          <h1 className="text-3xl font-serif uppercase text-[#FFFDF0]">Tax Efficiency Matrix</h1>
           <div className="bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
             {['Revenue', 'Expenses', 'Extraction'].map((field) => (
               <div key={field} className="mb-4">
@@ -64,20 +62,19 @@ export default function PremiumVault() {
           </div>
         </div>
 
-        {/* Execution Dashboard */}
         <div className={`lg:col-span-7 transition-opacity duration-700 ${isActive ? 'opacity-100' : 'opacity-30'}`}>
           <div className="bg-[#032213] p-8 rounded-xl border border-[#F5D36B]/40 text-center mb-8">
-            <span className="block text-[10px] font-mono tracking-widest uppercase mb-3 text-[#F5D36B]/80">NET CAPITAL RETAINED (THE ARBITRAGE)</span>
-            <span className="block text-5xl font-serif text-[#10B981]">R {results.arbitrage.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+            <span className="block text-[10px] font-mono tracking-widest uppercase mb-3 text-[#F5D36B]/80">TOTAL TAX EFFICIENCY GAIN</span>
+            <span className="block text-5xl font-serif text-[#10B981]">R {results.gain.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-[#021A0E] p-6 rounded-lg border border-[#10B981]/10">
-              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Timeline A: Individual</h3>
+              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">Paying in Personal Name</h3>
               <div className="text-sm font-light text-[#F5D36B]/70 flex justify-between"><span>SARS Progressive Tax</span><span className="text-[#EF4444]">R {results.indTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
             </div>
             <div className="bg-[#021A0E] p-6 rounded-lg border border-[#F5D36B]/20">
-              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-6">Timeline B: Corporate</h3>
+              <h3 className="text-xs font-mono font-bold tracking-widest uppercase text-[#F5D36B] mb-6">Using Business Structure</h3>
               <div className="space-y-4 text-sm font-light text-[#F5D36B]/70">
                 <div className="flex justify-between"><span>Corp Tax (27%)</span><span className="text-[#FFFDF0]">R {results.corpTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
                 <div className="flex justify-between"><span>Dividend Tax (20%)</span><span className="text-[#FFFDF0]">R {results.dividendTax.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span></div>
@@ -86,19 +83,36 @@ export default function PremiumVault() {
           </div>
         </div>
 
-        {/* Permanent Footer Component */}
-        <footer className="lg:col-span-12 mt-20 border-t border-[#10B981]/10 py-8 px-6 text-[9px] font-mono text-[#10B981]/40 text-center uppercase leading-loose">
-          <p>
-            OPERATIONAL MANDATE: PROPRIETARY FINANCIAL DIAGNOSTIC TOOL. 
-            <br/>
-            THIS SYSTEM IS A MATHEMATICAL SIMULATION AND DOES NOT CONSTITUTE PROFESSIONAL FINANCIAL, TAX, OR LEGAL ADVICE.
-            <br/>
-            ALL STRUCTURAL DECISIONS REQUIRE INDEPENDENT VERIFICATION BY A CERTIFIED TAX PRACTITIONER. 
-            <br/>
-            © 2026 PURE APPROACH INVESTMENTS (PTY) LTD. ALL RIGHTS RESERVED.
-          </p>
-        </footer>
+        <div className="lg:col-span-12 mt-12 bg-[#021A0E] p-8 rounded-xl border border-[#10B981]/20">
+          <h2 className="text-xs font-mono font-bold tracking-widest uppercase text-[#10B981] mb-6">How to use this tool</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm font-light text-[#F5D36B]/80 leading-relaxed">
+            <div>
+              <span className="block text-[#FFFDF0] font-bold mb-2">1. Your Business Numbers</span>
+              Input your total annual income and your total business costs. The tool calculates your clear profit, just like a simple profit-and-loss sheet.
+            </div>
+            <div>
+              <span className="block text-[#FFFDF0] font-bold mb-2">2. Your Take-Home Pay</span>
+              Enter the amount of cash you actually need to pull out of the business to pay for your lifestyle. This simulates your dividend needs.
+            </div>
+            <div>
+              <span className="block text-[#FFFDF0] font-bold mb-2">3. Tax Efficiency Diagnosis</span>
+              We compare two paths: paying tax personally versus through your company. The 'Efficiency Gain' is the extra money you keep by choosing the better path.
+            </div>
+          </div>
+        </div>
       </main>
+
+      <footer className="mt-20 border-t border-[#10B981]/10 py-8 px-6 text-[9px] font-mono text-[#10B981]/40 text-center uppercase leading-loose">
+        <p>
+          OPERATIONAL MANDATE: PROPRIETARY FINANCIAL DIAGNOSTIC TOOL. 
+          <br/>
+          THIS SYSTEM IS A MATHEMATICAL SIMULATION AND DOES NOT CONSTITUTE PROFESSIONAL FINANCIAL, TAX, OR LEGAL ADVICE.
+          <br/>
+          ALL STRUCTURAL DECISIONS REQUIRE INDEPENDENT VERIFICATION BY A CERTIFIED TAX PRACTITIONER. 
+          <br/>
+          © 2026 PURE APPROACH INVESTMENTS (PTY) LTD. ALL RIGHTS RESERVED.
+        </p>
+      </footer>
     </div>
   );
 }
