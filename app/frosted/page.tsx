@@ -21,7 +21,7 @@ export default function FrostedDivision() {
         {/* Seamless Logo Integration */}
         <div className="flex items-center justify-center shrink-0">
           <img 
-            src="/frostedlogo.jpg" 
+            src="/frostedlogo.png" 
             alt="Frosted Nostalgia Logo" 
             className="h-28 sm:h-32 w-auto object-contain filter drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]"
           />
