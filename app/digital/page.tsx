@@ -12,7 +12,7 @@ export default function DigitalDivision() {
           <img 
             src="/apexlogo.png" 
             alt="Pure Apex Pulse Logo" 
-            className="h-28 sm:h-32 w-auto object-contain"
+            className="h-40 sm:h-44 w-auto object-contain"
           />
         </div>
 
