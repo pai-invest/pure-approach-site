@@ -18,15 +18,15 @@ export default function PureLegacyFoundation() {
     /* The Background is now a brighter, more vibrant green: #C6F6D5 */
     <div className={`min-h-screen bg-[#C6F6D5] text-[#0F1C14] ${globalFont.className} selection:bg-[#1E3A8A] selection:text-white pb-24`}>
       
-      {/* Foundation Top Navigation */}
-      <header className="max-w-6xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#0F1C14]/10 gap-6">
+      {/* Foundation Top Navigation - Centerpiece Formatting Applied */}
+      <header className="max-w-6xl mx-auto px-6 pt-16 pb-12 flex flex-col items-center border-b border-[#0F1C14]/10 gap-8">
         
-        {/* THE LOGO WRAPPER: White box removed, logo floats naturally with a drop shadow */}
-        <div className="flex items-center justify-center shrink-0">
+        {/* THE LOGO WRAPPER: Now a focal centerpiece with a gentle white glow */}
+        <div className="flex items-center justify-center shrink-0 w-full">
           <img 
             src="/legacylogo.png" 
             alt="Pure Legacy Foundation Logo" 
-            className="h-40 sm:h-48 w-auto object-contain drop-shadow-2xl"
+            className="h-56 sm:h-72 md:h-80 w-auto object-contain filter drop-shadow-[0_0_30px_rgba(255,255,255,0.6)]"
           />
         </div>
 
