@@ -16,16 +16,18 @@ export default function PiMetrixEquities() {
     <div className="min-h-screen bg-[#280101] text-[#F4E0A1] font-sans selection:bg-red-950 selection:text-[#FFD700] pb-24">
       
       {/* Institutional Top Navigation */}
-      <header className="max-w-6xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#D4AF37]/20 gap-6">
-        <div className="flex items-center justify-center shrink-0">
+      <header className="max-w-6xl mx-auto px-6 pt-16 pb-12 flex flex-col items-center border-b border-[#D4AF37]/20 gap-8">
+        
+        {/* Centerpiece Logo */}
+        <div className="flex items-center justify-center shrink-0 w-full">
           <img 
             src="/pmelogo.png" 
             alt="Pi-Metrix Equities Logo" 
-            className="h-28 sm:h-32 w-auto object-contain filter drop-shadow-[0_0_20px_rgba(212,175,55,0.3)]"
+            className="h-56 sm:h-72 md:h-80 w-auto object-contain filter drop-shadow-[0_0_20px_rgba(212,175,55,0.3)]"
           />
         </div>
 
-        <div className="w-full flex justify-between items-center mt-4">
+        <div className="w-full flex justify-between items-center mt-6">
           <a href="/" className="text-xs font-bold tracking-[0.2em] text-[#D4AF37] hover:text-white transition font-mono">
             ← PURE APPROACH TERMINAL
           </a>
