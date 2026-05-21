@@ -57,7 +57,7 @@ export default function CommerceDivision() {
           {/* Collection Bundle 01 */}
           <div className="group cursor-pointer">
             <div className="aspect-[4/5] w-full bg-[#0E1A30] border border-slate-800/50 rounded-lg flex items-center justify-center p-8 transition group-hover:border-slate-700 shadow-lg">
-              <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: LEATHER TRAVEL ASSETS ]</span>
+              <span className="text-xs tracking-widest text-slate-500 font-mono">[IMAGE VAULT]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
               <h3 className="text-lg font-bold tracking-wide bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] bg-clip-text text-transparent filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
@@ -73,7 +73,7 @@ export default function CommerceDivision() {
           {/* Collection Bundle 02 */}
           <div className="group cursor-pointer">
             <div className="aspect-[4/5] w-full bg-[#0E1A30] border border-slate-800/50 rounded-lg flex items-center justify-center p-8 transition group-hover:border-slate-700 shadow-lg">
-              <span className="text-xs tracking-widest text-slate-500 font-mono">[ IMAGE VAULT: ESSENTIAL ACCESSORIES ]</span>
+              <span className="text-xs tracking-widest text-slate-500 font-mono">[IMAGE VAULT:]</span>
             </div>
             <div className="mt-6 flex justify-between items-baseline">
               <h3 className="text-lg font-bold tracking-wide bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] bg-clip-text text-transparent filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
