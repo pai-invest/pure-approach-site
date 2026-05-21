@@ -72,7 +72,7 @@ export default function GlobalSwingMatrix() {
             entryPrice: Number(row['Entry price']),
             investedUSD: Number(row['Invested (USD)']),
             target9: Number(row['Sell (+9%)']),
-            target12: Number(row['Entry price']) * 1.12, // Extrapolated for active tracking
+            target12: Number(row['Entry price']) * 1.12, 
             stopLoss5: Number(row['StpLos (-5%)']),
             exitDate: row['Exit date'],
             exitPrice: Number(row['Exit price']),
@@ -82,8 +82,9 @@ export default function GlobalSwingMatrix() {
             actualProfitZAR: Number(row['Actual Profit ']),
             runningProfit: Number(row['Running Profit']),
             usdZarRate: Number(row['USD/ZAR rate ']),
-            status: row['Exit date'] ? 'CLOSED' : 'ACTIVE'
-          })).filter(t => t.ticker); // Filter out empty spreadsheet rows
+            status: (row['Exit date'] ? 'CLOSED' : 'ACTIVE') as Trade['status'] // <-- The TypeScript Fix
+          })).filter((t: any) => t.ticker) as Trade[]; // <-- Additional safety cast
+          
           setLedger(formatted);
         }
       });
@@ -156,7 +157,7 @@ export default function GlobalSwingMatrix() {
           </section>
         </div>
 
-        {/* The Unified Ledger (Horizontal Scroll for heavy data) */}
+        {/* The Unified Ledger */}
         <section className="bg-[#111C3A] border border-[#94A3B8]/20 rounded overflow-x-auto print:border-black print:bg-white">
           <table className="w-full text-left text-xs font-mono whitespace-nowrap">
             <thead className="text-[9px] text-[#94A3B8] uppercase tracking-widest bg-[#1C2541] print:bg-gray-100 print:text-black border-b border-[#94A3B8]/20">
