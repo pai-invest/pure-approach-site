@@ -36,9 +36,7 @@ export default function DigitalDivision() {
           </span>
           
           {/* Classy 24K Liquid Gold Serif Typography */}
-          <h1 className="mt-4 text-4xl md:text-6xl tracking-[0.15em] font-serif font-light uppercase py-2
-            bg-[linear-gradient(135deg,#FFFDF0_0%,#F5D36B_25%,#D4AF37_50%,#B38F24_75%,#543D04_100%)] 
-            bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+          <h1 className="mt-4 text-4xl md:text-6xl tracking-[0.15em] font-serif font-light uppercase py-2 bg-[linear-gradient(135deg,#FFFDF0_0%,#F5D36B_25%,#D4AF37_50%,#B38F24_75%,#543D04_100%)] bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
             PURE APEX PULSE
           </h1>
           
@@ -90,14 +88,16 @@ export default function DigitalDivision() {
                 <div>DEBT LEVERAGE: <span className="text-[#FFFDF0] font-bold">0.00%</span></div>
               </div>
               
-              {/* --- NEW ASSET REGISTRY LINKS ADDED HERE --- */}
+              {/* --- ASSET REGISTRY LINKS --- */}
               <div className="mt-6 flex gap-4">
                 <a href="/digital/calculator" className="flex-1 text-center px-4 py-2 border border-[#10B981]/30 hover:border-[#10B981] text-[#10B981] text-[10px] uppercase tracking-widest font-mono transition">
                   Public Calculator
                 </a>
-                <a href="/digital/vault" className="flex-1 flex items-center justify-center px-4 py-2 bg-[#F5D36B] text-[#032213] text-[10px] uppercase tracking-widest font-mono font-bold hover:bg-[#FFFDF0] transition shadow-[0_0_15px_rgba(245,211,107,0.15)]">
-                  Access Vault
-                </a>
+                
+                {/* LOCKED VAULT */}
+                <span className="flex-1 flex items-center justify-center px-4 py-2 bg-[#021A0E] border border-[#F5D36B]/20 text-[#F5D36B]/40 text-[10px] uppercase tracking-widest font-mono font-bold cursor-not-allowed select-none">
+                  VAULT // LOCKED
+                </span>
               </div>
             </div>
           </div>
