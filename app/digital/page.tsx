@@ -5,19 +5,19 @@ export default function DigitalDivision() {
     <div className="min-h-screen bg-[#032213] text-[#F5D36B] font-sans selection:bg-[#04381F] selection:text-[#FFFDF0]">
       
       {/* Header Area */}
-      <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#10B981]/10 gap-6">
+      <header className="max-w-5xl mx-auto px-6 pt-16 pb-12 flex flex-col items-center border-b border-[#10B981]/10 gap-8">
         
-        {/* Official Apex Pulse Logo filling the entire previous footprint seamlessly */}
-        <div className="flex items-center justify-center shrink-0">
+        {/* Official Apex Pulse Logo filling the entire previous footprint seamlessly - Now a focal centerpiece */}
+        <div className="flex items-center justify-center shrink-0 w-full">
           <img 
             src="/apexlogo.png" 
             alt="Pure Apex Pulse Logo" 
-            className="h-40 sm:h-44 w-auto object-contain"
+            className="h-56 sm:h-72 md:h-80 w-auto object-contain"
           />
         </div>
 
         {/* Dynamic sub-navigation row */}
-        <div className="w-full flex justify-between items-center mt-4">
+        <div className="w-full flex justify-between items-center mt-6">
           <a href="/preview" className="text-xs font-bold tracking-[0.2em] text-[#10B981] hover:text-[#FFFDF0] transition font-mono">
             ← PURE APPROACH TERMINAL
           </a>
