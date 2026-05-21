@@ -23,16 +23,13 @@ interface Trade {
 }
 
 export default function GlobalSwingMatrix() {
-  // Manual Trade Entry State
   const [amountInvested, setAmountInvested] = useState<number>(400);
   const [ticker, setTicker] = useState<string>("SPY");
   const [entryPrice, setEntryPrice] = useState<number>(500);
   const [exchangeRate, setExchangeRate] = useState<number>(18.50);
   
-  // Master Ledger
   const [ledger, setLedger] = useState<Trade[]>([]);
 
-  // Real-Time USD/ZAR Fetch Engine
   useEffect(() => {
     fetch('https://api.exchangerate-api.com/v4/latest/USD')
       .then(res => res.json())
@@ -84,8 +81,8 @@ export default function GlobalSwingMatrix() {
             actualProfitZAR: Number(row['Actual Profit ']),
             runningProfit: Number(row['Running Profit']),
             usdZarRate: Number(row['USD/ZAR rate ']),
-            status: (row['Exit date'] ? 'CLOSED' : 'ACTIVE') as Trade['status'] // <-- The TypeScript Fix
-          })).filter((t: any) => t.ticker) as Trade[]; // <-- Additional safety cast
+            status: (row['Exit date'] ? 'CLOSED' : 'ACTIVE') as Trade['status']
+          })).filter((t: any) => t.ticker) as Trade[];
           
           setLedger(formatted);
         }
@@ -98,7 +95,6 @@ export default function GlobalSwingMatrix() {
   return (
     <div className="min-h-screen bg-[#0A1128] text-[#E2E8F0] font-sans selection:bg-[#1C2541] print:bg-white print:text-black">
       
-      {/* Header */}
       <header className="max-w-[1400px] mx-auto px-8 py-8 flex justify-between items-end border-b border-[#94A3B8]/20 print:hidden">
         <div>
           <h1 className="text-2xl font-serif text-[#FFFFFF] tracking-wide uppercase">Global Swing Matrix</h1>
@@ -117,7 +113,6 @@ export default function GlobalSwingMatrix() {
 
       <main className="max-w-[1400px] mx-auto px-8 py-8 space-y-8">
         
-        {/* Top Section: Inputs */}
         <div className="mb-8 print:hidden">
           <section className="bg-[#111C3A] p-6 rounded border border-[#94A3B8]/20 max-w-5xl mx-auto">
             <div className="flex justify-between items-center border-b border-[#94A3B8]/20 pb-4 mb-6">
@@ -151,7 +146,6 @@ export default function GlobalSwingMatrix() {
           </section>
         </div>
 
-        {/* The Unified Ledger */}
         <section className="bg-[#111C3A] border border-[#94A3B8]/20 rounded overflow-x-auto print:border-black print:bg-white">
           <table className="w-full text-left text-xs font-mono whitespace-nowrap">
             <thead className="text-[9px] text-[#94A3B8] uppercase tracking-widest bg-[#1C2541] print:bg-gray-100 print:text-black border-b border-[#94A3B8]/20">
@@ -173,4 +167,10 @@ export default function GlobalSwingMatrix() {
             <tbody className="divide-y divide-[#94A3B8]/10 text-[#E2E8F0] print:text-black">
               {ledger.map((trade) => (
                 <tr key={trade.id} className="hover:bg-[#1C2541]/50 transition">
-                  <td className="px-4 py-4 font-
+                  <td className="px-4 py-4 font-bold text-white">{trade.ticker}</td>
+                  <td className="px-4 py-4 text-[#94A3B8]">{trade.entryDate}</td>
+                  <td className="px-4 py-4">{trade.investedUSD?.toFixed(2)}</td>
+                  <td className="px-4 py-4 text-yellow-500/80">{trade.entryPrice?.toFixed(2)}</td>
+                  <td className="px-4 py-4 text-[#10B981]/80">{trade.target9?.toFixed(2)}</td>
+                  <td className="px-4 py-4 text-[#10B981]/80">{trade.target12?.toFixed(2)}</td>
+                  <td className="px-4 py-4 text-red-500/80">{trade.stopLoss5?.toFixed(2
