@@ -88,7 +88,7 @@ export default function PiMetrixEquities() {
               <strong className="font-bold text-[#FFD700]">Pi-Metrix Equities (PME)</strong> functions as the proprietary trading and global treasury management division of Pure Approach Investments. 
             </p>
             <p>
-              Engineered to navigate highly liquid global public markets, PME deploys corporate capital through a systematic, metric-driven framework designed to extract alpha from structural market momentum while prioritizing absolute capital preservation.
+              Strategically engineered and perfected over 10 years to navigate highly liquid global public markets, PME deploys corporate capital through a systematic, metric-driven framework designed to extract alpha from structural market momentum while prioritizing absolute capital preservation.
             </p>
           </div>
           
