@@ -127,7 +127,7 @@ export default function Home() {
             <div>
               <div className="h-40 sm:h-48 w-full mb-6 flex items-center justify-center overflow-hidden bg-white rounded-lg border border-[#B9BBB7]/30 p-4 shadow-sm">
                 <img 
-                  src="/frostedlogo.jpg" 
+                  src="/frostedlogo.png" 
                   alt="Frosted Nostalgia Logo" 
                   className="w-full h-full object-contain object-center"
                 />
