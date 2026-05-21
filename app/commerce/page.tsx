@@ -4,20 +4,20 @@ export default function CommerceDivision() {
   return (
     <div className="min-h-screen bg-[#0A1224] text-slate-300 font-sans selection:bg-slate-800 selection:text-white">
       
-      {/* Header Area with Large Primero Logo as the First Element (Matches Pulse & Capital Layout) */}
-      <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-slate-800/40 gap-6">
+      {/* Header Area with Large Primero Logo as the First Element */}
+      <header className="max-w-5xl mx-auto px-6 pt-16 pb-12 flex flex-col items-center border-b border-slate-800/40 gap-8">
         
-        {/* Seamless Primero Logo Integration (Borderless, no box plaque) */}
-        <div className="flex items-center justify-center shrink-0">
+        {/* Seamless Primero Logo Integration - Now with a Silver Glow */}
+        <div className="flex items-center justify-center shrink-0 w-full">
           <img 
             src="/primerologo2.png" 
             alt="Primero Collection Logo" 
-            className="h-28 sm:h-32 w-auto object-contain"
+            className="h-56 sm:h-72 md:h-80 w-auto object-contain filter drop-shadow-[0_0_30px_rgba(203,213,225,0.3)]"
           />
         </div>
 
         {/* Dynamic sub-navigation row */}
-        <div className="w-full flex justify-between items-center mt-4">
+        <div className="w-full flex justify-between items-center mt-6">
           <a href="/preview" className="text-xs font-bold tracking-[0.2em] text-slate-400 hover:text-white transition font-mono">
             ← PURE APPROACH TERMINAL
           </a>
@@ -139,23 +139,4 @@ export default function CommerceDivision() {
                 Kitted Logistics
               </h4>
               <p className="leading-relaxed font-light
-                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
-                bg-clip-text text-transparent 
-                filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
-                By utilizing optimized bundling models and automated delivery pipelines, we ensure premium customer unboxing experiences while maintaining superior operating margins.
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="max-w-5xl mx-auto px-6 py-12 border-t border-slate-800/40 text-xs text-center
-          bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8_45%,#FFFFFF_55%,#CBD5E1_70%,#475569_100%)] 
-          bg-clip-text text-transparent 
-          filter drop-shadow-[0_2px_1px_rgba(255,255,255,0.15)] drop-shadow-[0_4px_5px_rgba(0,0,0,0.9)]">
-        © 2026 Pure Approach Investments (Pty) Ltd. Primero Collection Division.
-      </footer>
-    </div>
-  );
-}
+                bg-[linear-gradient(135deg,#FFFFFF_0%,#E2E8F0_25%,#94A3B8
