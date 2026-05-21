@@ -16,19 +16,19 @@ export default function FrostedDivision() {
     <div className="min-h-screen bg-black text-[#FFD700] selection:bg-amber-950 selection:text-amber-200" style={whimsicalFontStyle}>
       
       {/* Header Area with Central Logo */}
-      <header className="max-w-5xl mx-auto px-6 pt-12 pb-8 flex flex-col items-center border-b border-[#FFD700]/20 gap-6">
+      <header className="max-w-5xl mx-auto px-6 pt-16 pb-12 flex flex-col items-center border-b border-[#FFD700]/20 gap-8">
         
-        {/* Seamless Logo Integration */}
-        <div className="flex items-center justify-center shrink-0">
+        {/* Seamless Logo Integration - Now a focal centerpiece */}
+        <div className="flex items-center justify-center shrink-0 w-full">
           <img 
             src="/frostedlogo.png" 
             alt="Frosted Nostalgia Logo" 
-            className="h-28 sm:h-32 w-auto object-contain filter drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]"
+            className="h-56 sm:h-72 md:h-80 w-auto object-contain filter drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]"
           />
         </div>
 
         {/* Standalone Navigation Row */}
-        <div className="w-full flex justify-between items-center mt-4 text-sm font-mono">
+        <div className="w-full flex justify-between items-center mt-6 text-sm font-mono">
           <a href="/" className="text-xs font-bold tracking-[0.2em] text-[#FFD700] hover:text-white transition">
             ← BACK TO MAIN
           </a>
