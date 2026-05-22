@@ -5,6 +5,14 @@ export default function PublicUtilitiesHub() {
   const publicTools = [
     // --- MONSTER TOOLS (PRO-EDITION) ---
     {
+      id: "synthesis-engine",
+      title: "Synthesis Engine",
+      tag: "PRO_EDITION // NEURAL",
+      description: "Personal truth arbitrage node: synthesize fragmented data, news, and market inputs into high-probability insights.",
+      link: "/digital/calculator/synthesis-engine",
+      isPro: true
+    },
+    {
       id: "exit-optimizer",
       title: "Exit & Drag Optimizer",
       tag: "PRO_EDITION // ANALYTICS",
@@ -81,7 +89,7 @@ export default function PublicUtilitiesHub() {
         <div>
           <h1 className="text-4xl font-serif text-[#FFFFFF] uppercase tracking-[0.1em]">Public Utilities</h1>
           <p className="text-[#10B981] font-mono text-xs mt-3 tracking-widest uppercase">
-            UNRESTRICTED DIAGNOSTIC NODES // PURE APPROACH INVESTMENTS
+            9X UNRESTRICTED DIAGNOSTIC NODES // PURE APPROACH INVESTMENTS
           </p>
         </div>
       </header>
