@@ -17,7 +17,7 @@ export default function PublicCalculatorHub() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 pt-16">
+      <main className="max-w-5xl mx-auto px-6 pt-16">
         {/* Hub Title */}
         <div className="max-w-3xl mb-16">
           <span className="text-xs font-bold tracking-[0.4em] text-[#10B981] uppercase font-mono block mb-3">
@@ -31,61 +31,113 @@ export default function PublicCalculatorHub() {
           </p>
         </div>
 
-        {/* Free Tools Directory */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Free Tools Directory (6-Card Grid) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
-          {/* Tool 01 */}
-          <a href="/digital/calculator/compound-yield" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer">
+          {/* --- BRAND NEW TOOLS --- */}
+          
+          {/* Tool 01: Compound Yield */}
+          <a href="/digital/calculator/compound-yield" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.02)]">
             <div>
               <div className="flex justify-between items-baseline mb-4">
                 <h3 className="text-lg font-bold font-mono text-[#FFFDF0]">Compound Yield Simulator</h3>
-                <span className="text-[10px] text-[#10B981] tracking-widest font-mono uppercase">V.1.0.4</span>
+                <span className="text-[10px] text-[#10B981] tracking-widest font-mono uppercase">NEW_SYS</span>
               </div>
               <p className="text-xs text-[#F5D36B]/60 leading-relaxed font-light mb-6">
                 Calculate infinite compounding trajectories over varying time horizons, factoring in automated dividend reinvestment and capital drag ratios.
               </p>
             </div>
             <div className="text-xs font-mono text-[#10B981] group-hover:text-[#FFFDF0] transition">
-              [ INITIALIZE CALCULATOR ] →
+              [ INITIALIZE ] →
             </div>
           </a>
 
-          {/* Tool 02 */}
-          <a href="/digital/calculator/ad-arbitrage" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer">
+          {/* Tool 02: Ad Arbitrage */}
+          <a href="/digital/calculator/ad-arbitrage" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.02)]">
             <div>
               <div className="flex justify-between items-baseline mb-4">
                 <h3 className="text-lg font-bold font-mono text-[#FFFDF0]">Ad Arbitrage Matrix</h3>
-                <span className="text-[10px] text-[#10B981] tracking-widest font-mono uppercase">V.2.1.0</span>
+                <span className="text-[10px] text-[#10B981] tracking-widest font-mono uppercase">NEW_SYS</span>
               </div>
               <p className="text-xs text-[#F5D36B]/60 leading-relaxed font-light mb-6">
                 Determine exact net-yield margins for programmatic media pipelines by cross-referencing Cost Per Click (CPC) vs. Revenue Per Mille (RPM).
               </p>
             </div>
             <div className="text-xs font-mono text-[#10B981] group-hover:text-[#FFFDF0] transition">
-              [ INITIALIZE CALCULATOR ] →
+              [ INITIALIZE ] →
             </div>
           </a>
 
-          {/* Tool 03 */}
-          <a href="/digital/calculator/saas-churn" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer">
+          {/* Tool 03: SaaS Churn */}
+          <a href="/digital/calculator/saas-churn" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.02)]">
             <div>
               <div className="flex justify-between items-baseline mb-4">
                 <h3 className="text-lg font-bold font-mono text-[#FFFDF0]">SaaS Churn & LTV Engine</h3>
-                <span className="text-[10px] text-[#10B981] tracking-widest font-mono uppercase">V.1.2.2</span>
+                <span className="text-[10px] text-[#10B981] tracking-widest font-mono uppercase">NEW_SYS</span>
               </div>
               <p className="text-xs text-[#F5D36B]/60 leading-relaxed font-light mb-6">
                 Model long-term valuation of subscription architectures. Input Customer Acquisition Cost (CAC) and monthly churn to extract true Lifetime Value (LTV).
               </p>
             </div>
             <div className="text-xs font-mono text-[#10B981] group-hover:text-[#FFFDF0] transition">
-              [ INITIALIZE CALCULATOR ] →
+              [ INITIALIZE ] →
             </div>
           </a>
+
+          {/* --- EXISTING TOOLS (INTEGRATED) --- */}
+
+          {/* Tool 04: Swing Telemetry */}
+          <a href="/digital/calculator/swing" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.02)]">
+            <div>
+              <div className="flex justify-between items-baseline mb-4">
+                <h3 className="text-lg font-bold font-mono text-[#FFFDF0]">Swing Telemetry Demo</h3>
+                <span className="text-[10px] text-[#F5D36B]/80 tracking-widest font-mono uppercase">TRADING</span>
+              </div>
+              <p className="text-xs text-[#F5D36B]/60 leading-relaxed font-light mb-6">
+                Mathematically isolate your 9% and 12% global swing exit targets for precise trade execution and structural capital rotation.
+              </p>
+            </div>
+            <div className="text-xs font-mono text-[#10B981] group-hover:text-[#FFFDF0] transition">
+              [ INITIALIZE ] →
+            </div>
+          </a>
+
+          {/* Tool 05: Tax Drag Estimator */}
+          <a href="/digital/calculator/tax" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.02)]">
+            <div>
+              <div className="flex justify-between items-baseline mb-4">
+                <h3 className="text-lg font-bold font-mono text-[#FFFDF0]">Tax Drag Estimator</h3>
+                <span className="text-[10px] text-[#F5D36B]/80 tracking-widest font-mono uppercase">GOVERNANCE</span>
+              </div>
+              <p className="text-xs text-[#F5D36B]/60 leading-relaxed font-light mb-6">
+                Estimate baseline progressive tax friction versus optimal corporate dividend structuring to preserve total net portfolio yield.
+              </p>
+            </div>
+            <div className="text-xs font-mono text-[#10B981] group-hover:text-[#FFFDF0] transition">
+              [ INITIALIZE ] →
+            </div>
+          </a>
+
+          {/* Tool 06: Purification Matrix */}
+          <a href="/digital/calculator/purification" className="group p-6 rounded-lg bg-[#021A0E] border border-[#10B981]/30 hover:border-[#10B981] transition duration-300 flex flex-col justify-between cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.02)]">
+            <div>
+              <div className="flex justify-between items-baseline mb-4">
+                <h3 className="text-lg font-bold font-mono text-[#FFFDF0]">Purification Matrix</h3>
+                <span className="text-[10px] text-[#F5D36B]/80 tracking-widest font-mono uppercase">COMPLIANCE</span>
+              </div>
+              <p className="text-xs text-[#F5D36B]/60 leading-relaxed font-light mb-6">
+                Systematically isolate non-compliant equity dividend fractions, routing disqualified yield directly toward philanthropic redistribution.
+              </p>
+            </div>
+            <div className="text-xs font-mono text-[#10B981] group-hover:text-[#FFFDF0] transition">
+              [ INITIALIZE ] →
+            </div>
+          </a>
+
         </div>
 
         {/* Vault Upsell Block */}
         <div className="mt-16 p-8 border border-[#F5D36B]/20 bg-[#F5D36B]/5 rounded-lg flex flex-col md:flex-row items-center justify-between gap-8 backdrop-blur-sm relative overflow-hidden">
-          {/* Subtle background glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#D4AF37]/5 blur-[50px] rounded-full pointer-events-none"></div>
           
           <div className="z-10 flex-1">
