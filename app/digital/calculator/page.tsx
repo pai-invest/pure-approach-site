@@ -3,13 +3,21 @@ import React from 'react';
 
 export default function PublicUtilitiesHub() {
   const publicTools = [
-    // --- MONSTER TOOL (PRO-EDITION) ---
+    // --- MONSTER TOOLS (PRO-EDITION) ---
     {
       id: "exit-optimizer",
       title: "Exit & Drag Optimizer",
       tag: "PRO_EDITION // ANALYTICS",
       description: "Model optimal exit windows by calculating compound growth vs tax friction and inflationary decay.",
       link: "/digital/calculator/exit-optimizer",
+      isPro: true
+    },
+    {
+      id: "burn-survival",
+      title: "Burn Survival Matrix",
+      tag: "PRO_EDITION // TELEMETRY",
+      description: "Automated daily runway monitor: identify days to bankruptcy and exact revenue adjustments needed.",
+      link: "/digital/calculator/burn-survival",
       isPro: true
     },
     // --- EXISTING UTILITIES ---
