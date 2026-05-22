@@ -90,10 +90,10 @@ export default function DigitalDivision() {
               
               {/* --- ASSET REGISTRY LINKS --- */}
               <div className="mt-6 flex gap-4">
-                {/* LOCKED CALCULATOR */}
-                <span className="flex-1 flex items-center justify-center px-4 py-2 bg-[#021A0E] border border-[#10B981]/20 text-[#10B981]/40 text-[10px] uppercase tracking-widest font-mono font-bold cursor-not-allowed select-none">
-                  CALC // LOCKED
-                </span>
+                {/* UNLOCKED CALCULATOR HUB */}
+                <a href="/digital/calculator" className="flex-1 flex items-center justify-center px-4 py-2 border border-[#10B981]/30 hover:border-[#10B981] text-[#10B981] text-[10px] uppercase tracking-widest font-mono transition">
+                  PUBLIC_CALC // LIVE
+                </a>
                 
                 {/* LOCKED VAULT */}
                 <span className="flex-1 flex items-center justify-center px-4 py-2 bg-[#021A0E] border border-[#F5D36B]/20 text-[#F5D36B]/40 text-[10px] uppercase tracking-widest font-mono font-bold cursor-not-allowed select-none">
