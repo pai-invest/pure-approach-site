@@ -4,82 +4,102 @@ import React, { useState } from 'react';
 
 export default function SynthesisEngine() {
   const [dataInput, setDataInput] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [report, setReport] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const runSynthesis = () => {
-    if (dataInput.length < 20) return;
+  /**
+   * ABSOLUTE DIAGNOSTIC CORE
+   * Generates a 3-dimensional data analysis report.
+   * Stability: Deterministic (Same Input = Same Output)
+   */
+  const generateFullAnalysis = (text: string) => {
+    const raw = text.trim();
+    if (raw.length < 50) return null;
+
+    const words = raw.split(/\s+/);
+    const sentences = raw.split(/[.!?]+/).filter(Boolean);
+    const uniqueWords = new Set(words.map(w => w.toLowerCase())).size;
+
+    // 1. Lexical Richness (Vocabulary Variance)
+    const richness = (uniqueWords / words.length) * 100;
+    
+    // 2. Structural Density (Complexity Index)
+    const density = Math.min(100, (words.length / sentences.length) * 2);
+    
+    // 3. Information Integrity (Truth Vector)
+    // A balanced metric calculated as the mean of lexical and structural integrity
+    const integrity = (richness * 0.4) + (density * 0.6);
+
+    return {
+      integrityScore: integrity.toFixed(2),
+      metrics: {
+        lexicalRichness: richness.toFixed(1) + "%",
+        structuralDensity: density.toFixed(1) + " pts",
+        wordCount: words.length,
+        sentimentSignal: integrity > 80 ? "HIGH_SIGNAL" : "NOISE_FLOOR"
+      },
+      analysisSummary: integrity > 80 
+        ? "Data exhibits high structural integrity and semantic depth." 
+        : "Data exhibits structural fragmentation requiring further refinement."
+    };
+  };
+
+  const handleCompute = () => {
+    if (dataInput.length < 50) return;
     setIsProcessing(true);
-
     setTimeout(() => {
-      // 1. Analyze text complexity & entropy to generate unique results
-      const wordCount = dataInput.trim().split(/\s+/).length;
-      const charCount = dataInput.length;
-      const entropy = (charCount % 17) * (wordCount % 13);
-      
-      // 2. Generate pseudo-random variance based on input structure
-      const truthScore = (70 + (entropy / 2)).toFixed(1);
-      const coherenceIndex = (80 + (wordCount % 15) - (charCount % 5)).toFixed(1);
-      
-      // 3. Dynamic Verdicts based on input weight
-      const verdict = charCount > 200 
-        ? "HIGH_DENSITY_NEURAL_ALIGNMENT" 
-        : "FRAGMENTED_DATA_RECONSTRUCTION";
-
-      setResult({
-        truthScore,
-        coherenceIndex,
-        verdict,
-        timestamp: new Date().toLocaleTimeString()
-      });
+      setReport(generateFullAnalysis(dataInput));
       setIsProcessing(false);
     }, 1200);
   };
 
   return (
-    <div className="min-h-screen bg-[#032213] text-[#F5D36B] p-6 md:p-12 font-mono">
-      <div className="max-w-5xl mx-auto">
+    <div className="min-h-screen bg-[#020503] text-[#F5D36B] p-12 font-mono">
+      <div className="max-w-4xl mx-auto">
         <header className="mb-12 border-l-4 border-[#10B981] pl-6">
-          <h1 className="text-4xl font-bold text-[#FFFDF0] uppercase tracking-[0.2em]">Synthesis Engine</h1>
-          <p className="text-[#10B981] text-xs uppercase tracking-widest mt-2">Neural Context & Value Arbitrage :: PURE_APEX_PULSE</p>
+          <h1 className="text-4xl font-serif text-white uppercase tracking-[0.2em]">Synthesis Engine</h1>
+          <p className="text-[#10B981] text-[10px] uppercase tracking-[0.3em] mt-2">V.5.0 // ABSOLUTE_DIAGNOSTIC_PROTOCOL</p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-[#021A0E] p-6 border border-[#10B981]/30 rounded-lg">
-            <textarea 
-              className="w-full h-64 bg-[#032213] border border-[#10B981]/30 p-4 text-white font-mono focus:border-[#F5D36B] outline-none"
-              placeholder="Paste fragmented data sources, articles, or market inputs here..."
-              value={dataInput}
-              onChange={(e) => setDataInput(e.target.value)}
-            />
-            <button 
-              onClick={runSynthesis}
-              disabled={isProcessing}
-              className="w-full mt-4 py-3 bg-[#10B981] text-[#032213] font-bold uppercase tracking-widest hover:bg-[#FFFDF0] transition"
-            >
-              {isProcessing ? "PROCESSING_NEURAL_NODES..." : "Execute Synthesis"}
-            </button>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <textarea 
+            className="w-full h-96 bg-[#060D0A] border border-[#10B981]/40 p-8 text-white focus:border-[#F5D36B] outline-none transition"
+            placeholder="Paste telemetry, market data, or documentation here for absolute analysis..."
+            onChange={(e) => setDataInput(e.target.value)}
+          />
 
-          <div className="bg-[#04381F]/20 p-6 border border-[#F5D36B]/20 rounded-lg flex flex-col items-center justify-center text-center">
-            {result ? (
-              <div className="w-full space-y-6">
-                <span className="text-[10px] text-[#F5D36B]/60 uppercase tracking-widest">Synthetic Truth Score</span>
-                <div className="text-7xl font-bold text-[#FFFDF0]">{result.truthScore}</div>
-                <div className="grid grid-cols-2 gap-4 border-t border-[#10B981]/20 pt-6">
-                  <div>
-                    <span className="text-[8px] text-[#10B981] uppercase">Coherence</span>
-                    <div className="text-lg">{result.coherenceIndex}%</div>
-                  </div>
-                  <div>
-                    <span className="text-[8px] text-[#10B981] uppercase">Status</span>
-                    <div className="text-[10px] truncate">{result.verdict}</div>
-                  </div>
+          <div className="bg-[#050D08] p-8 border border-[#10B981]/20 flex flex-col">
+            {report ? (
+              <div className="space-y-8 animate-in fade-in duration-700">
+                <div>
+                  <span className="text-[9px] text-[#10B981] uppercase">Absolute Integrity Score</span>
+                  <div className="text-7xl font-bold text-white mt-2">{report.integrityScore}</div>
                 </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {Object.entries(report.metrics).map(([key, val]) => (
+                    <div key={key} className="border-t border-[#10B981]/10 pt-2">
+                      <span className="text-[8px] uppercase block text-[#F5D36B]/60">{key.replace(/([A-Z])/g, ' $1')}</span>
+                      <span className="text-sm text-white">{val as string}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-white italic border-t border-[#10B981]/20 pt-4">
+                  {report.analysisSummary}
+                </p>
               </div>
             ) : (
-              <div className="text-[#10B981]/30 uppercase text-xs tracking-widest">[ Awaiting Data Input ]</div>
+              <div className="h-full flex items-center justify-center text-[#10B981]/20 uppercase text-xs tracking-widest">
+                Awaiting Data Integrity Scan
+              </div>
             )}
+            
+            <button 
+              onClick={handleCompute}
+              disabled={isProcessing || dataInput.length < 50}
+              className="mt-auto py-4 bg-[#10B981] text-[#020503] font-bold uppercase tracking-widest hover:bg-white transition disabled:opacity-30"
+            >
+              {isProcessing ? "EXECUTING_DIAGNOSTIC..." : "Execute Absolute Analysis"}
+            </button>
           </div>
         </div>
       </div>
