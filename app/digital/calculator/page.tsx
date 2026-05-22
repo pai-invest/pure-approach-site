@@ -20,7 +20,29 @@ export default function PublicUtilitiesHub() {
       link: "/digital/calculator/burn-survival",
       isPro: true
     },
-    // --- EXISTING UTILITIES ---
+    // --- NEW PUBLIC ADDITIONS ---
+    {
+      id: "compound-yield",
+      title: "Compound Yield Simulator",
+      tag: "PUBLIC // FINANCE",
+      description: "Model infinite compounding trajectories, factoring in automated reinvestment and capital drag.",
+      link: "/digital/calculator/compound-yield"
+    },
+    {
+      id: "ad-arbitrage",
+      title: "Ad Arbitrage Matrix",
+      tag: "PUBLIC // MEDIA",
+      description: "Determine exact net-yield margins for programmatic media pipelines by cross-referencing CPC vs RPM.",
+      link: "/digital/calculator/ad-arbitrage"
+    },
+    {
+      id: "saas-churn",
+      title: "SaaS Churn & LTV Engine",
+      tag: "PUBLIC // VALUATION",
+      description: "Model long-term valuation by extracting the true Lifetime Value from churn and acquisition costs.",
+      link: "/digital/calculator/saas-churn"
+    },
+    // --- LEGACY UTILITIES ---
     {
       id: "swing-demo",
       title: "Swing Telemetry Demo",
@@ -65,7 +87,7 @@ export default function PublicUtilitiesHub() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {publicTools.map((tool) => (
             <div 
               key={tool.id} 
