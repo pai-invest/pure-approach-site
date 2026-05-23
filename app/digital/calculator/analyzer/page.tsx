@@ -43,53 +43,55 @@ export default function EEDataAnalyzer() {
 
   const processCSV = (text: string) => {
     const lines = text.split("\n");
+    // Broker CSVs are newest to oldest. Reverse them to process chronologically
+    const dataLines = lines.slice(1).filter(l => l.trim() !== "");
+    dataLines.reverse(); 
+
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number }[] = [];
 
-    // 1. Extract and clean raw events
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-
+    // 1. Extract and clean raw events (Robustly handling commas and string splits)
+    for (const line of dataLines) {
+      // Regex to split CSV keeping quoted strings intact
       const matches = line.match(/(?:^|,)("(?:[^"]|"")*"|[^,]*)/g);
       if (!matches || matches.length < 3) continue;
 
       const dateStr = matches[0].replace(/^,/, "").trim();
-      let comment = matches[1].replace(/^,/, "").trim();
+      let comment = matches[1].replace(/^,/, "").trim().replace(/^"|"$/g, ""); // Strip quotes
       const amountStr = matches[2].replace(/^,/, "").trim();
 
-      const amount = parseFloat(amountStr) || 0;
+      // Crucial Fix: Strip commas before parsing floats to prevent 1,000 becoming 1
+      const amount = parseFloat(amountStr.replace(/,/g, "")) || 0;
       const date = new Date(dateStr);
 
-      let action = "";
-      let assetName = "";
-      let qty = 0;
+      const isBuy = comment.startsWith("Bought ");
+      const isSell = comment.startsWith("Sold ");
 
-      // Regex to capture asset name and quantity from EasyEquities comment strings
-      const buyMatch = comment.match(/^"?Bought (.*?) ([\d\.]+) @/);
-      const sellMatch = comment.match(/^"?Sold (.*?) ([\d\.]+) @/);
+      if (isBuy || isSell) {
+        const action = isBuy ? "Buy" : "Sell";
+        const withoutAction = comment.replace(/^(Bought|Sold) /, "").trim();
+        const atParts = withoutAction.split(" @ ");
+        
+        if (atParts.length >= 2) {
+          const leftSide = atParts[0].trim().split(" ");
+          // Extract the quantity (the last string before the @)
+          const qtyStr = leftSide.pop() || "0";
+          const qty = parseFloat(qtyStr.replace(/,/g, ""));
+          const assetName = leftSide.join(" ").trim();
 
-      if (buyMatch) {
-        action = "Buy";
-        assetName = buyMatch[1].trim();
-        qty = parseFloat(buyMatch[2]);
-      } else if (sellMatch) {
-        action = "Sell";
-        assetName = sellMatch[1].trim();
-        qty = parseFloat(sellMatch[2]);
-      }
-
-      if (action && assetName && qty > 0) {
-        allEvents.push({ date, action, asset: assetName, qty, amount });
+          if (qty > 0 && assetName) {
+            allEvents.push({ date, action, asset: assetName, qty, amount });
+          }
+        }
       }
     }
 
-    // 2. Sort chronologically to ensure strict FIFO order
+    // Stable sort by Date (Preserves exact intraday order because we pre-reversed)
     allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const lots = new Map<string, BuyLot[]>();
     const realizedTrades: RealizedTaxEvent[] = [];
 
-    // 3. FIFO Accounting Engine
+    // 2. Exact Fractional FIFO Accounting Engine
     for (const event of allEvents) {
       if (!lots.has(event.asset)) lots.set(event.asset, []);
       const assetLots = lots.get(event.asset)!;
@@ -103,14 +105,15 @@ export default function EEDataAnalyzer() {
         });
       } else if (event.action === "Sell") {
         let remainingToSell = event.qty;
-        // Total credit received for this sell block
+        // Total credit received per unit for this sell block
         const unitSellPrice = Math.abs(event.amount) / event.qty;
 
         for (const lot of assetLots) {
-          if (remainingToSell <= 0.00001) break; // Account for floating point margins
-          if (lot.remainingQty <= 0.00001) continue;
+          // Floating point buffer to prevent microscopic fractional remainders 
+          if (remainingToSell <= 0.000001) break; 
+          if (lot.remainingQty <= 0.000001) continue;
 
-          // Take the smaller of what we need to sell vs what is available in this specific old lot
+          // Slice exact quantity needed from this specific historical lot
           const qtyToTake = Math.min(remainingToSell, lot.remainingQty);
           
           lot.remainingQty -= qtyToTake;
@@ -137,7 +140,7 @@ export default function EEDataAnalyzer() {
       }
     }
 
-    // 4. Aggregate results for the UI Summary Blocks
+    // 3. Aggregate fractional results for the UI
     let revLoss = 0, capLoss = 0, revProf = 0;
     const grouped = new Map<string, GroupedAssetRecord>();
 
@@ -146,7 +149,6 @@ export default function EEDataAnalyzer() {
       if (trade.category === "Capital" && trade.realizedPnL < 0) capLoss += trade.realizedPnL;
       if (trade.category === "Revenue" && trade.realizedPnL > 0) revProf += trade.realizedPnL;
 
-      // Group by Asset AND Category (so an asset that crossed the 3-yr mark midway gets two lines)
       const key = `${trade.asset}-${trade.category}`;
       if (!grouped.has(key)) {
         grouped.set(key, {
@@ -187,7 +189,6 @@ export default function EEDataAnalyzer() {
       processCSV(text);
     };
     reader.readAsText(file);
-    // Reset input so same file can be uploaded again if needed
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -221,7 +222,6 @@ export default function EEDataAnalyzer() {
           </div>
         ) : (
           <>
-            {/* Macro Summary Dashboard */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Valid Revenue Shield</h3>
@@ -246,7 +246,6 @@ export default function EEDataAnalyzer() {
               </div>
             </div>
 
-            {/* Detailed Diagnostics Table */}
             <div className="overflow-x-auto bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
               <table className="w-full text-left border-collapse">
                 <thead>
