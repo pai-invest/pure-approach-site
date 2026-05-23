@@ -167,7 +167,7 @@ export default function EEDataAnalyzer() {
             qtySold: remainingToSell,
             holdingDays: "N/A",
             category: "Missing Data",
-            realizedPnL: (remainingToSell * unitSellPrice) - 0, // Assumes $0 cost basis to flag it visually
+            realizedPnL: (remainingToSell * unitSellPrice) - 0, 
           });
         }
       }
@@ -196,107 +196,9 @@ export default function EEDataAnalyzer() {
     setIsAnalyzing(true);
     const reader = new FileReader();
     reader.onload = (evt) => {
-      const text = evt.target?.result as string;
-      processCSV(text);
-    };
-    reader.readAsText(file);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  return (
-    <>
-      <div className="p-6 md:p-10 max-w-7xl mx-auto bg-[#0a1128] text-[#e0e1dd] min-h-screen font-sans">
-        <div className="mb-8 border-b border-[#c0c0c0]/30 pb-4 flex justify-between items-end">
-          <div>
-            <h1 className="text-3xl font-bold text-[#c0c0c0] tracking-wide uppercase">FIFO TAX ANALYZER</h1>
-            <p className="text-[#8d99ae] text-sm mt-1">Strict Parcel Tracing (Splits & Capital vs Revenue)</p>
-          </div>
-          <button 
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition shadow-[0_0_15px_rgba(192,192,192,0.15)] rounded-sm"
-          >
-            {isAnalyzing ? "ANALYZING..." : "UPLOAD EE CSV"}
-          </button>
-          <input 
-            type="file" 
-            accept=".csv" 
-            ref={fileInputRef} 
-            onChange={handleFileUpload} 
-            className="hidden" 
-          />
-        </div>
-
-        {analyzedData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-[#c0c0c0]/30 rounded-sm bg-[#14213d]">
-            <p className="text-[#8d99ae] mb-4">Export your Account History from EasyEquities as a CSV</p>
-            <p className="text-[#c0c0c0] font-mono text-sm">Upload to run fractional FIFO parcel tracing.</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Valid Revenue Shield</h3>
-                <p className="text-3xl font-mono text-red-400">
-                  {revenueLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-              </div>
-              <div className="bg-[#120f1a] border border-purple-900 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-purple-400 font-bold mb-2 uppercase tracking-widest text-xs">Locked Capital Losses</h3>
-                <p className="text-3xl font-mono text-red-400">
-                  {capitalLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-              </div>
-              <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-[#c0c0c0] font-bold mb-2 uppercase tracking-widest text-xs">Revenue Profits</h3>
-                <p className="text-3xl font-mono text-green-400">
-                  +{revenueProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="text-[#c0c0c0] border-b border-[#c0c0c0]/20 bg-[#0a1128]">
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Asset / Ticker</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Buy Date</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Sell Date</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty Matched</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">SARS Category</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold text-right">Realized P/L</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {analyzedData.map((trade) => (
-                    <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
-                      <td className={`p-4 font-semibold ${trade.category === 'Missing Data' ? 'text-yellow-400' : 'text-[#e0e1dd]'}`}>
-                        {trade.asset}
-                      </td>
-                      <td className="p-4 text-sm text-[#8d99ae]">
-                        {trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}
-                      </td>
-                      <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
-                      <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
-                      <td className="p-4">
-                        <span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase tracking-wider ${
-                          trade.category === "Capital" ? "bg-purple-900/40 text-purple-300 border border-purple-800" : 
-                          trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300 border border-sky-800" :
-                          "bg-yellow-900/40 text-yellow-300 border border-yellow-800"
-                        }`}>
-                          {trade.category}
-                        </span>
-                      </td>
-                      <td className={`p-4 font-mono font-bold text-sm text-right ${trade.realizedPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>
-                        {trade.realizedPnL < 0 ? "" : "+"}{trade.realizedPnL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-      </div>
-    </>
-  );
-}
+      try {
+        const text = evt.target?.result as string;
+        processCSV(text);
+      } catch (error) {
+        console.error("Parse Error:", error);
+        alert("The parser failed
