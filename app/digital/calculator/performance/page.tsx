@@ -72,15 +72,15 @@ className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transi
 </button>
 </div>
 
-<div className="overflow-x-auto mb-10 bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
-<table className="w-full text-left border-collapse">
+<div className="overflow-x-auto w-full mb-10 bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
+<table className="w-full min-w-[900px] text-left border-collapse">
 <thead>
 <tr className="text-[#c0c0c0] border-b border-[#c0c0c0]/20 bg-[#0a1128]">
 <th className="p-4 text-xs uppercase tracking-widest font-semibold">Month</th>
-<th className="p-4 text-xs uppercase tracking-widest font-semibold">Column T: JSE (ZAR)</th>
-<th className="p-4 text-xs uppercase tracking-widest font-semibold text-blue-400">Column V: USD P/L</th>
+<th className="p-4 text-xs uppercase tracking-widest font-semibold">JSE (ZAR)</th>
+<th className="p-4 text-xs uppercase tracking-widest font-semibold text-blue-400">USD P/L</th>
 <th className="p-4 text-xs uppercase tracking-widest font-semibold">Exch. Rate</th>
-<th className="p-4 text-xs uppercase tracking-widest font-semibold">Column U: US/ZAR</th>
+<th className="p-4 text-xs uppercase tracking-widest font-semibold">US/ZAR</th>
 <th className="p-4 text-xs uppercase tracking-widest font-semibold text-purple-400">Net Month (ZAR)</th>
 </tr>
 </thead>
@@ -137,41 +137,6 @@ R {netMonth.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionD
 </div>
 
 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<div className="bg-[#081b2e] border border-sky-800 p-6 shadow-[0_4px_20px_rgba(14,165,233,0.08)] rounded-sm flex flex-col">
-<h3 className="text-sky-400 font-bold mb-4 border-b border-sky-900/60 pb-2 uppercase tracking-widest text-sm flex justify-between">
-<span>Tax Calculations</span>
-<span className="text-sky-700 font-normal">Light Blue Sec.</span>
-</h3>
-<div className="space-y-4">
-<div className="flex justify-between items-center">
-<span className="text-sm text-[#8d99ae]">Tax Rate (%)</span>
-<input type="number" step="0.01" value={taxRate} onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-20 focus:outline-none text-right rounded-sm" />
-</div>
-<div className="flex justify-between items-center">
-<span className="text-sm text-[#8d99ae]">Donations Offset</span>
-<input type="number" value={donations} onChange={(e) => setDonations(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-24 focus:outline-none text-right rounded-sm" />
-</div>
-<div className="flex justify-between items-center">
-<span className="text-sm text-[#8d99ae]">Medical Offset</span>
-<input type="number" value={medicalOffset} onChange={(e) => setMedicalOffset(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-24 focus:outline-none text-right rounded-sm" />
-</div>
-<div className="flex justify-between items-center">
-<span className="text-sm text-[#8d99ae]">RA Offset</span>
-<input type="number" value={raOffset} onChange={(e) => setRaOffset(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-24 focus:outline-none text-right rounded-sm" />
-</div>
-</div>
-<div className="mt-6 pt-4 border-t border-sky-900/60 space-y-2">
-<div className="flex justify-between items-center text-sm">
-<span className="text-[#8d99ae]">Gross Tax</span>
-<span className="font-mono text-sky-200">R {grossTax.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-</div>
-<div className="flex justify-between items-center font-bold">
-<span className="text-sky-400">NET TAX OWED</span>
-<span className="font-mono text-sky-400">R {taxOwed.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-</div>
-</div>
-</div>
-
 <div className="bg-[#1f1a24] border border-purple-900/50 p-6 shadow-[0_4px_20px_rgba(168,85,247,0.05)] rounded-sm flex flex-col">
 <h3 className="text-purple-400 font-bold mb-4 border-b border-purple-900/60 pb-2 uppercase tracking-widest text-sm flex justify-between">
 <span>Overall Performance</span>
@@ -211,6 +176,41 @@ Month-Over-Month
 <div className="flex justify-between items-center">
 <span className="text-sm text-[#8d99ae]">This Month</span>
 <span className={`font-mono ${thisMonthProfit < 0 ? "text-red-400" : "text-green-400"}`}>R {thisMonthProfit.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+</div>
+</div>
+</div>
+
+<div className="bg-[#081b2e] border border-sky-800 p-6 shadow-[0_4px_20px_rgba(14,165,233,0.08)] rounded-sm flex flex-col">
+<h3 className="text-sky-400 font-bold mb-4 border-b border-sky-900/60 pb-2 uppercase tracking-widest text-sm flex justify-between">
+<span>Tax Calculations</span>
+<span className="text-sky-700 font-normal">Light Blue Sec.</span>
+</h3>
+<div className="space-y-4">
+<div className="flex justify-between items-center">
+<span className="text-sm text-[#8d99ae]">Tax Rate (%)</span>
+<input type="number" step="0.01" value={taxRate} onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-20 focus:outline-none text-right rounded-sm" />
+</div>
+<div className="flex justify-between items-center">
+<span className="text-sm text-[#8d99ae]">Donations Offset</span>
+<input type="number" value={donations} onChange={(e) => setDonations(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-24 focus:outline-none text-right rounded-sm" />
+</div>
+<div className="flex justify-between items-center">
+<span className="text-sm text-[#8d99ae]">Medical Offset</span>
+<input type="number" value={medicalOffset} onChange={(e) => setMedicalOffset(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-24 focus:outline-none text-right rounded-sm" />
+</div>
+<div className="flex justify-between items-center">
+<span className="text-sm text-[#8d99ae]">RA Offset</span>
+<input type="number" value={raOffset} onChange={(e) => setRaOffset(parseFloat(e.target.value) || 0)} className="bg-[#0a1128] border border-sky-800/50 p-1 w-24 focus:outline-none text-right rounded-sm" />
+</div>
+</div>
+<div className="mt-6 pt-4 border-t border-sky-900/60 space-y-2">
+<div className="flex justify-between items-center text-sm">
+<span className="text-[#8d99ae]">Gross Tax</span>
+<span className="font-mono text-sky-200">R {grossTax.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+</div>
+<div className="flex justify-between items-center font-bold">
+<span className="text-sky-400">NET TAX OWED</span>
+<span className="font-mono text-sky-400">R {taxOwed.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
 </div>
 </div>
 </div>
