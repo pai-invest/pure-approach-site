@@ -21,18 +21,8 @@ interface RealizedTaxEvent {
   realizedPnL: number;
 }
 
-// Grouped view for the UI table
-interface GroupedAssetRecord {
-  asset: string;
-  category: "Capital" | "Revenue";
-  totalPnL: number;
-  totalQtySold: number;
-  earliestBuy: Date;
-  latestSell: Date;
-}
-
 export default function EEDataAnalyzer() {
-  const [analyzedData, setAnalyzedData] = useState<GroupedAssetRecord[]>([]);
+  const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -49,17 +39,15 @@ export default function EEDataAnalyzer() {
 
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number }[] = [];
 
-    // 1. Extract and clean raw events (Robustly handling commas and string splits)
+    // 1. Extract and clean raw events
     for (const line of dataLines) {
-      // Regex to split CSV keeping quoted strings intact
       const matches = line.match(/(?:^|,)("(?:[^"]|"")*"|[^,]*)/g);
       if (!matches || matches.length < 3) continue;
 
       const dateStr = matches[0].replace(/^,/, "").trim();
-      let comment = matches[1].replace(/^,/, "").trim().replace(/^"|"$/g, ""); // Strip quotes
+      let comment = matches[1].replace(/^,/, "").trim().replace(/^"|"$/g, ""); 
       const amountStr = matches[2].replace(/^,/, "").trim();
 
-      // Crucial Fix: Strip commas before parsing floats to prevent 1,000 becoming 1
       const amount = parseFloat(amountStr.replace(/,/g, "")) || 0;
       const date = new Date(dateStr);
 
@@ -73,7 +61,6 @@ export default function EEDataAnalyzer() {
         
         if (atParts.length >= 2) {
           const leftSide = atParts[0].trim().split(" ");
-          // Extract the quantity (the last string before the @)
           const qtyStr = leftSide.pop() || "0";
           const qty = parseFloat(qtyStr.replace(/,/g, ""));
           const assetName = leftSide.join(" ").trim();
@@ -140,41 +127,21 @@ export default function EEDataAnalyzer() {
       }
     }
 
-    // 3. Aggregate fractional results for the UI
+    // 3. Aggregate fractional results for the UI Summary Blocks
     let revLoss = 0, capLoss = 0, revProf = 0;
-    const grouped = new Map<string, GroupedAssetRecord>();
 
     for (const trade of realizedTrades) {
       if (trade.category === "Revenue" && trade.realizedPnL < 0) revLoss += trade.realizedPnL;
       if (trade.category === "Capital" && trade.realizedPnL < 0) capLoss += trade.realizedPnL;
       if (trade.category === "Revenue" && trade.realizedPnL > 0) revProf += trade.realizedPnL;
-
-      const key = `${trade.asset}-${trade.category}`;
-      if (!grouped.has(key)) {
-        grouped.set(key, {
-          asset: trade.asset,
-          category: trade.category,
-          totalPnL: 0,
-          totalQtySold: 0,
-          earliestBuy: trade.buyDate,
-          latestSell: trade.sellDate,
-        });
-      }
-
-      const g = grouped.get(key)!;
-      g.totalPnL += trade.realizedPnL;
-      g.totalQtySold += trade.qtySold;
-      if (trade.buyDate < g.earliestBuy) g.earliestBuy = trade.buyDate;
-      if (trade.sellDate > g.latestSell) g.latestSell = trade.sellDate;
     }
 
     setRevenueLoss(revLoss);
     setCapitalLoss(capLoss);
     setRevenueProfit(revProf);
     
-    // Convert map to array and sort by worst losses first
-    const finalData = Array.from(grouped.values()).sort((a, b) => a.totalPnL - b.totalPnL);
-    setAnalyzedData(finalData);
+    // UI FIX: Render the raw trades instead of grouping them, sorted by most recent sale
+    setAnalyzedData(realizedTrades.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
     setIsAnalyzing(false);
   };
 
@@ -246,25 +213,26 @@ export default function EEDataAnalyzer() {
               </div>
             </div>
 
+            {/* NEW UI: Detailed Ledger showing every individual matched fractional trade */}
             <div className="overflow-x-auto bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="text-[#c0c0c0] border-b border-[#c0c0c0]/20 bg-[#0a1128]">
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold">Asset / Ticker</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Earliest Parcel</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Latest Exit</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty Sold</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Buy Date</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Sell Date</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty Matched</th>
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold">SARS Category</th>
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold text-right">Realized P/L</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {analyzedData.map((trade, idx) => (
-                    <tr key={idx} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
+                  {analyzedData.map((trade) => (
+                    <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
                       <td className="p-4 font-semibold text-[#e0e1dd]">{trade.asset}</td>
-                      <td className="p-4 text-sm text-[#8d99ae]">{trade.earliestBuy.toLocaleDateString()}</td>
-                      <td className="p-4 text-sm text-[#8d99ae]">{trade.latestSell.toLocaleDateString()}</td>
-                      <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.totalQtySold.toFixed(4)}</td>
+                      <td className="p-4 text-sm text-[#8d99ae]">{trade.buyDate.toLocaleDateString()}</td>
+                      <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
+                      <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase tracking-wider ${
                           trade.category === "Capital" 
@@ -274,8 +242,8 @@ export default function EEDataAnalyzer() {
                           {trade.category}
                         </span>
                       </td>
-                      <td className={`p-4 font-mono font-bold text-sm text-right ${trade.totalPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>
-                        {trade.totalPnL < 0 ? "" : "+"}{trade.totalPnL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      <td className={`p-4 font-mono font-bold text-sm text-right ${trade.realizedPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>
+                        {trade.realizedPnL < 0 ? "" : "+"}{trade.realizedPnL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>
                   ))}
