@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from "react";
 
-// Types for the FIFO accounting engine
 interface BuyLot {
   date: Date;
   qty: number;
@@ -13,11 +12,11 @@ interface BuyLot {
 interface RealizedTaxEvent {
   id: string;
   asset: string;
-  buyDate: Date;
+  buyDate: Date | string;
   sellDate: Date;
   qtySold: number;
-  holdingDays: number;
-  category: "Capital" | "Revenue";
+  holdingDays: number | string;
+  category: "Capital" | "Revenue" | "Missing Data";
   realizedPnL: number;
 }
 
@@ -26,20 +25,18 @@ export default function EEDataAnalyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Summary state
   const [revenueLoss, setRevenueLoss] = useState(0);
   const [capitalLoss, setCapitalLoss] = useState(0);
   const [revenueProfit, setRevenueProfit] = useState(0);
 
   const processCSV = (text: string) => {
     const lines = text.split("\n");
-    // Broker CSVs are newest to oldest. Reverse them to process chronologically
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     dataLines.reverse(); 
 
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number }[] = [];
 
-    // 1. Extract and clean raw events
+    // 1. Robust string parsing including Corporate Actions
     for (const line of dataLines) {
       const matches = line.match(/(?:^|,)("(?:[^"]|"")*"|[^,]*)/g);
       if (!matches || matches.length < 3) continue;
@@ -53,6 +50,7 @@ export default function EEDataAnalyzer() {
 
       const isBuy = comment.startsWith("Bought ");
       const isSell = comment.startsWith("Sold ");
+      const isCA = comment.startsWith("Corporate Action ");
 
       if (isBuy || isSell) {
         const action = isBuy ? "Buy" : "Sell";
@@ -69,16 +67,31 @@ export default function EEDataAnalyzer() {
             allEvents.push({ date, action, asset: assetName, qty, amount });
           }
         }
+      } else if (isCA) {
+        const withoutCA = comment.replace(/^Corporate Action /, "").trim();
+        const atParts = withoutCA.split(" @ ");
+        
+        if (atParts.length >= 2) {
+          const leftSide = atParts[0].trim().split(" ");
+          const qtyStr = leftSide.pop() || "0";
+          const qty = parseFloat(qtyStr.replace(/,/g, ""));
+          
+          const type = leftSide.shift(); 
+          const assetName = leftSide.join(" ").trim(); 
+
+          if ((type === "Consolidation" || type === "Subdivision") && assetName) {
+            allEvents.push({ date, action: "CA", asset: assetName, qty, amount: 0 });
+          }
+        }
       }
     }
 
-    // Stable sort by Date (Preserves exact intraday order because we pre-reversed)
     allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const lots = new Map<string, BuyLot[]>();
     const realizedTrades: RealizedTaxEvent[] = [];
 
-    // 2. Exact Fractional FIFO Accounting Engine
+    // 2. FIFO Engine with Reverse Split Interception
     for (const event of allEvents) {
       if (!lots.has(event.asset)) lots.set(event.asset, []);
       const assetLots = lots.get(event.asset)!;
@@ -90,17 +103,36 @@ export default function EEDataAnalyzer() {
           unitCost: Math.abs(event.amount) / event.qty,
           remainingQty: event.qty,
         });
-      } else if (event.action === "Sell") {
+      } 
+      else if (event.action === "CA") {
+        // Handle Corporate Action (Reverse Splits / Stock Splits)
+        let totalRemaining = 0;
+        for (const lot of assetLots) totalRemaining += lot.remainingQty;
+
+        if (totalRemaining > 0) {
+          // event.qty is the +/- change in shares
+          const newTotal = totalRemaining + event.qty; 
+          
+          if (newTotal > 0) {
+            const ratio = newTotal / totalRemaining;
+            for (const lot of assetLots) {
+              lot.remainingQty *= ratio;
+              lot.unitCost /= ratio; // Scales cost basis appropriately
+            }
+          } else {
+            // Cashed out fractional remnants
+            for (const lot of assetLots) lot.remainingQty = 0;
+          }
+        }
+      }
+      else if (event.action === "Sell") {
         let remainingToSell = event.qty;
-        // Total credit received per unit for this sell block
         const unitSellPrice = Math.abs(event.amount) / event.qty;
 
         for (const lot of assetLots) {
-          // Floating point buffer to prevent microscopic fractional remainders 
           if (remainingToSell <= 0.000001) break; 
           if (lot.remainingQty <= 0.000001) continue;
 
-          // Slice exact quantity needed from this specific historical lot
           const qtyToTake = Math.min(remainingToSell, lot.remainingQty);
           
           lot.remainingQty -= qtyToTake;
@@ -124,10 +156,23 @@ export default function EEDataAnalyzer() {
             realizedPnL,
           });
         }
+
+        // Ticker Change Failsafe: Log missing buys as Ghost Shares
+        if (remainingToSell > 0.000001) {
+          realizedTrades.push({
+            id: `GHOST-${event.asset}-${event.date.getTime()}-${Math.random()}`,
+            asset: `${event.asset} (Missing Buy Data)`,
+            buyDate: "Unknown", 
+            sellDate: event.date,
+            qtySold: remainingToSell,
+            holdingDays: "N/A",
+            category: "Missing Data",
+            realizedPnL: (remainingToSell * unitSellPrice) - 0, // Assumes $0 cost basis to flag it visually
+          });
+        }
       }
     }
 
-    // 3. Aggregate fractional results for the UI Summary Blocks
     let revLoss = 0, capLoss = 0, revProf = 0;
 
     for (const trade of realizedTrades) {
@@ -140,7 +185,6 @@ export default function EEDataAnalyzer() {
     setCapitalLoss(capLoss);
     setRevenueProfit(revProf);
     
-    // UI FIX: Render the raw trades instead of grouping them, sorted by most recent sale
     setAnalyzedData(realizedTrades.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
     setIsAnalyzing(false);
   };
@@ -165,7 +209,7 @@ export default function EEDataAnalyzer() {
         <div className="mb-8 border-b border-[#c0c0c0]/30 pb-4 flex justify-between items-end">
           <div>
             <h1 className="text-3xl font-bold text-[#c0c0c0] tracking-wide uppercase">FIFO TAX ANALYZER</h1>
-            <p className="text-[#8d99ae] text-sm mt-1">Strict Parcel Tracing (Capital vs Revenue)</p>
+            <p className="text-[#8d99ae] text-sm mt-1">Strict Parcel Tracing (Splits & Capital vs Revenue)</p>
           </div>
           <button 
             onClick={() => fileInputRef.current?.click()}
@@ -195,25 +239,21 @@ export default function EEDataAnalyzer() {
                 <p className="text-3xl font-mono text-red-400">
                   {revenueLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Deductible against short-term trades</p>
               </div>
               <div className="bg-[#120f1a] border border-purple-900 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-purple-400 font-bold mb-2 uppercase tracking-widest text-xs">Locked Capital Losses</h3>
                 <p className="text-3xl font-mono text-red-400">
                   {capitalLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Ring-fenced for &gt;36 month holdings</p>
               </div>
               <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-[#c0c0c0] font-bold mb-2 uppercase tracking-widest text-xs">Revenue Profits</h3>
                 <p className="text-3xl font-mono text-green-400">
                   +{revenueProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Taxable at flat 27% corporate rate</p>
               </div>
             </div>
 
-            {/* NEW UI: Detailed Ledger showing every individual matched fractional trade */}
             <div className="overflow-x-auto bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -229,15 +269,19 @@ export default function EEDataAnalyzer() {
                 <tbody>
                   {analyzedData.map((trade) => (
                     <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
-                      <td className="p-4 font-semibold text-[#e0e1dd]">{trade.asset}</td>
-                      <td className="p-4 text-sm text-[#8d99ae]">{trade.buyDate.toLocaleDateString()}</td>
+                      <td className={`p-4 font-semibold ${trade.category === 'Missing Data' ? 'text-yellow-400' : 'text-[#e0e1dd]'}`}>
+                        {trade.asset}
+                      </td>
+                      <td className="p-4 text-sm text-[#8d99ae]">
+                        {trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}
+                      </td>
                       <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
                       <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase tracking-wider ${
-                          trade.category === "Capital" 
-                            ? "bg-purple-900/40 text-purple-300 border border-purple-800" 
-                            : "bg-sky-900/40 text-sky-300 border border-sky-800"
+                          trade.category === "Capital" ? "bg-purple-900/40 text-purple-300 border border-purple-800" : 
+                          trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300 border border-sky-800" :
+                          "bg-yellow-900/40 text-yellow-300 border border-yellow-800"
                         }`}>
                           {trade.category}
                         </span>
