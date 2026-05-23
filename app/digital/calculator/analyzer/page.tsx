@@ -235,7 +235,7 @@ export default function EEDataAnalyzer() {
                 <p className="text-3xl font-mono text-red-400">
                   {capitalLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Ring-fenced for >36 month holdings</p>
+                <p className="text-[#8d99ae] text-xs mt-2">Ring-fenced for &gt;36 month holdings</p>
               </div>
               <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-[#c0c0c0] font-bold mb-2 uppercase tracking-widest text-xs">Revenue Profits</h3>
