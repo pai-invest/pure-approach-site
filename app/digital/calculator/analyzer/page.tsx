@@ -41,7 +41,7 @@ export default function EEDataAnalyzer() {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Manual Edit States
+  // Manual Entry States
   const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState("");
   const [manualSellDate, setManualSellDate] = useState("");
@@ -68,6 +68,11 @@ export default function EEDataAnalyzer() {
     const sym = currency === "USD" ? "$" : "R";
     const absVal = Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return `${amount < 0 ? '-' : ''}${sym}${absVal}`;
+  };
+
+  const formatDate = (d: Date | string) => {
+    if (d instanceof Date) return d.toISOString().split('T')[0];
+    return d;
   };
 
   const processCSV = (text: string) => {
@@ -148,7 +153,7 @@ export default function EEDataAnalyzer() {
   };
 
   const exportReport = () => {
-    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${t.buyDate},${t.sellDate},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
+    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${formatDate(t.buyDate)},${t.sellDate.toISOString().split('T')[0]},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
     a.download = "Report.csv";
@@ -198,7 +203,10 @@ export default function EEDataAnalyzer() {
             </tr>
           ) : (
             <tr key={t.id} className="border-b border-gray-800 text-sm">
-                <td className="p-4">{t.asset}</td><td className="p-4">{t.buyDate.toString()}</td><td className="p-4">{t.sellDate.toLocaleDateString()}</td><td className="p-4">{formatCurrency(t.realizedPnL)}</td>
+                <td className="p-4">{t.asset}</td>
+                <td className="p-4 text-[#8d99ae]">{formatDate(t.buyDate)}</td>
+                <td className="p-4 text-[#8d99ae]">{t.sellDate.toISOString().split('T')[0]}</td>
+                <td className="p-4">{formatCurrency(t.realizedPnL)}</td>
                 <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => setEditingTradeId(t.id)} className="text-yellow-400 border px-2">ADD</button>}</td>
             </tr>
           ))}
