@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 
+// --- Types ---
 interface BuyLot {
   date: Date;
   qty: number;
@@ -32,7 +33,6 @@ interface PortfolioItem {
 export default function EEDataAnalyzer() {
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -50,6 +50,7 @@ export default function EEDataAnalyzer() {
   const [manualSold, setManualSold] = useState<number>(0);
   const [manualFee, setManualFee] = useState<number>(0);
 
+  // --- Helpers ---
   const filteredData = analyzedData.filter((t) => {
     if (startDate && t.sellDate instanceof Date && t.sellDate < new Date(startDate)) return false;
     if (endDate && t.sellDate instanceof Date && t.sellDate > new Date(endDate)) return false;
@@ -70,8 +71,13 @@ export default function EEDataAnalyzer() {
     return `${amount < 0 ? '-' : ''}${sym}${absVal}`;
   };
 
+  const formatDate = (d: Date | string) => {
+    if (d instanceof Date) return d.toISOString().split('T')[0];
+    return d;
+  };
+
+  // --- Logic ---
   const processCSV = (text: string) => {
-    setIsAnalyzing(true);
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     const allEvents: any[] = [];
@@ -89,7 +95,7 @@ export default function EEDataAnalyzer() {
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
 
-      // FIX: Capture invalid dates as "Missing Data" instead of skipping
+      // Logic: If date invalid, create a Missing Data event so user can edit it
       if (isNaN(date.getTime()) || !dateStr) {
          allEvents.push({ date: new Date(), action: "Invalid", asset: comment, qty: 0, amount, fee: 0, isInvalid: true });
          continue;
@@ -149,11 +155,10 @@ export default function EEDataAnalyzer() {
     });
     setPortfolio(port);
     setAnalyzedData(realized.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
-    setIsAnalyzing(false);
   };
 
   const exportReport = () => {
-    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${t.buyDate},${t.sellDate.toISOString().split('T')[0]},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
+    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${formatDate(t.buyDate)},${t.sellDate.toISOString().split('T')[0]},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
     a.download = "Report.csv";
@@ -204,7 +209,7 @@ export default function EEDataAnalyzer() {
           ) : (
             <tr key={t.id} className="border-b border-gray-800 text-sm">
                 <td className="p-4">{t.asset}</td>
-                <td className="p-4 text-[#8d99ae]">{t.buyDate instanceof Date ? t.buyDate.toISOString().split('T')[0] : t.buyDate}</td>
+                <td className="p-4 text-[#8d99ae]">{formatDate(t.buyDate)}</td>
                 <td className="p-4 text-[#8d99ae]">{t.sellDate.toISOString().split('T')[0]}</td>
                 <td className="p-4">{formatCurrency(t.realizedPnL)}</td>
                 <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => setEditingTradeId(t.id)} className="text-yellow-400 border px-2">ADD</button>}</td>
