@@ -35,18 +35,19 @@ export default function EEDataAnalyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
+  // Sale Modal State
   const [isSelling, setIsSelling] = useState<string | null>(null);
   const [sellDate, setSellDate] = useState(new Date().toISOString().split('T')[0]);
   const [sellQty, setSellQty] = useState<number>(0);
   const [sellPrice, setSellPrice] = useState<number>(0);
   const [sellFee, setSellFee] = useState<number>(0);
 
+  // Settings & Manual Edit
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
 
-  // Manual Edit States
   const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState<string>("");
   const [manualSellDate, setManualSellDate] = useState<string>("");
@@ -212,7 +213,6 @@ export default function EEDataAnalyzer() {
       }
     }
 
-    // Portfolio extraction
     const currentPortfolio: PortfolioItem[] = [];
     lots.forEach((assetLots, asset) => {
         let totalQty = 0;
@@ -238,27 +238,18 @@ export default function EEDataAnalyzer() {
     setManualAsset(trade.asset);
     setManualDate(trade.buyDate instanceof Date ? trade.buyDate.toISOString().split('T')[0] : "");
     setManualSellDate(trade.sellDate.toISOString().split('T')[0]);
-    setManualAmountInvested("");
     setManualQty(trade.qtySold);
-    setManualAmountSold("");
-    setManualFee(0);
   };
 
   const saveManualData = (tradeId: string) => {
-    if (!manualDate || !manualSellDate || manualAmountInvested === "" || manualAmountSold === "" || manualQty === "" || manualFee === "") {
-        alert("Please provide the Buy Date, Sell Date, Qty, Amount Invested, Amount Sold, and Fee.");
-        return;
-    }
-
-    const parsedBuyDate = new Date(manualDate);
-    const parsedSellDate = new Date(manualSellDate);
-    const qty = Number(manualQty);
-    const amountInvested = Number(manualAmountInvested);
-    const amountSold = Number(manualAmountSold);
-    const fee = Number(manualFee);
-
     setAnalyzedData(prevData => prevData.map(trade => {
       if (trade.id === tradeId) {
+        const parsedBuyDate = new Date(manualDate);
+        const parsedSellDate = new Date(manualSellDate);
+        const qty = Number(manualQty);
+        const amountInvested = Number(manualAmountInvested);
+        const amountSold = Number(manualAmountSold);
+        const fee = Number(manualFee);
         const holdingDays = Math.ceil(Math.abs(parsedSellDate.getTime() - parsedBuyDate.getTime()) / (1000 * 60 * 60 * 24));
         const category = holdingDays >= 1095 ? "Capital" : "Revenue";
         
@@ -277,7 +268,6 @@ export default function EEDataAnalyzer() {
       }
       return trade;
     }));
-
     setEditingTradeId(null);
   };
 
@@ -292,7 +282,6 @@ export default function EEDataAnalyzer() {
       t.realizedPnL.toFixed(2),
       t.fee.toFixed(2)
     ].join(","));
-    
     const csvContent = [headers.join(","), ...rows].join("\n");
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -307,10 +296,21 @@ export default function EEDataAnalyzer() {
         <div className="flex justify-between items-center mb-8 border-b border-[#c0c0c0]/30 pb-4">
             <h1 className="text-3xl font-bold text-[#c0c0c0] uppercase tracking-widest">FIFO TAX ANALYZER</h1>
             <div className="flex gap-4">
+                <button onClick={() => {
+                    const id = "NEW-" + Date.now();
+                    setAnalyzedData(prev => [{ id, asset: "NEW ASSET", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 }, ...prev]);
+                    startEditing({ id, asset: "NEW ASSET", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 });
+                }} className="bg-blue-600 text-white px-5 py-2 font-bold hover:bg-blue-500">+ ADD NEW TRADE</button>
                 <button onClick={exportReport} className="bg-sky-900 text-white px-5 py-2 font-bold hover:bg-sky-800 transition rounded-sm">EXPORT CSV</button>
                 <button onClick={() => fileInputRef.current?.click()} className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition rounded-sm">UPLOAD CSV</button>
                 <input type="file" ref={fileInputRef} onChange={(e) => { const file = e.target.files?.[0]; if(file) { setIsAnalyzing(true); const reader = new FileReader(); reader.onload = (evt) => processCSV(evt.target?.result as string); reader.readAsText(file); } }} className="hidden" />
             </div>
+        </div>
+
+        <div className="mb-6 flex gap-4">
+             <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-[#0a1128] p-2 border border-[#c0c0c0]/30"><option value="ZAR">ZAR</option><option value="USD">USD</option></select>
+             <input type="date" onChange={(e) => setStartDate(e.target.value)} className="bg-[#0a1128] p-2 border border-[#c0c0c0]/30" />
+             <input type="date" onChange={(e) => setEndDate(e.target.value)} className="bg-[#0a1128] p-2 border border-[#c0c0c0]/30" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -332,7 +332,7 @@ export default function EEDataAnalyzer() {
                                 <td className="p-4"><input type="date" onChange={e => setManualSellDate(e.target.value)} className="bg-black p-1 w-full" /></td>
                                 <td className="p-4"><input type="number" onChange={e => setManualQty(Number(e.target.value))} className="bg-black p-1 w-16" /></td>
                                 <td className="p-4">—</td>
-                                <td className="p-4"><input type="number" onChange={e => setManualAmountInvested(Number(e.target.value))} placeholder="Amount" className="bg-black p-1 w-20" /></td>
+                                <td className="p-4"><input type="number" onChange={e => setManualAmountInvested(Number(e.target.value))} placeholder="Amt Inv" className="bg-black p-1 w-20" /><input type="number" onChange={e => setManualAmountSold(Number(e.target.value))} placeholder="Amt Sold" className="bg-black p-1 w-20" /></td>
                                 <td className="p-4 text-center"><button onClick={() => saveManualData(t.id)} className="bg-yellow-500 text-black px-3 py-1 font-bold">SAVE</button></td>
                             </tr>
                         ) : (
@@ -375,11 +375,10 @@ export default function EEDataAnalyzer() {
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
                 <div className="bg-[#14213d] p-8 border border-sky-500 rounded shadow-2xl w-96">
                     <h3 className="text-white font-bold mb-4 uppercase">Record Sale: {isSelling}</h3>
-                    <label className="text-xs text-[#c0c0c0] block mb-1">Sale Date</label>
-                    <input type="date" className="block w-full mb-4 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellDate(e.target.value)} />
-                    <input type="number" placeholder="Quantity Sold" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellQty(Number(e.target.value))} />
-                    <input type="number" placeholder="Total Sale Amount" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellPrice(Number(e.target.value))} />
-                    <input type="number" placeholder="Total Fees" className="block w-full mb-4 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellFee(Number(e.target.value))} />
+                    <input type="date" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellDate(e.target.value)} />
+                    <input type="number" placeholder="Qty" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellQty(Number(e.target.value))} />
+                    <input type="number" placeholder="Total Sale" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellPrice(Number(e.target.value))} />
+                    <input type="number" placeholder="Fees" className="block w-full mb-4 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellFee(Number(e.target.value))} />
                     <div className="flex gap-2">
                         <button onClick={() => { setIsSelling(null); }} className="bg-sky-600 flex-1 py-2 font-bold uppercase text-sm">Confirm Sale</button>
                         <button onClick={() => setIsSelling(null)} className="bg-gray-600 flex-1 py-2 font-bold uppercase text-sm">Cancel</button>
