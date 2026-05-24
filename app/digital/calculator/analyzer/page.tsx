@@ -21,7 +21,6 @@ interface RealizedTaxEvent {
   category: "Capital" | "Revenue" | "Missing Data" | "Other";
   realizedPnL: number;
   fee: number;
-  action?: string;
 }
 
 interface PortfolioItem {
@@ -31,14 +30,16 @@ interface PortfolioItem {
 }
 
 export default function EEDataAnalyzer() {
+  // IMPORTANT: State declarations must be at the top level of the component
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
   const [isSelling, setIsSelling] = useState<string | null>(null);
-  
+
   // Manual Entry States
   const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState("");
@@ -71,6 +72,7 @@ export default function EEDataAnalyzer() {
   };
 
   const processCSV = (text: string) => {
+    setIsAnalyzing(true);
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     const allEvents: any[] = [];
@@ -136,7 +138,6 @@ export default function EEDataAnalyzer() {
       }
     }
 
-    // Set Portfolio
     const port: PortfolioItem[] = [];
     lots.forEach((l, asset) => {
         const q = l.reduce((sum, item) => sum + item.remainingQty, 0);
@@ -199,22 +200,9 @@ export default function EEDataAnalyzer() {
           ) : (
             <tr key={t.id} className="border-b border-gray-800 text-sm">
                 <td className="p-4">{t.asset}</td><td className="p-4">{t.buyDate.toString()}</td><td className="p-4">{t.sellDate.toLocaleDateString()}</td><td className="p-4">{formatCurrency(t.realizedPnL)}</td>
-                <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => startEditing(t)} className="text-yellow-400 border px-2">ADD</button>}</td>
+                <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => setEditingTradeId(t.id)} className="text-yellow-400 border px-2">ADD</button>}</td>
             </tr>
           ))}
-        </tbody>
-      </table>
-
-      <h2 className="text-lg font-bold uppercase mb-4">Open Portfolio</h2>
-      <table className="w-full bg-[#14213d] border border-gray-700">
-        <thead><tr className="bg-[#0a1128] text-xs text-gray-400 uppercase"><th className="p-4">Asset</th><th className="p-4">Qty</th><th className="p-4 text-center">Action</th></tr></thead>
-        <tbody>
-            {portfolio.map((p, i) => (
-                <tr key={i} className="border-b border-gray-800">
-                    <td className="p-4">{p.asset}</td><td className="p-4 text-right">{p.qty.toFixed(4)}</td>
-                    <td className="p-4 text-center"><button onClick={() => setIsSelling(p.asset)} className="bg-sky-900 px-3 py-1 text-xs">SELL</button></td>
-                </tr>
-            ))}
         </tbody>
       </table>
     </div>
