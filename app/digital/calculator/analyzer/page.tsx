@@ -223,10 +223,8 @@ export default function EEDataAnalyzer() {
   const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState<string>("");
   const [manualSellDate, setManualSellDate] = useState<string>("");
-  const [manualUnitCost, setManualUnitCost] = useState<number | "">("");
   const [manualAmountInvested, setManualAmountInvested] = useState<number | "">("");
   const [manualQty, setManualQty] = useState<number | "">("");
-  const [manualSellPrice, setManualSellPrice] = useState<number | "">("");
   const [manualAmountSold, setManualAmountSold] = useState<number | "">("");
 
   const startEditing = (trade: RealizedTaxEvent) => {
@@ -234,10 +232,8 @@ export default function EEDataAnalyzer() {
     setManualAsset(trade.asset);
     setManualDate(trade.buyDate instanceof Date ? trade.buyDate.toISOString().split('T')[0] : "");
     setManualSellDate(trade.sellDate.toISOString().split('T')[0]);
-    setManualUnitCost("");
     setManualAmountInvested("");
     setManualQty(trade.qtySold);
-    setManualSellPrice(trade.unitSellPrice);
     setManualAmountSold("");
   };
 
@@ -315,12 +311,10 @@ export default function EEDataAnalyzer() {
                 }, ...prev]);
                 setEditingTradeId(id);
                 setManualAsset("");
-                setManualDate(new Date().toISOString().split('T')[0]);
-                setManualSellDate(new Date().toISOString().split('T')[0]);
-                setManualUnitCost("");
+                setManualDate("");
+                setManualSellDate("");
                 setManualAmountInvested("");
                 setManualQty(0);
-                setManualSellPrice(0);
                 setManualAmountSold("");
               }}
               className="bg-blue-600 text-white px-5 py-2 font-bold mr-2 hover:bg-blue-700 transition"
@@ -401,20 +395,18 @@ export default function EEDataAnalyzer() {
                   {filteredData.map((trade) => (
                     editingTradeId === trade.id ? (
                       <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
-                        <td className="p-4 font-semibold text-yellow-400"><input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={trade.asset === "NEW ASSET" ? "" : trade.asset} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="date" value={manualSellDate} onChange={e => setManualSellDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="number" placeholder="Qty" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-20" /></td>
-                        <td className="p-4">
-                             <div className="flex flex-col gap-1">
-                                <input type="number" placeholder="Amt Invested" value={manualAmountInvested} onChange={e => setManualAmountInvested(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm" />
-                                <input type="number" placeholder="Amt Sold" value={manualAmountSold} onChange={e => setManualAmountSold(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm" />
-                             </div>
+                        <td className="p-4"><input type="text" value={manualAsset} onChange={e => setManualAsset(e.target.value)} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="date" value={manualSellDate} onChange={e => setManualSellDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="number" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-20" /></td>
+                        <td className="p-4 text-xs">
+                           <div className="flex flex-col gap-1">
+                                <input type="number" placeholder="Amt Inv" value={manualAmountInvested} onChange={e => setManualAmountInvested(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full"/>
+                                <input type="number" placeholder="Amt Sold" value={manualAmountSold} onChange={e => setManualAmountSold(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full"/>
+                           </div>
                         </td>
-                        <td className="p-4 text-xs text-yellow-400/70 text-right uppercase">PENDING</td>
-                        <td className="p-4 text-center whitespace-nowrap">
-                          <button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1 font-bold rounded-sm">SAVE</button>
-                        </td>
+                        <td className="p-4 text-xs text-yellow-400 uppercase">PENDING</td>
+                        <td className="p-4 text-center"><button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1 font-bold rounded-sm">SAVE</button></td>
                       </tr>
                     ) : (
                       <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
