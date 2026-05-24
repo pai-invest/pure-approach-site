@@ -66,6 +66,7 @@ export default function EEDataAnalyzer() {
     let currentEvent: any = null;
     const feeKeywords = ["commission", "clearing", "vat", "fee", "tax", "sec", "finra"];
 
+    // Process in original order to preserve trade-fee adjacency
     for (const line of dataLines) {
       const delimiter = line.includes(";") ? ";" : ",";
       const parts = line.split(delimiter);
@@ -99,16 +100,24 @@ export default function EEDataAnalyzer() {
           }
         }
       } else if (isFee && currentEvent) {
-        // Debits are costs (positive fee)
-        currentEvent.fee += Math.abs(amount);
+        // Only associate if the fee line does not name a different asset, or if it has no asset name at all
+        const feeAssetMatch = feeKeywords.some(keyword => commentLower.includes(keyword)); 
+        // If the fee line mentions a specific asset, verify it matches the current trade
+        const assetInFee = comment.split(" ").find(part => currentEvent.asset.includes(part) || part.includes(currentEvent.asset));
+        
+        if (!assetInFee || commentLower.includes(currentEvent.asset.toLowerCase())) {
+           currentEvent.fee += Math.abs(amount);
+        }
       } else {
-        // Reset if we hit a non-trade/non-fee line
         currentEvent = null;
       }
     }
 
     const lots = new Map<string, BuyLot[]>();
     const realizedTrades: RealizedTaxEvent[] = [];
+
+    // Now sort for FIFO logic
+    allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     for (const event of allEvents) {
       if (!lots.has(event.asset)) lots.set(event.asset, []);
