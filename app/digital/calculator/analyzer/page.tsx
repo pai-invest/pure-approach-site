@@ -22,18 +22,15 @@ interface RealizedTaxEvent {
 }
 
 export default function EEDataAnalyzer() {
-  const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
+  // Stripped inline generics to prevent Next.js SWC compiler crashes
+  const [analyzedData, setAnalyzedData] = useState([] as RealizedTaxEvent[]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef(null as HTMLInputElement | null);
 
-  // Settings State
-  const [currency, setCurrency] = useState<"ZAR" | "USD">("ZAR");
+  const [currency, setCurrency] = useState("ZAR");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  // Segment / Time Filter State
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
-
-  // Derived Filtered Data
   const filteredData = analyzedData.filter((trade) => {
     let isValid = true;
     if (startDate) {
@@ -47,12 +44,10 @@ export default function EEDataAnalyzer() {
     return isValid;
   });
 
-  // Dynamic Macro Summaries (Based strictly on Filtered Data)
   const revenueLoss = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const capitalLoss = filteredData.reduce((sum, t) => t.category === "Capital" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const revenueProfit = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
   
-  // Explicit Net P/L Calculation (Total Profit - Total Loss)
   const totalProfit = filteredData.reduce((sum, t) => t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
   const totalLoss = Math.abs(filteredData.reduce((sum, t) => t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0));
   const netPnL = totalProfit - totalLoss;
@@ -230,9 +225,9 @@ export default function EEDataAnalyzer() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
-  const [manualDate, setManualDate] = useState<string>("");
-  const [manualUnitCost, setManualUnitCost] = useState<number | string>("");
+  const [editingTradeId, setEditingTradeId] = useState(null as string | null);
+  const [manualDate, setManualDate] = useState("");
+  const [manualUnitCost, setManualUnitCost] = useState("");
 
   const startEditing = (trade: RealizedTaxEvent) => {
     setEditingTradeId(trade.id);
@@ -329,14 +324,14 @@ export default function EEDataAnalyzer() {
           <p className="text-[#c0c0c0] font-mono text-sm">Upload to run fractional FIFO parcel tracing.</p>
         </div>
       ) : (
-        <React.Fragment>
+        <div className="w-full">
           {/* Dynamic Date Segment & Settings Filter */}
           <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end shadow-md">
             <div className="flex flex-col border-r border-[#c0c0c0]/20 pr-4">
               <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Currency</label>
               <select 
                 value={currency} 
-                onChange={(e) => setCurrency(e.target.value as "ZAR" | "USD")}
+                onChange={(e) => setCurrency(e.target.value)}
                 className="bg-[#0a1128] border border-[#c0c0c0]/30 p-2 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-sky-500 transition cursor-pointer"
               >
                 <option value="ZAR">ZAR (R)</option>
@@ -419,4 +414,76 @@ export default function EEDataAnalyzer() {
                   <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty Matched</th>
                   <th className="p-4 text-xs uppercase tracking-widest font-semibold">SARS Category</th>
                   <th className="p-4 text-xs uppercase tracking-widest font-semibold text-right">Realized P/L</th>
-                  <th className="p-4 text-xs uppercase tracking-widest font-semibold text
+                  <th className="p-4 text-xs uppercase tracking-widest font-semibold text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((trade) => (
+                  editingTradeId === trade.id ? (
+                    <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
+                      <td className="p-4 font-semibold text-yellow-400">
+                        {trade.asset.replace(" (Missing Buy Data)", "")}
+                      </td>
+                      <td className="p-4">
+                        <input 
+                          type="date" 
+                          value={manualDate} 
+                          onChange={(e) => setManualDate(e.target.value)} 
+                          className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[140px]" 
+                        />
+                      </td>
+                      <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
+                      <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
+                      <td className="p-4">
+                        <input 
+                          type="number" 
+                          placeholder="Avg Price/Share" 
+                          value={manualUnitCost} 
+                          onChange={(e) => setManualUnitCost(e.target.value)} 
+                          className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[130px]" 
+                        />
+                      </td>
+                      <td className="p-4 text-xs text-yellow-400/70 text-right uppercase mt-1 block">Awaiting P/L</td>
+                      <td className="p-4 text-center whitespace-nowrap">
+                        <button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1.5 font-bold text-xs rounded-sm hover:bg-yellow-400 transition mr-2">SAVE</button>
+                        <button onClick={() => setEditingTradeId(null)} className="text-[#8d99ae] hover:text-white text-xs font-semibold">CANCEL</button>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
+                      <td className={`p-4 font-semibold ${trade.category === 'Missing Data' ? 'text-yellow-400' : 'text-[#e0e1dd]'}`}>
+                        {trade.asset}
+                      </td>
+                      <td className="p-4 text-sm text-[#8d99ae]">
+                        {trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}
+                      </td>
+                      <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
+                      <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
+                      <td className="p-4">
+                        <span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase tracking-wider ${
+                          trade.category === "Capital" ? "bg-purple-900/40 text-purple-300 border border-purple-800" : 
+                          trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300 border border-sky-800" :
+                          "bg-yellow-900/40 text-yellow-300 border border-yellow-800"
+                        }`}>
+                          {trade.category}
+                        </span>
+                      </td>
+                      <td className={`p-4 font-mono font-bold text-sm text-right ${trade.category === 'Missing Data' ? 'text-[#8d99ae]' : trade.realizedPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>
+                        {trade.category === 'Missing Data' ? "—" : formatCurrency(trade.realizedPnL, true)}
+                      </td>
+                      <td className="p-4 text-center">
+                        {trade.category === "Missing Data" && (
+                          <button onClick={() => startEditing(trade)} className="text-yellow-400 border border-yellow-500/50 px-2 py-1 text-xs font-bold rounded-sm hover:bg-yellow-500/20 transition">+ ADD DATA</button>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
