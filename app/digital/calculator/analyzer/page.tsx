@@ -24,13 +24,16 @@ interface RealizedTaxEvent {
 export default function EEDataAnalyzer() {
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isAddingNew, setIsAddingNew] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Currency State
   const [currency, setCurrency] = useState("ZAR");
+
+  // Segment / Time Filter State
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
+  // Derived Filtered Data
   const filteredData = analyzedData.filter((trade) => {
     let isValid = true;
     if (startDate) {
@@ -222,6 +225,7 @@ export default function EEDataAnalyzer() {
   };
 
   const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
+  const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState<string>("");
   const [manualUnitCost, setManualUnitCost] = useState<number | "">("");
   const [manualQty, setManualQty] = useState<number | "">("");
@@ -229,7 +233,8 @@ export default function EEDataAnalyzer() {
 
   const startEditing = (trade: RealizedTaxEvent) => {
     setEditingTradeId(trade.id);
-    setManualDate("");
+    setManualAsset(trade.asset);
+    setManualDate(trade.buyDate instanceof Date ? trade.buyDate.toISOString().split('T')[0] : "");
     setManualUnitCost("");
     setManualQty(trade.qtySold);
     setManualSellPrice(trade.unitSellPrice);
@@ -250,7 +255,7 @@ export default function EEDataAnalyzer() {
         
         return {
           ...trade,
-          asset: trade.asset === "NEW ASSET" ? "MANUAL TRADE" : trade.asset.replace(" (Missing Buy Data)", ""),
+          asset: manualAsset,
           buyDate: parsedDate,
           qtySold: qty,
           unitSellPrice: sellPrice,
@@ -263,7 +268,6 @@ export default function EEDataAnalyzer() {
     }));
 
     setEditingTradeId(null);
-    setIsAddingNew(false);
   };
 
   const exportReport = () => {
@@ -297,9 +301,9 @@ export default function EEDataAnalyzer() {
             <button 
               type="button"
               onClick={() => {
-                setIsAddingNew(true);
+                const id = "NEW-" + Date.now();
                 setAnalyzedData(prev => [{
-                  id: "NEW-" + Date.now(),
+                  id,
                   asset: "NEW ASSET",
                   buyDate: new Date(),
                   sellDate: new Date(),
@@ -309,7 +313,7 @@ export default function EEDataAnalyzer() {
                   category: "Missing Data",
                   realizedPnL: 0
                 }, ...prev]);
-                setEditingTradeId("NEW-" + Date.now());
+                setEditingTradeId(id);
               }}
               className="bg-blue-600 text-white px-5 py-2 font-bold mr-2 hover:bg-blue-700 transition"
             >
@@ -326,30 +330,34 @@ export default function EEDataAnalyzer() {
           </div>
         </div>
 
-        <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end">
-            <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-black p-2 border border-gray-600"><option>ZAR</option><option>USD</option></select>
-            <input type="date" onChange={(e) => setStartDate(e.target.value)} className="bg-black p-2 border border-gray-600"/>
-            <input type="date" onChange={(e) => setEndDate(e.target.value)} className="bg-black p-2 border border-gray-600"/>
-            <button onClick={exportReport} className="ml-auto bg-sky-900 text-white px-4 py-2">EXPORT CSV</button>
-        </div>
+        {analyzedData.length > 0 && (
+          <>
+            <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end">
+              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-black p-2 border border-gray-600"><option>ZAR</option><option>USD</option></select>
+              <input type="date" onChange={(e) => setStartDate(e.target.value)} className="bg-black p-2 border border-gray-600"/>
+              <input type="date" onChange={(e) => setEndDate(e.target.value)} className="bg-black p-2 border border-gray-600"/>
+              <button onClick={exportReport} className="ml-auto bg-sky-900 text-white px-4 py-2">EXPORT CSV</button>
+            </div>
 
-        <table className="w-full text-left border border-gray-700">
-            <thead><tr className="bg-[#14213d] border-b border-gray-700"><th className="p-4">ASSET</th><th className="p-4">BUY DATE</th><th className="p-4">QTY</th><th className="p-4">PRICE</th><th className="p-4">P/L</th><th className="p-4">ACTION</th></tr></thead>
-            <tbody>
-                {filteredData.map(t => (
-                    <tr key={t.id} className="border-b border-gray-800">
-                        <td className="p-4">{t.asset}</td>
-                        <td className="p-4">{editingTradeId === t.id ? <input type="date" onChange={e => setManualDate(e.target.value)} className="text-black"/> : (t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate)}</td>
-                        <td className="p-4">{editingTradeId === t.id ? <input type="number" onChange={e => setManualQty(parseFloat(e.target.value))} className="text-black w-20"/> : t.qtySold}</td>
-                        <td className="p-4">{editingTradeId === t.id ? <input type="number" onChange={e => setManualSellPrice(parseFloat(e.target.value))} className="text-black w-20"/> : t.unitSellPrice}</td>
-                        <td className="p-4">{t.realizedPnL.toFixed(2)}</td>
-                        <td className="p-4">
-                            {editingTradeId === t.id ? <button onClick={() => saveManualData(t.id)} className="text-green-500 font-bold">SAVE</button> : <button onClick={() => startEditing(t)} className="text-yellow-500 underline">EDIT</button>}
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+            <table className="w-full text-left border border-gray-700">
+                <thead><tr className="bg-[#14213d] border-b border-gray-700"><th className="p-4">ASSET</th><th className="p-4">BUY DATE</th><th className="p-4">QTY</th><th className="p-4">PRICE</th><th className="p-4">P/L</th><th className="p-4">ACTION</th></tr></thead>
+                <tbody>
+                    {filteredData.map(t => (
+                        <tr key={t.id} className="border-b border-gray-800">
+                            <td className="p-4">{editingTradeId === t.id ? <input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={t.asset} className="text-black"/> : t.asset}</td>
+                            <td className="p-4">{editingTradeId === t.id ? <input type="date" onChange={e => setManualDate(e.target.value)} className="text-black"/> : (t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate)}</td>
+                            <td className="p-4">{editingTradeId === t.id ? <input type="number" onChange={e => setManualQty(parseFloat(e.target.value))} defaultValue={t.qtySold} className="text-black w-20"/> : t.qtySold}</td>
+                            <td className="p-4">{editingTradeId === t.id ? <input type="number" onChange={e => setManualSellPrice(parseFloat(e.target.value))} defaultValue={t.unitSellPrice} className="text-black w-20"/> : t.unitSellPrice}</td>
+                            <td className="p-4">{t.realizedPnL.toFixed(2)}</td>
+                            <td className="p-4">
+                                {editingTradeId === t.id ? <button onClick={() => saveManualData(t.id)} className="text-green-500 font-bold">SAVE</button> : <button onClick={() => startEditing(t)} className="text-yellow-500 underline">EDIT</button>}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+          </>
+        )}
       </div>
     </>
   );
