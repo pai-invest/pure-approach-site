@@ -26,10 +26,14 @@ export default function EEDataAnalyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Currency State
   const [currency, setCurrency] = useState("ZAR");
+
+  // Segment / Time Filter State
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
+  // Derived Filtered Data
   const filteredData = analyzedData.filter((trade) => {
     let isValid = true;
     if (startDate) {
@@ -224,8 +228,10 @@ export default function EEDataAnalyzer() {
   const [manualDate, setManualDate] = useState<string>("");
   const [manualSellDate, setManualSellDate] = useState<string>("");
   const [manualUnitCost, setManualUnitCost] = useState<number | "">("");
+  const [manualAmountInvested, setManualAmountInvested] = useState<number | "">("");
   const [manualQty, setManualQty] = useState<number | "">("");
   const [manualSellPrice, setManualSellPrice] = useState<number | "">("");
+  const [manualAmountSold, setManualAmountSold] = useState<number | "">("");
 
   const startEditing = (trade: RealizedTaxEvent) => {
     setEditingTradeId(trade.id);
@@ -233,40 +239,39 @@ export default function EEDataAnalyzer() {
     setManualDate(trade.buyDate instanceof Date ? trade.buyDate.toISOString().split('T')[0] : "");
     setManualSellDate(trade.sellDate.toISOString().split('T')[0]);
     setManualUnitCost("");
+    setManualAmountInvested("");
     setManualQty(trade.qtySold);
     setManualSellPrice(trade.unitSellPrice);
+    setManualAmountSold("");
   };
 
   const saveManualData = (tradeId: string) => {
-    if (manualDate === "" || manualSellDate === "" || manualUnitCost === "" || manualQty === "" || manualSellPrice === "") {
-        alert("Please fill all fields.");
+    if (!manualDate || !manualSellDate || manualAmountInvested === "" || manualAmountSold === "" || manualQty === "") {
+        alert("Please provide the Buy Date, Sell Date, Qty, Amount Invested, and Amount Sold.");
         return;
     }
 
     const parsedBuyDate = new Date(manualDate);
     const parsedSellDate = new Date(manualSellDate);
-    const unitCost = Number(manualUnitCost);
     const qty = Number(manualQty);
-    const sellPrice = Number(manualSellPrice);
+    const amountInvested = Number(manualAmountInvested);
+    const amountSold = Number(manualAmountSold);
 
     setAnalyzedData(prevData => prevData.map(trade => {
       if (trade.id === tradeId) {
         const holdingDays = Math.ceil(Math.abs(parsedSellDate.getTime() - parsedBuyDate.getTime()) / (1000 * 60 * 60 * 24));
         const category = holdingDays >= 1095 ? "Capital" : "Revenue";
         
-        // PnL Logic: (Qty * Unit Sell Price) - (Qty * Unit Cost)
-        const newRealizedPnL = (qty * sellPrice) - (qty * unitCost);
-
         return {
           ...trade,
           asset: manualAsset,
           buyDate: parsedBuyDate,
           sellDate: parsedSellDate,
           qtySold: qty,
-          unitSellPrice: sellPrice,
+          unitSellPrice: amountSold / qty,
           holdingDays,
           category,
-          realizedPnL: newRealizedPnL
+          realizedPnL: amountSold - amountInvested
         };
       }
       return trade;
@@ -314,11 +319,13 @@ export default function EEDataAnalyzer() {
                 }, ...prev]);
                 setEditingTradeId(id);
                 setManualAsset("");
-                setManualDate("");
+                setManualDate(new Date().toISOString().split('T')[0]);
                 setManualSellDate(new Date().toISOString().split('T')[0]);
                 setManualUnitCost("");
+                setManualAmountInvested("");
                 setManualQty(0);
                 setManualSellPrice(0);
+                setManualAmountSold("");
               }}
               className="bg-blue-600 text-white px-5 py-2 font-bold mr-2 hover:bg-blue-700 transition"
             >
@@ -335,12 +342,7 @@ export default function EEDataAnalyzer() {
           </div>
         </div>
 
-        {analyzedData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-[#c0c0c0]/30 rounded-sm bg-[#14213d]">
-            <p className="text-[#8d99ae] mb-4">Export your Account History from EasyEquities as a CSV</p>
-            <p className="text-[#c0c0c0] font-mono text-sm">Upload to run fractional FIFO parcel tracing.</p>
-          </div>
-        ) : (
+        {analyzedData.length > 0 && (
           <>
             <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end shadow-md">
               <div className="flex flex-col">
@@ -362,69 +364,35 @@ export default function EEDataAnalyzer() {
               <button onClick={exportReport} className="ml-auto bg-sky-900 text-white px-4 py-2 text-sm font-bold rounded-sm border border-sky-700">EXPORT CSV</button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Revenue Losses</h3>
-                <p className="text-3xl font-mono text-red-400">{formatCurrency(revenueLoss)}</p>
-              </div>
-              <div className="bg-[#120f1a] border border-purple-900 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-purple-400 font-bold mb-2 uppercase tracking-widest text-xs">Locked Capital Losses</h3>
-                <p className="text-3xl font-mono text-red-400">{formatCurrency(capitalLoss)}</p>
-              </div>
-              <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-[#c0c0c0] font-bold mb-2 uppercase tracking-widest text-xs">Revenue Profits</h3>
-                <p className="text-3xl font-mono text-green-400">{formatCurrency(revenueProfit)}</p>
-              </div>
-              <div className="bg-[#14213d] border border-blue-500/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-blue-400 font-bold mb-2 uppercase tracking-widest text-xs">Total Net P/L</h3>
-                <p className={`text-3xl font-mono ${netPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>{formatCurrency(netPnL)}</p>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="text-[#c0c0c0] border-b border-[#c0c0c0]/20 bg-[#0a1128]">
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Asset / Ticker</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Buy Date</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Sell Date</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty Matched</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">SARS Category</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold text-right">Realized P/L</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold text-center">Action</th>
-                  </tr>
-                </thead>
+            <table className="w-full text-left border border-gray-700">
+                <thead><tr className="bg-[#14213d] border-b border-gray-700"><th className="p-4">ASSET</th><th className="p-4">BUY DATE</th><th className="p-4">SELL DATE</th><th className="p-4">DETAILS</th><th className="p-4">P/L</th><th className="p-4">ACTION</th></tr></thead>
                 <tbody>
-                  {filteredData.map((trade) => (
-                    editingTradeId === trade.id ? (
-                      <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
-                        <td className="p-4 font-semibold text-yellow-400"><input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={trade.asset === "NEW ASSET" ? "" : trade.asset} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="date" value={manualSellDate} onChange={e => setManualSellDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="number" placeholder="Qty" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-20" /></td>
-                        <td className="p-4"><input type="number" placeholder="Avg Unit Cost" value={manualUnitCost} onChange={e => setManualUnitCost(e.target.value ? parseFloat(e.target.value) : "")} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4 text-xs text-yellow-400/70 text-right uppercase">PENDING</td>
-                        <td className="p-4 text-center whitespace-nowrap">
-                          <button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1 font-bold rounded-sm">SAVE</button>
-                        </td>
-                      </tr>
-                    ) : (
-                      <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
-                        <td className={`p-4 font-semibold ${trade.category === 'Missing Data' ? 'text-yellow-400' : 'text-[#e0e1dd]'}`}>{trade.asset}</td>
-                        <td className="p-4 text-sm text-[#8d99ae]">{trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}</td>
-                        <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
-                        <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
-                        <td className="p-4"><span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase ${trade.category === "Capital" ? "bg-purple-900/40 text-purple-300" : trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300" : "bg-yellow-900/40 text-yellow-300"}`}>{trade.category}</span></td>
-                        <td className="p-4 font-mono font-bold text-sm text-right">{trade.category === 'Missing Data' ? "—" : formatCurrency(trade.realizedPnL)}</td>
-                        <td className="p-4 text-center">
-                          {trade.category === "Missing Data" && <button onClick={() => startEditing(trade)} className="text-yellow-400 border border-yellow-500/50 px-2 py-1 text-xs font-bold rounded-sm hover:bg-yellow-500/20">+ ADD DATA</button>}
-                        </td>
-                      </tr>
-                    )
-                  ))}
+                    {filteredData.map(t => (
+                        <tr key={t.id} className="border-b border-gray-800">
+                            <td className="p-4">{editingTradeId === t.id ? <input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={t.asset === "NEW ASSET" ? "" : t.asset} className="bg-black text-white p-1"/> : t.asset}</td>
+                            <td className="p-4">{editingTradeId === t.id ? <input type="date" onChange={e => setManualDate(e.target.value)} defaultValue={manualDate} className="bg-black text-white p-1"/> : (t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate)}</td>
+                            <td className="p-4">{editingTradeId === t.id ? <input type="date" onChange={e => setManualSellDate(e.target.value)} defaultValue={manualSellDate} className="bg-black text-white p-1"/> : t.sellDate.toLocaleDateString()}</td>
+                            <td className="p-4 text-xs">
+                                {editingTradeId === t.id ? (
+                                    <div className="flex flex-col gap-1">
+                                        <input type="number" placeholder="Qty" onChange={e => setManualQty(parseFloat(e.target.value))} defaultValue={t.qtySold} className="bg-black text-white w-20 p-1"/>
+                                        <input type="number" placeholder="Avg Buy Price" onChange={e => setManualUnitCost(parseFloat(e.target.value))} className="bg-black text-white w-20 p-1"/>
+                                        <input type="number" placeholder="Amt Invested" onChange={e => setManualAmountInvested(parseFloat(e.target.value))} className="bg-black text-white w-20 p-1"/>
+                                        <input type="number" placeholder="Avg Sell Price" onChange={e => setManualSellPrice(parseFloat(e.target.value))} defaultValue={t.unitSellPrice} className="bg-black text-white w-20 p-1"/>
+                                        <input type="number" placeholder="Amt Sold" onChange={e => setManualAmountSold(parseFloat(e.target.value))} className="bg-black text-white w-20 p-1"/>
+                                    </div>
+                                ) : (
+                                    <>Qty: {t.qtySold.toFixed(2)}</>
+                                )}
+                            </td>
+                            <td className="p-4">{t.realizedPnL.toFixed(2)}</td>
+                            <td className="p-4">
+                                {editingTradeId === t.id ? <button onClick={() => saveManualData(t.id)} className="text-green-500 font-bold">SAVE</button> : <button onClick={() => startEditing(t)} className="text-yellow-500 underline">EDIT</button>}
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
-              </table>
-            </div>
+            </table>
           </>
         )}
       </div>
