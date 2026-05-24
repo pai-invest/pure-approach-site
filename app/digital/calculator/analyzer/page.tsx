@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 
 interface BuyLot {
   date: Date;
@@ -21,6 +21,7 @@ interface RealizedTaxEvent {
   category: "Capital" | "Revenue" | "Missing Data" | "Other";
   realizedPnL: number;
   fee: number;
+  action?: string;
 }
 
 interface PortfolioItem {
@@ -32,41 +33,27 @@ interface PortfolioItem {
 export default function EEDataAnalyzer() {
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // Sale Modal State
-  const [isSelling, setIsSelling] = useState<string | null>(null);
-  const [sellDate, setSellDate] = useState(new Date().toISOString().split('T')[0]);
-  const [sellQty, setSellQty] = useState<number>(0);
-  const [sellPrice, setSellPrice] = useState<number>(0);
-  const [sellFee, setSellFee] = useState<number>(0);
-
-  // Settings & Manual Edit
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
-
+  const [isSelling, setIsSelling] = useState<string | null>(null);
+  
+  // Manual Entry States
   const [manualAsset, setManualAsset] = useState("");
-  const [manualDate, setManualDate] = useState<string>("");
-  const [manualSellDate, setManualSellDate] = useState<string>("");
-  const [manualAmountInvested, setManualAmountInvested] = useState<number | "">("");
-  const [manualQty, setManualQty] = useState<number | "">("");
-  const [manualAmountSold, setManualAmountSold] = useState<number | "">("");
-  const [manualFee, setManualFee] = useState<number | "">("");
+  const [manualDate, setManualDate] = useState("");
+  const [manualSellDate, setManualSellDate] = useState("");
+  const [manualQty, setManualQty] = useState<number>(0);
+  const [manualInvested, setManualInvested] = useState<number>(0);
+  const [manualSold, setManualSold] = useState<number>(0);
+  const [manualFee, setManualFee] = useState<number>(0);
 
-  const filteredData = analyzedData.filter((trade) => {
-    let isValid = true;
-    if (startDate) {
-      const start = new Date(startDate + "T00:00:00");
-      isValid = isValid && (trade.sellDate instanceof Date ? trade.sellDate >= start : true);
-    }
-    if (endDate) {
-      const end = new Date(endDate + "T23:59:59");
-      isValid = isValid && (trade.sellDate instanceof Date ? trade.sellDate <= end : true);
-    }
-    return isValid;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const filteredData = analyzedData.filter((t) => {
+    if (startDate && t.sellDate instanceof Date && t.sellDate < new Date(startDate)) return false;
+    if (endDate && t.sellDate instanceof Date && t.sellDate > new Date(endDate)) return false;
+    return true;
   });
 
   const revenueLoss = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
@@ -86,8 +73,7 @@ export default function EEDataAnalyzer() {
   const processCSV = (text: string) => {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
-    
-    const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
+    const allEvents: any[] = [];
     let currentEvent: any = null;
     const feeKeywords = ["commission", "clearing", "vat", "fee", "tax", "sec", "finra"];
 
@@ -103,31 +89,17 @@ export default function EEDataAnalyzer() {
       let amountStr = parts[2].trim().replace(",", "."); 
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
-      
       if (isNaN(date.getTime())) continue;
 
       const commentLower = comment.toLowerCase();
-      const isBuy = comment.startsWith("Bought ");
-      const isSell = comment.startsWith("Sold ");
-      const isFee = feeKeywords.some(keyword => commentLower.includes(keyword));
-
-      if (isBuy || isSell) {
-        const action = isBuy ? "Buy" : "Sell";
-        const withoutAction = comment.replace(/^(Bought|Sold) /, "").trim();
-        const atParts = withoutAction.split(" @ ");
-        
-        if (atParts.length >= 2) {
-          const leftSide = atParts[0].trim().split(" ");
-          const qtyStr = leftSide.pop() || "0";
-          const qty = parseFloat(qtyStr.replace(",", "."));
-          const assetName = leftSide.join(" ").trim();
-
-          if (qty > 0 && assetName) {
-            currentEvent = { date, action, asset: assetName, qty, amount, fee: 0 };
-            allEvents.push(currentEvent);
-          }
-        }
-      } else if (isFee && currentEvent) {
+      if (comment.startsWith("Bought ") || comment.startsWith("Sold ")) {
+        const action = comment.startsWith("Bought ") ? "Buy" : "Sell";
+        const partsInfo = comment.replace(/^(Bought|Sold) /, "").split(" @ ");
+        const assetName = partsInfo[0].split(" ").slice(0, -1).join(" ");
+        const qty = parseFloat(partsInfo[0].split(" ").pop()?.replace(",", ".") || "0");
+        currentEvent = { date, action, asset: assetName, qty, amount, fee: 0 };
+        allEvents.push(currentEvent);
+      } else if (feeKeywords.some(k => commentLower.includes(k)) && currentEvent) {
         currentEvent.fee += Math.abs(amount);
       } else {
         allEvents.push({ date, action: "Other", asset: comment, qty: 0, amount, fee: 0 });
@@ -138,254 +110,113 @@ export default function EEDataAnalyzer() {
     allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const lots = new Map<string, BuyLot[]>();
-    const realizedTrades: RealizedTaxEvent[] = [];
+    const realized: RealizedTaxEvent[] = [];
 
-    for (const event of allEvents) {
-      if (event.action === "Buy") {
-        if (!lots.has(event.asset)) lots.set(event.asset, []);
-        lots.get(event.asset)!.push({
-          date: event.date,
-          qty: event.qty,
-          unitCost: Math.abs(event.amount) / event.qty,
-          remainingQty: event.qty,
-          totalFee: event.fee
-        });
-      } 
-      else if (event.action === "Sell") {
-        if (!lots.has(event.asset)) lots.set(event.asset, []);
-        const assetLots = lots.get(event.asset)!;
-        let remainingToSell = event.qty;
-        const unitSellPrice = Math.abs(event.amount) / event.qty;
-
-        for (const lot of assetLots) {
-          if (remainingToSell <= 0.000001) break; 
-          const qtyToTake = Math.min(remainingToSell, lot.remainingQty);
-          
-          lot.remainingQty -= qtyToTake;
-          remainingToSell -= qtyToTake;
-
-          const holdingDays = Math.ceil(Math.abs(event.date.getTime() - lot.date.getTime()) / (1000 * 60 * 60 * 24));
-          const category = holdingDays >= 1095 ? "Capital" : "Revenue";
-          const proportionalFee = (lot.totalFee * (qtyToTake / lot.qty)) + (event.fee * (qtyToTake / event.qty));
-          const realizedPnL = (qtyToTake * unitSellPrice) - (qtyToTake * lot.unitCost) - proportionalFee;
-
-          realizedTrades.push({
-            id: `${event.asset}-${event.date.getTime()}-${Math.random()}`,
-            asset: event.asset,
-            buyDate: lot.date,
-            sellDate: event.date,
-            qtySold: qtyToTake,
-            unitSellPrice,
-            holdingDays,
-            category,
-            realizedPnL,
-            fee: proportionalFee
+    for (const e of allEvents) {
+      if (e.action === "Buy") {
+        if (!lots.has(e.asset)) lots.set(e.asset, []);
+        lots.get(e.asset)!.push({ date: e.date, qty: e.qty, unitCost: Math.abs(e.amount)/e.qty, remainingQty: e.qty, totalFee: e.fee });
+      } else if (e.action === "Sell") {
+        if (!lots.has(e.asset)) lots.set(e.asset, []);
+        let remaining = e.qty;
+        for (const lot of lots.get(e.asset)!) {
+          if (remaining <= 0.000001) break;
+          const take = Math.min(remaining, lot.remainingQty);
+          lot.remainingQty -= take;
+          remaining -= take;
+          const fee = (lot.totalFee * (take/lot.qty)) + (e.fee * (take/e.qty));
+          realized.push({
+            id: Math.random().toString(), asset: e.asset, buyDate: lot.date, sellDate: e.date,
+            qtySold: take, unitSellPrice: Math.abs(e.amount)/e.qty, holdingDays: 0, category: "Revenue",
+            realizedPnL: (take * (Math.abs(e.amount)/e.qty)) - (take * lot.unitCost) - fee, fee
           });
         }
-
-        if (remainingToSell > 0.000001) {
-            realizedTrades.push({
-              id: `GHOST-${event.asset}-${event.date.getTime()}-${Math.random()}`,
-              asset: `${event.asset} (Missing Buy Data)`,
-              buyDate: "Unknown", 
-              sellDate: event.date,
-              qtySold: remainingToSell,
-              unitSellPrice,
-              holdingDays: "N/A",
-              category: "Missing Data",
-              realizedPnL: (remainingToSell * unitSellPrice),
-              fee: 0
-            });
-          }
       } else {
-        realizedTrades.push({
-          id: `${event.date.getTime()}-${Math.random()}`,
-          asset: event.asset,
-          buyDate: event.date,
-          sellDate: event.date,
-          qtySold: 0,
-          unitSellPrice: 0,
-          holdingDays: "N/A",
-          category: "Other",
-          realizedPnL: 0,
-          fee: 0
-        });
+        realized.push({ id: Math.random().toString(), asset: e.asset, buyDate: e.date, sellDate: e.date, qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Other", realizedPnL: 0, fee: 0 });
       }
     }
 
-    const currentPortfolio: PortfolioItem[] = [];
-    lots.forEach((assetLots, asset) => {
-        let totalQty = 0;
-        let totalCost = 0;
-        assetLots.forEach(l => {
-            if (l.remainingQty > 0) {
-                totalQty += l.remainingQty;
-                totalCost += (l.remainingQty * l.unitCost);
-            }
-        });
-        if (totalQty > 0) {
-            currentPortfolio.push({ asset, qty: totalQty, avgCost: totalCost / totalQty });
-        }
+    // Set Portfolio
+    const port: PortfolioItem[] = [];
+    lots.forEach((l, asset) => {
+        const q = l.reduce((sum, item) => sum + item.remainingQty, 0);
+        if (q > 0) port.push({ asset, qty: q, avgCost: 0 });
     });
-
-    setPortfolio(currentPortfolio);
-    setAnalyzedData(realizedTrades.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
+    setPortfolio(port);
+    setAnalyzedData(realized.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
     setIsAnalyzing(false);
   };
 
-  const startEditing = (trade: RealizedTaxEvent) => {
-    setEditingTradeId(trade.id);
-    setManualAsset(trade.asset);
-    setManualDate(trade.buyDate instanceof Date ? trade.buyDate.toISOString().split('T')[0] : "");
-    setManualSellDate(trade.sellDate.toISOString().split('T')[0]);
-    setManualQty(trade.qtySold);
-  };
-
-  const saveManualData = (tradeId: string) => {
-    setAnalyzedData(prevData => prevData.map(trade => {
-      if (trade.id === tradeId) {
-        const parsedBuyDate = new Date(manualDate);
-        const parsedSellDate = new Date(manualSellDate);
-        const qty = Number(manualQty);
-        const amountInvested = Number(manualAmountInvested);
-        const amountSold = Number(manualAmountSold);
-        const fee = Number(manualFee);
-        const holdingDays = Math.ceil(Math.abs(parsedSellDate.getTime() - parsedBuyDate.getTime()) / (1000 * 60 * 60 * 24));
-        const category = holdingDays >= 1095 ? "Capital" : "Revenue";
-        
-        return {
-          ...trade,
-          asset: manualAsset,
-          buyDate: parsedBuyDate,
-          sellDate: parsedSellDate,
-          qtySold: qty,
-          unitSellPrice: amountSold / qty,
-          holdingDays,
-          category,
-          realizedPnL: (amountSold - amountInvested) - fee,
-          fee: fee
-        };
-      }
-      return trade;
-    }));
-    setEditingTradeId(null);
-  };
-
   const exportReport = () => {
-    const headers = ["Asset", "Buy Date", "Sell Date", "Qty", "Category", "PnL", "Fee"];
-    const rows = filteredData.map(t => [
-      `"${t.asset}"`, 
-      t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate, 
-      t.sellDate.toLocaleDateString(), 
-      t.qtySold.toFixed(4), 
-      t.category, 
-      t.realizedPnL.toFixed(2),
-      t.fee.toFixed(2)
-    ].join(","));
-    const csvContent = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
+    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${t.buyDate},${t.sellDate},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `Tax_Report_${currency}.csv`;
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = "Report.csv";
     a.click();
   };
 
+  const saveManual = (id: string) => {
+    setAnalyzedData(prev => prev.map(t => t.id === id ? {...t, asset: manualAsset, buyDate: manualDate, sellDate: new Date(manualSellDate), qtySold: manualQty, realizedPnL: manualSold - manualInvested - manualFee, fee: manualFee} : t));
+    setEditingTradeId(null);
+  };
+
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto bg-[#0a1128] text-[#e0e1dd] min-h-screen font-sans">
-        <div className="flex justify-between items-center mb-8 border-b border-[#c0c0c0]/30 pb-4">
-            <h1 className="text-3xl font-bold text-[#c0c0c0] uppercase tracking-widest">FIFO TAX ANALYZER</h1>
-            <div className="flex gap-4">
-                <button onClick={() => {
-                    const id = "NEW-" + Date.now();
-                    setAnalyzedData(prev => [{ id, asset: "NEW ASSET", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 }, ...prev]);
-                    startEditing({ id, asset: "NEW ASSET", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 });
-                }} className="bg-blue-600 text-white px-5 py-2 font-bold hover:bg-blue-500">+ ADD NEW TRADE</button>
-                <button onClick={exportReport} className="bg-sky-900 text-white px-5 py-2 font-bold hover:bg-sky-800 transition rounded-sm">EXPORT CSV</button>
-                <button onClick={() => fileInputRef.current?.click()} className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition rounded-sm">UPLOAD CSV</button>
-                <input type="file" ref={fileInputRef} onChange={(e) => { const file = e.target.files?.[0]; if(file) { setIsAnalyzing(true); const reader = new FileReader(); reader.onload = (evt) => processCSV(evt.target?.result as string); reader.readAsText(file); } }} className="hidden" />
-            </div>
+    <div className="p-8 bg-[#0a1128] text-[#e0e1dd] min-h-screen">
+      <div className="flex justify-between mb-8">
+        <h1 className="text-2xl font-bold uppercase">FIFO TAX ANALYZER</h1>
+        <div className="flex gap-2">
+          <button onClick={() => setAnalyzedData(prev => [{ id: "NEW", asset: "New Trade", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 }, ...prev])} className="bg-blue-600 px-4 py-2 text-sm font-bold">+ ADD TRADE</button>
+          <button onClick={exportReport} className="bg-sky-900 px-4 py-2 text-sm font-bold">EXPORT CSV</button>
+          <button onClick={() => fileInputRef.current?.click()} className="bg-[#c0c0c0] text-black px-4 py-2 text-sm font-bold">UPLOAD CSV</button>
+          <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if(f){ const r=new FileReader(); r.onload=(e)=>processCSV(e.target?.result as string); r.readAsText(f); } }} />
         </div>
+      </div>
 
-        <div className="mb-6 flex gap-4">
-             <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-[#0a1128] p-2 border border-[#c0c0c0]/30"><option value="ZAR">ZAR</option><option value="USD">USD</option></select>
-             <input type="date" onChange={(e) => setStartDate(e.target.value)} className="bg-[#0a1128] p-2 border border-[#c0c0c0]/30" />
-             <input type="date" onChange={(e) => setEndDate(e.target.value)} className="bg-[#0a1128] p-2 border border-[#c0c0c0]/30" />
-        </div>
+      <div className="flex gap-4 mb-6">
+        <select onChange={(e) => setCurrency(e.target.value)} className="bg-[#0a1128] border border-gray-600 p-2"><option value="ZAR">ZAR</option><option value="USD">USD</option></select>
+        <input type="date" onChange={(e) => setStartDate(e.target.value)} className="bg-[#0a1128] border border-gray-600 p-2" />
+        <input type="date" onChange={(e) => setEndDate(e.target.value)} className="bg-[#0a1128] border border-gray-600 p-2" />
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-[#081b2e] border border-sky-800 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-sky-400">Revenue Losses</h3><p className="text-3xl text-red-400">{formatCurrency(revenueLoss)}</p></div>
-            <div className="bg-[#120f1a] border border-purple-900 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-purple-400">Net Capital P/L</h3><p className="text-3xl text-green-400">{formatCurrency(netCapitalPnL)}</p></div>
-            <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-[#c0c0c0]">Revenue Profits</h3><p className="text-3xl text-green-400">{formatCurrency(revenueProfit)}</p></div>
-            <div className="bg-[#14213d] border border-blue-500/30 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-blue-400">Trading Net P/L</h3><p className="text-3xl text-green-400">{formatCurrency(netPnL)}</p></div>
-        </div>
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="bg-[#081b2e] p-4 text-center border border-sky-900"><p className="text-xs text-sky-400">REV LOSSES</p><p className="text-2xl text-red-400">{formatCurrency(revenueLoss)}</p></div>
+        <div className="bg-[#120f1a] p-4 text-center border border-purple-900"><p className="text-xs text-purple-400">NET CAP P/L</p><p className="text-2xl text-green-400">{formatCurrency(netCapitalPnL)}</p></div>
+        <div className="bg-[#0a1128] p-4 text-center border border-gray-700"><p className="text-xs text-gray-400">REV PROFITS</p><p className="text-2xl text-green-400">{formatCurrency(revenueProfit)}</p></div>
+        <div className="bg-[#14213d] p-4 text-center border border-blue-900"><p className="text-xs text-blue-400">NET P/L</p><p className="text-2xl text-green-400">{formatCurrency(netPnL)}</p></div>
+      </div>
 
-        <div className="overflow-x-auto bg-[#14213d] border border-[#c0c0c0]/20 mb-12 shadow-lg">
-            <table className="w-full text-left">
-                <thead><tr className="bg-[#0a1128] text-[#c0c0c0] uppercase text-xs"><th className="p-4">Asset</th><th className="p-4">Buy Date</th><th className="p-4">Sell Date</th><th className="p-4">Qty</th><th className="p-4">Category</th><th className="p-4 text-right">Realized P/L</th><th className="p-4 text-center">Action</th></tr></thead>
-                <tbody>
-                    {filteredData.map((t) => (
-                        editingTradeId === t.id ? (
-                            <tr key={`edit-${t.id}`} className="bg-yellow-900/10 border-b border-yellow-500/30">
-                                <td className="p-4"><input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={t.asset} className="bg-black p-1 w-full" /></td>
-                                <td className="p-4"><input type="date" onChange={e => setManualDate(e.target.value)} className="bg-black p-1 w-full" /></td>
-                                <td className="p-4"><input type="date" onChange={e => setManualSellDate(e.target.value)} className="bg-black p-1 w-full" /></td>
-                                <td className="p-4"><input type="number" onChange={e => setManualQty(Number(e.target.value))} className="bg-black p-1 w-16" /></td>
-                                <td className="p-4">—</td>
-                                <td className="p-4"><input type="number" onChange={e => setManualAmountInvested(Number(e.target.value))} placeholder="Amt Inv" className="bg-black p-1 w-20" /><input type="number" onChange={e => setManualAmountSold(Number(e.target.value))} placeholder="Amt Sold" className="bg-black p-1 w-20" /></td>
-                                <td className="p-4 text-center"><button onClick={() => saveManualData(t.id)} className="bg-yellow-500 text-black px-3 py-1 font-bold">SAVE</button></td>
-                            </tr>
-                        ) : (
-                        <tr key={t.id} className="border-b border-[#c0c0c0]/5 text-sm hover:bg-[#1f2f54]/40">
-                            <td className="p-4">{t.asset}</td>
-                            <td className="p-4 text-[#8d99ae]">{t.buyDate.toString()}</td>
-                            <td className="p-4 text-[#8d99ae]">{t.sellDate instanceof Date ? t.sellDate.toLocaleDateString() : "—"}</td>
-                            <td className="p-4">{t.qtySold.toFixed(4)}</td>
-                            <td className="p-4"><span className={`px-2 py-1 text-xs uppercase font-bold rounded ${t.category === 'Capital' ? 'bg-purple-900' : 'bg-sky-900'}`}>{t.category}</span></td>
-                            <td className="p-4 text-right font-mono">{t.category !== "Other" ? formatCurrency(t.realizedPnL) : "—"}</td>
-                            <td className="p-4 text-center">
-                                {t.category === "Missing Data" && <button onClick={() => startEditing(t)} className="text-yellow-400 text-xs border border-yellow-400 px-2 py-1 rounded">ADD DATA</button>}
-                            </td>
-                        </tr>
-                        )
-                    ))}
-                </tbody>
-            </table>
-        </div>
+      <table className="w-full bg-[#14213d] border border-gray-700 mb-8">
+        <thead><tr className="bg-[#0a1128] text-xs text-gray-400 uppercase"><th className="p-4">Asset</th><th className="p-4">Buy Date</th><th className="p-4">Sell Date</th><th className="p-4">PnL</th><th className="p-4 text-center">Action</th></tr></thead>
+        <tbody>
+          {filteredData.map(t => editingTradeId === t.id ? (
+            <tr key={t.id} className="bg-yellow-900/20">
+                <td className="p-2"><input className="bg-black w-full" onChange={e=>setManualAsset(e.target.value)} defaultValue={t.asset}/></td>
+                <td className="p-2"><input type="date" className="bg-black w-full" onChange={e=>setManualDate(e.target.value)}/></td>
+                <td className="p-2"><input type="date" className="bg-black w-full" onChange={e=>setManualSellDate(e.target.value)}/></td>
+                <td className="p-2"><input type="number" className="bg-black w-16" placeholder="Inv" onChange={e=>setManualInvested(Number(e.target.value))}/><input type="number" className="bg-black w-16" placeholder="Sold" onChange={e=>setManualSold(Number(e.target.value))}/></td>
+                <td className="p-2 text-center"><button className="bg-yellow-500 text-black px-2" onClick={()=>saveManual(t.id)}>SAVE</button></td>
+            </tr>
+          ) : (
+            <tr key={t.id} className="border-b border-gray-800 text-sm">
+                <td className="p-4">{t.asset}</td><td className="p-4">{t.buyDate.toString()}</td><td className="p-4">{t.sellDate.toLocaleDateString()}</td><td className="p-4">{formatCurrency(t.realizedPnL)}</td>
+                <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => startEditing(t)} className="text-yellow-400 border px-2">ADD</button>}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-        <div>
-            <h2 className="text-xl font-bold text-[#c0c0c0] uppercase mb-4 tracking-wide">Open Portfolio</h2>
-            <table className="w-full text-left bg-[#14213d] border border-[#c0c0c0]/20 shadow-lg">
-                <thead><tr className="bg-[#0a1128] text-[#c0c0c0] uppercase text-xs"><th className="p-4">Asset</th><th className="p-4 text-right">Qty</th><th className="p-4 text-center">Action</th></tr></thead>
-                <tbody>
-                    {portfolio.map((item, idx) => (
-                        <tr key={idx} className="border-b border-[#c0c0c0]/5">
-                            <td className="p-4">{item.asset}</td>
-                            <td className="p-4 text-right font-mono">{item.qty.toFixed(4)}</td>
-                            <td className="p-4 text-center">
-                                <button onClick={() => setIsSelling(item.asset)} className="bg-sky-900 px-3 py-1 text-xs rounded hover:bg-sky-700">SELL</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-
-        {isSelling && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-                <div className="bg-[#14213d] p-8 border border-sky-500 rounded shadow-2xl w-96">
-                    <h3 className="text-white font-bold mb-4 uppercase">Record Sale: {isSelling}</h3>
-                    <input type="date" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellDate(e.target.value)} />
-                    <input type="number" placeholder="Qty" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellQty(Number(e.target.value))} />
-                    <input type="number" placeholder="Total Sale" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellPrice(Number(e.target.value))} />
-                    <input type="number" placeholder="Fees" className="block w-full mb-4 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellFee(Number(e.target.value))} />
-                    <div className="flex gap-2">
-                        <button onClick={() => { setIsSelling(null); }} className="bg-sky-600 flex-1 py-2 font-bold uppercase text-sm">Confirm Sale</button>
-                        <button onClick={() => setIsSelling(null)} className="bg-gray-600 flex-1 py-2 font-bold uppercase text-sm">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        )}
+      <h2 className="text-lg font-bold uppercase mb-4">Open Portfolio</h2>
+      <table className="w-full bg-[#14213d] border border-gray-700">
+        <thead><tr className="bg-[#0a1128] text-xs text-gray-400 uppercase"><th className="p-4">Asset</th><th className="p-4">Qty</th><th className="p-4 text-center">Action</th></tr></thead>
+        <tbody>
+            {portfolio.map((p, i) => (
+                <tr key={i} className="border-b border-gray-800">
+                    <td className="p-4">{p.asset}</td><td className="p-4 text-right">{p.qty.toFixed(4)}</td>
+                    <td className="p-4 text-center"><button onClick={() => setIsSelling(p.asset)} className="bg-sky-900 px-3 py-1 text-xs">SELL</button></td>
+                </tr>
+            ))}
+        </tbody>
+      </table>
     </div>
   );
 }
