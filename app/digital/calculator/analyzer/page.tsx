@@ -46,9 +46,9 @@ export default function EEDataAnalyzer() {
   const revenueLoss = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const capitalLoss = filteredData.reduce((sum, t) => t.category === "Capital" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const revenueProfit = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
-  const totalProfit = filteredData.reduce((sum, t) => t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
-  const totalLoss = Math.abs(filteredData.reduce((sum, t) => t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0));
-  const netPnL = totalProfit - totalLoss;
+  
+  // NEW LOGIC: Net P/L = Revenue Profit - Revenue Loss (Capital excluded)
+  const netPnL = revenueProfit - Math.abs(revenueLoss);
 
   const formatCurrency = (amount: number) => {
     const sym = currency === "USD" ? "$" : "R";
@@ -312,7 +312,7 @@ export default function EEDataAnalyzer() {
                 setEditingTradeId(id);
                 setManualAsset("");
                 setManualDate("");
-                setManualSellDate("");
+                setManualSellDate(new Date().toISOString().split('T')[0]);
                 setManualAmountInvested("");
                 setManualQty(0);
                 setManualAmountSold("");
@@ -359,7 +359,7 @@ export default function EEDataAnalyzer() {
               <button onClick={exportReport} className="ml-auto bg-sky-900 text-white px-4 py-2 text-sm font-bold rounded-sm border border-sky-700">EXPORT CSV</button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Revenue Losses</h3>
                 <p className="text-3xl font-mono text-red-400">{formatCurrency(revenueLoss)}</p>
@@ -373,7 +373,7 @@ export default function EEDataAnalyzer() {
                 <p className="text-3xl font-mono text-green-400">{formatCurrency(revenueProfit)}</p>
               </div>
               <div className="bg-[#14213d] border border-blue-500/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-blue-400 font-bold mb-2 uppercase tracking-widest text-xs">Total Net P/L</h3>
+                <h3 className="text-blue-400 font-bold mb-2 uppercase tracking-widest text-xs">Trading Net P/L</h3>
                 <p className={`text-3xl font-mono ${netPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>{formatCurrency(netPnL)}</p>
               </div>
             </div>
@@ -395,18 +395,20 @@ export default function EEDataAnalyzer() {
                   {filteredData.map((trade) => (
                     editingTradeId === trade.id ? (
                       <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
-                        <td className="p-4"><input type="text" value={manualAsset} onChange={e => setManualAsset(e.target.value)} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="date" value={manualSellDate} onChange={e => setManualSellDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="number" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-20" /></td>
+                        <td className="p-4 font-semibold text-yellow-400"><input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={trade.asset === "NEW ASSET" ? "" : trade.asset} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="date" value={manualSellDate} onChange={e => setManualSellDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="number" placeholder="Qty" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-20" /></td>
                         <td className="p-4 text-xs">
                            <div className="flex flex-col gap-1">
-                                <input type="number" placeholder="Amt Inv" value={manualAmountInvested} onChange={e => setManualAmountInvested(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full"/>
-                                <input type="number" placeholder="Amt Sold" value={manualAmountSold} onChange={e => setManualAmountSold(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500 p-1 rounded-sm w-full"/>
+                                <input type="number" placeholder="Amt Inv" value={manualAmountInvested} onChange={e => setManualAmountInvested(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full"/>
+                                <input type="number" placeholder="Amt Sold" value={manualAmountSold} onChange={e => setManualAmountSold(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full"/>
                            </div>
                         </td>
-                        <td className="p-4 text-xs text-yellow-400 uppercase">PENDING</td>
-                        <td className="p-4 text-center"><button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1 font-bold rounded-sm">SAVE</button></td>
+                        <td className="p-4 text-xs text-yellow-400/70 text-right uppercase">PENDING</td>
+                        <td className="p-4 text-center whitespace-nowrap">
+                          <button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1 font-bold rounded-sm">SAVE</button>
+                        </td>
                       </tr>
                     ) : (
                       <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
