@@ -7,7 +7,7 @@ interface BuyLot {
   qty: number;
   unitCost: number;
   remainingQty: number;
-  totalFee: number; // Buy fees attached to this lot
+  totalFee: number;
 }
 
 interface RealizedTaxEvent {
@@ -20,7 +20,7 @@ interface RealizedTaxEvent {
   holdingDays: number | string;
   category: "Capital" | "Revenue" | "Missing Data";
   realizedPnL: number;
-  fee: number; // Sell fees attached to this event
+  fee: number;
 }
 
 export default function EEDataAnalyzer() {
@@ -63,11 +63,11 @@ export default function EEDataAnalyzer() {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     
-    // Process strictly in order to maintain trade-fee sequence
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
     let currentEvent: any = null;
     const feeKeywords = ["commission", "clearing", "vat", "fee", "tax", "sec", "finra"];
 
+    // Process line-by-line in original order to maintain adjacency
     for (const line of dataLines) {
       const delimiter = line.includes(";") ? ";" : ",";
       const parts = line.split(delimiter);
@@ -101,12 +101,14 @@ export default function EEDataAnalyzer() {
           }
         }
       } else if (isFee && currentEvent) {
-        // Aggregate fees for the immediately preceding transaction
         currentEvent.fee += Math.abs(amount);
       } else {
         currentEvent = null;
       }
     }
+
+    // Now sort for FIFO tracing
+    allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const lots = new Map<string, BuyLot[]>();
     const realizedTrades: RealizedTaxEvent[] = [];
@@ -143,9 +145,9 @@ export default function EEDataAnalyzer() {
           const chunkCost = qtyToTake * lot.unitCost;
           const chunkProceeds = qtyToTake * unitSellPrice;
           
-          // Allocate proportional fees
           const proportionalBuyFee = (lot.totalFee * (qtyToTake / lot.qty));
           const proportionalSellFee = (event.fee * (qtyToTake / event.qty));
+          
           const realizedPnL = chunkProceeds - chunkCost - proportionalBuyFee - proportionalSellFee;
 
           realizedTrades.push({
