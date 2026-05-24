@@ -32,6 +32,7 @@ interface PortfolioItem {
 export default function EEDataAnalyzer() {
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -70,6 +71,7 @@ export default function EEDataAnalyzer() {
   };
 
   const processCSV = (text: string) => {
+    setIsAnalyzing(true);
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     const allEvents: any[] = [];
@@ -87,7 +89,7 @@ export default function EEDataAnalyzer() {
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
 
-      // FIX: Capture row even if date is invalid, store raw 'comment' so user can identify it
+      // Logic: If date invalid, mark as 'isInvalid' so we can capture the comment as the asset name
       if (isNaN(date.getTime()) || !dateStr) {
          allEvents.push({ date: new Date(), action: "Invalid", asset: comment, qty: 0, amount, fee: 0, isInvalid: true });
          continue;
@@ -147,6 +149,7 @@ export default function EEDataAnalyzer() {
     });
     setPortfolio(port);
     setAnalyzedData(realized.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
+    setIsAnalyzing(false);
   };
 
   const exportReport = () => {
