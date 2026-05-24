@@ -30,7 +30,6 @@ interface PortfolioItem {
 }
 
 export default function EEDataAnalyzer() {
-  // IMPORTANT: State declarations must be at the top level of the component
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -39,8 +38,10 @@ export default function EEDataAnalyzer() {
   const [endDate, setEndDate] = useState<string>("");
   const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
   const [isSelling, setIsSelling] = useState<string | null>(null);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Manual Entry States
+  // Manual Edit States
   const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState("");
   const [manualSellDate, setManualSellDate] = useState("");
@@ -48,8 +49,6 @@ export default function EEDataAnalyzer() {
   const [manualInvested, setManualInvested] = useState<number>(0);
   const [manualSold, setManualSold] = useState<number>(0);
   const [manualFee, setManualFee] = useState<number>(0);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredData = analyzedData.filter((t) => {
     if (startDate && t.sellDate instanceof Date && t.sellDate < new Date(startDate)) return false;
@@ -203,6 +202,19 @@ export default function EEDataAnalyzer() {
                 <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => setEditingTradeId(t.id)} className="text-yellow-400 border px-2">ADD</button>}</td>
             </tr>
           ))}
+        </tbody>
+      </table>
+
+      <h2 className="text-lg font-bold uppercase mb-4">Open Portfolio</h2>
+      <table className="w-full bg-[#14213d] border border-gray-700">
+        <thead><tr className="bg-[#0a1128] text-xs text-gray-400 uppercase"><th className="p-4">Asset</th><th className="p-4">Qty</th><th className="p-4 text-center">Action</th></tr></thead>
+        <tbody>
+            {portfolio.map((p, i) => (
+                <tr key={i} className="border-b border-gray-800">
+                    <td className="p-4">{p.asset}</td><td className="p-4 text-right">{p.qty.toFixed(4)}</td>
+                    <td className="p-4 text-center"><button onClick={() => setIsSelling(p.asset)} className="bg-sky-900 px-3 py-1 text-xs">SELL</button></td>
+                </tr>
+            ))}
         </tbody>
       </table>
     </div>
