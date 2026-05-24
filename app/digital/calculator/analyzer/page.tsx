@@ -7,6 +7,7 @@ interface BuyLot {
   qty: number;
   unitCost: number;
   remainingQty: number;
+  totalFee: number; // Buy fees attached to this lot
 }
 
 interface RealizedTaxEvent {
@@ -19,7 +20,7 @@ interface RealizedTaxEvent {
   holdingDays: number | string;
   category: "Capital" | "Revenue" | "Missing Data";
   realizedPnL: number;
-  fee: number;
+  fee: number; // Sell fees attached to this event
 }
 
 export default function EEDataAnalyzer() {
@@ -62,11 +63,11 @@ export default function EEDataAnalyzer() {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     
+    // Process strictly in order to maintain trade-fee sequence
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
     let currentEvent: any = null;
     const feeKeywords = ["commission", "clearing", "vat", "fee", "tax", "sec", "finra"];
 
-    // Process in original order to preserve trade-fee adjacency
     for (const line of dataLines) {
       const delimiter = line.includes(";") ? ";" : ",";
       const parts = line.split(delimiter);
@@ -100,14 +101,8 @@ export default function EEDataAnalyzer() {
           }
         }
       } else if (isFee && currentEvent) {
-        // Only associate if the fee line does not name a different asset, or if it has no asset name at all
-        const feeAssetMatch = feeKeywords.some(keyword => commentLower.includes(keyword)); 
-        // If the fee line mentions a specific asset, verify it matches the current trade
-        const assetInFee = comment.split(" ").find(part => currentEvent.asset.includes(part) || part.includes(currentEvent.asset));
-        
-        if (!assetInFee || commentLower.includes(currentEvent.asset.toLowerCase())) {
-           currentEvent.fee += Math.abs(amount);
-        }
+        // Aggregate fees for the immediately preceding transaction
+        currentEvent.fee += Math.abs(amount);
       } else {
         currentEvent = null;
       }
@@ -115,9 +110,6 @@ export default function EEDataAnalyzer() {
 
     const lots = new Map<string, BuyLot[]>();
     const realizedTrades: RealizedTaxEvent[] = [];
-
-    // Now sort for FIFO logic
-    allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     for (const event of allEvents) {
       if (!lots.has(event.asset)) lots.set(event.asset, []);
@@ -129,6 +121,7 @@ export default function EEDataAnalyzer() {
           qty: event.qty,
           unitCost: Math.abs(event.amount) / event.qty,
           remainingQty: event.qty,
+          totalFee: event.fee
         });
       } 
       else if (event.action === "Sell") {
@@ -150,8 +143,10 @@ export default function EEDataAnalyzer() {
           const chunkCost = qtyToTake * lot.unitCost;
           const chunkProceeds = qtyToTake * unitSellPrice;
           
-          const proportionalFee = event.fee * (qtyToTake / event.qty);
-          const realizedPnL = chunkProceeds - chunkCost - proportionalFee;
+          // Allocate proportional fees
+          const proportionalBuyFee = (lot.totalFee * (qtyToTake / lot.qty));
+          const proportionalSellFee = (event.fee * (qtyToTake / event.qty));
+          const realizedPnL = chunkProceeds - chunkCost - proportionalBuyFee - proportionalSellFee;
 
           realizedTrades.push({
             id: `${event.asset}-${event.date.getTime()}-${Math.random()}`,
@@ -163,7 +158,7 @@ export default function EEDataAnalyzer() {
             holdingDays,
             category,
             realizedPnL,
-            fee: proportionalFee
+            fee: proportionalBuyFee + proportionalSellFee
           });
         }
       }
