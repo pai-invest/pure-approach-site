@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from "react";
 
-// --- Types ---
 interface BuyLot {
   date: Date;
   qty: number;
@@ -22,7 +21,6 @@ interface RealizedTaxEvent {
   category: "Capital" | "Revenue" | "Missing Data" | "Other";
   realizedPnL: number;
   fee: number;
-  reference?: string; // Added for row context
 }
 
 interface PortfolioItem {
@@ -86,16 +84,13 @@ export default function EEDataAnalyzer() {
       if (parts.length < 3) continue;
 
       const dateStr = parts[0].trim();
+      if (!dateStr || dateStr.length < 8) continue;
+      
       let comment = parts[1].replace(/^"|"$/g, "").trim(); 
       let amountStr = parts[2].trim().replace(",", "."); 
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
-
-      // Logic: Preserve raw line as reference if date is invalid
-      if (isNaN(date.getTime()) || !dateStr) {
-         allEvents.push({ date: new Date(), action: "Invalid", asset: "INVALID DATE ENTRY", qty: 0, amount, fee: 0, isInvalid: true, reference: line });
-         continue;
-      }
+      if (isNaN(date.getTime())) continue;
 
       const commentLower = comment.toLowerCase();
       if (comment.startsWith("Bought ") || comment.startsWith("Sold ")) {
@@ -119,9 +114,7 @@ export default function EEDataAnalyzer() {
     const realized: RealizedTaxEvent[] = [];
 
     for (const e of allEvents) {
-      if (e.isInvalid) {
-        realized.push({ id: Math.random().toString(), asset: e.asset, buyDate: "INVALID DATE", sellDate: e.date, qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0, reference: e.reference });
-      } else if (e.action === "Buy") {
+      if (e.action === "Buy") {
         if (!lots.has(e.asset)) lots.set(e.asset, []);
         lots.get(e.asset)!.push({ date: e.date, qty: e.qty, unitCost: Math.abs(e.amount)/e.qty, remainingQty: e.qty, totalFee: e.fee });
       } else if (e.action === "Sell") {
@@ -155,7 +148,7 @@ export default function EEDataAnalyzer() {
   };
 
   const exportReport = () => {
-    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee,Reference", ...filteredData.map(t => `${t.asset},${t.buyDate},${t.sellDate.toISOString().split('T')[0]},${t.qtySold},${t.category},${t.realizedPnL},${t.fee},${t.reference || ""}`)].join("\n");
+    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${t.buyDate},${t.sellDate},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
     a.download = "Report.csv";
@@ -163,7 +156,7 @@ export default function EEDataAnalyzer() {
   };
 
   const saveManual = (id: string) => {
-    setAnalyzedData(prev => prev.map(t => t.id === id ? {...t, asset: manualAsset, buyDate: manualDate, sellDate: new Date(manualSellDate), qtySold: manualQty, realizedPnL: manualSold - manualInvested - manualFee, fee: manualFee, category: "Revenue", reference: undefined} : t));
+    setAnalyzedData(prev => prev.map(t => t.id === id ? {...t, asset: manualAsset, buyDate: manualDate, sellDate: new Date(manualSellDate), qtySold: manualQty, realizedPnL: manualSold - manualInvested - manualFee, fee: manualFee} : t));
     setEditingTradeId(null);
   };
 
@@ -172,7 +165,7 @@ export default function EEDataAnalyzer() {
       <div className="flex justify-between mb-8">
         <h1 className="text-2xl font-bold uppercase">FIFO TAX ANALYZER</h1>
         <div className="flex gap-2">
-          <button onClick={() => setAnalyzedData(prev => [{ id: Math.random().toString(), asset: "New Trade", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 }, ...prev])} className="bg-blue-600 px-4 py-2 text-sm font-bold">+ ADD TRADE</button>
+          <button onClick={() => setAnalyzedData(prev => [{ id: "NEW", asset: "New Trade", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 }, ...prev])} className="bg-blue-600 px-4 py-2 text-sm font-bold">+ ADD TRADE</button>
           <button onClick={exportReport} className="bg-sky-900 px-4 py-2 text-sm font-bold">EXPORT CSV</button>
           <button onClick={() => fileInputRef.current?.click()} className="bg-[#c0c0c0] text-black px-4 py-2 text-sm font-bold">UPLOAD CSV</button>
           <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if(f){ const r=new FileReader(); r.onload=(e)=>processCSV(e.target?.result as string); r.readAsText(f); } }} />
@@ -193,18 +186,19 @@ export default function EEDataAnalyzer() {
       </div>
 
       <table className="w-full bg-[#14213d] border border-gray-700 mb-8">
-        <thead><tr className="bg-[#0a1128] text-xs text-gray-400 uppercase"><th className="p-4">Asset</th><th className="p-4">Reference (CSV Row)</th><th className="p-4">Action</th></tr></thead>
+        <thead><tr className="bg-[#0a1128] text-xs text-gray-400 uppercase"><th className="p-4">Asset</th><th className="p-4">Buy Date</th><th className="p-4">Sell Date</th><th className="p-4">PnL</th><th className="p-4 text-center">Action</th></tr></thead>
         <tbody>
           {filteredData.map(t => editingTradeId === t.id ? (
             <tr key={t.id} className="bg-yellow-900/20">
                 <td className="p-2"><input className="bg-black w-full" onChange={e=>setManualAsset(e.target.value)} defaultValue={t.asset}/></td>
-                <td className="p-2 col-span-2"><input type="date" className="bg-black" onChange={e=>setManualDate(e.target.value)}/></td>
-                <td className="p-2"><button className="bg-yellow-500 text-black px-2" onClick={()=>saveManual(t.id)}>SAVE</button></td>
+                <td className="p-2"><input type="date" className="bg-black w-full" onChange={e=>setManualDate(e.target.value)}/></td>
+                <td className="p-2"><input type="date" className="bg-black w-full" onChange={e=>setManualSellDate(e.target.value)}/></td>
+                <td className="p-2"><input type="number" className="bg-black w-16" placeholder="Inv" onChange={e=>setManualInvested(Number(e.target.value))}/><input type="number" className="bg-black w-16" placeholder="Sold" onChange={e=>setManualSold(Number(e.target.value))}/></td>
+                <td className="p-2 text-center"><button className="bg-yellow-500 text-black px-2" onClick={()=>saveManual(t.id)}>SAVE</button></td>
             </tr>
           ) : (
             <tr key={t.id} className="border-b border-gray-800 text-sm">
-                <td className="p-4">{t.asset}</td>
-                <td className="p-4 text-xs font-mono text-gray-500">{t.reference || "—"}</td>
+                <td className="p-4">{t.asset}</td><td className="p-4">{t.buyDate.toString()}</td><td className="p-4">{t.sellDate.toLocaleDateString()}</td><td className="p-4">{formatCurrency(t.realizedPnL)}</td>
                 <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => setEditingTradeId(t.id)} className="text-yellow-400 border px-2">ADD</button>}</td>
             </tr>
           ))}
