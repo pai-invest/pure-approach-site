@@ -61,11 +61,14 @@ export default function EEDataAnalyzer() {
   const processCSV = (text: string) => {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
-    dataLines.reverse(); 
+    
+    // We process chronologically (oldest to newest) to correctly attribute fees
+    const sortedLines = dataLines.sort((a, b) => new Date(a.split(";")[0]).getTime() - new Date(b.split(";")[0]).getTime());
 
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
+    let currentEvent: any = null;
 
-    for (const line of dataLines) {
+    for (const line of sortedLines) {
       const delimiter = line.includes(";") ? ";" : ",";
       const parts = line.split(delimiter);
       if (parts.length < 3) continue;
@@ -73,14 +76,12 @@ export default function EEDataAnalyzer() {
       const dateStr = parts[0].trim();
       let comment = parts[1].replace(/^"|"$/g, "").trim(); 
       let amountStr = parts[2].trim().replace(",", "."); 
-      const fee = parts.length > 3 ? parseFloat(parts[3].trim().replace(",", ".")) || 0 : 0;
-
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
 
       const isBuy = comment.startsWith("Bought ");
       const isSell = comment.startsWith("Sold ");
-      const isCA = comment.startsWith("Corporate Action ");
+      const isFee = comment.includes("Commission") || comment.includes("Clearing") || comment.includes("VAT") || comment.includes("Fee") || comment.includes("Tax");
 
       if (isBuy || isSell) {
         const action = isBuy ? "Buy" : "Sell";
@@ -94,29 +95,14 @@ export default function EEDataAnalyzer() {
           const assetName = leftSide.join(" ").trim();
 
           if (qty > 0 && assetName) {
-            allEvents.push({ date, action, asset: assetName, qty, amount, fee });
+            currentEvent = { date, action, asset: assetName, qty, amount, fee: 0 };
+            allEvents.push(currentEvent);
           }
         }
-      } else if (isCA) {
-        const withoutCA = comment.replace(/^Corporate Action /, "").trim();
-        const atParts = withoutCA.split(" @ ");
-        
-        if (atParts.length >= 2) {
-          const leftSide = withoutCA.split(" @ ")[0].trim().split(" ");
-          const qtyStr = leftSide.pop() || "0";
-          const qty = parseFloat(qtyStr.replace(",", "."));
-          
-          const type = leftSide.shift(); 
-          const assetName = leftSide.join(" ").trim(); 
-
-          if ((type === "Consolidation" || type === "Subdivision") && assetName) {
-            allEvents.push({ date, action: "CA", asset: assetName, qty, amount: 0, fee: 0 });
-          }
-        }
+      } else if (isFee && currentEvent) {
+        currentEvent.fee += Math.abs(amount);
       }
     }
-
-    allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const lots = new Map<string, BuyLot[]>();
     const realizedTrades: RealizedTaxEvent[] = [];
@@ -133,24 +119,6 @@ export default function EEDataAnalyzer() {
           remainingQty: event.qty,
         });
       } 
-      else if (event.action === "CA") {
-        let totalRemaining = 0;
-        for (const lot of assetLots) totalRemaining += lot.remainingQty;
-
-        if (totalRemaining > 0) {
-          const newTotal = totalRemaining + event.qty; 
-          
-          if (newTotal > 0) {
-            const ratio = newTotal / totalRemaining;
-            for (const lot of assetLots) {
-              lot.remainingQty *= ratio;
-              lot.unitCost /= ratio; 
-            }
-          } else {
-            for (const lot of assetLots) lot.remainingQty = 0;
-          }
-        }
-      }
       else if (event.action === "Sell") {
         let remainingToSell = event.qty;
         const unitSellPrice = Math.abs(event.amount) / event.qty;
@@ -169,7 +137,7 @@ export default function EEDataAnalyzer() {
 
           const chunkCost = qtyToTake * lot.unitCost;
           const chunkProceeds = qtyToTake * unitSellPrice;
-          const realizedPnL = chunkProceeds - chunkCost - event.fee;
+          const realizedPnL = chunkProceeds - chunkCost - (event.fee * (qtyToTake / event.qty));
 
           realizedTrades.push({
             id: `${event.asset}-${event.date.getTime()}-${Math.random()}`,
@@ -181,22 +149,7 @@ export default function EEDataAnalyzer() {
             holdingDays,
             category,
             realizedPnL,
-            fee: event.fee
-          });
-        }
-
-        if (remainingToSell > 0.000001) {
-          realizedTrades.push({
-            id: `GHOST-${event.asset}-${event.date.getTime()}-${Math.random()}`,
-            asset: `${event.asset} (Missing Buy Data)`,
-            buyDate: "Unknown", 
-            sellDate: event.date,
-            qtySold: remainingToSell,
-            unitSellPrice,
-            holdingDays: "N/A",
-            category: "Missing Data",
-            realizedPnL: (remainingToSell * unitSellPrice) - 0 - event.fee, 
-            fee: event.fee
+            fee: event.fee * (qtyToTake / event.qty)
           });
         }
       }
