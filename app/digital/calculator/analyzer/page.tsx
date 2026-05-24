@@ -46,9 +46,10 @@ export default function EEDataAnalyzer() {
   const revenueLoss = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const capitalLoss = filteredData.reduce((sum, t) => t.category === "Capital" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const revenueProfit = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
+  const capitalProfit = filteredData.reduce((sum, t) => t.category === "Capital" && t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
   
-  // NEW LOGIC: Net P/L = Revenue Profit - Revenue Loss (Capital excluded)
   const netPnL = revenueProfit - Math.abs(revenueLoss);
+  const netCapitalPnL = capitalProfit - Math.abs(capitalLoss);
 
   const formatCurrency = (amount: number) => {
     const sym = currency === "USD" ? "$" : "R";
@@ -359,14 +360,14 @@ export default function EEDataAnalyzer() {
               <button onClick={exportReport} className="ml-auto bg-sky-900 text-white px-4 py-2 text-sm font-bold rounded-sm border border-sky-700">EXPORT CSV</button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Revenue Losses</h3>
                 <p className="text-3xl font-mono text-red-400">{formatCurrency(revenueLoss)}</p>
               </div>
               <div className="bg-[#120f1a] border border-purple-900 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
-                <h3 className="text-purple-400 font-bold mb-2 uppercase tracking-widest text-xs">Locked Capital Losses</h3>
-                <p className="text-3xl font-mono text-red-400">{formatCurrency(capitalLoss)}</p>
+                <h3 className="text-purple-400 font-bold mb-2 uppercase tracking-widest text-xs">Net Capital P/L</h3>
+                <p className={`text-3xl font-mono ${netCapitalPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>{formatCurrency(netCapitalPnL)}</p>
               </div>
               <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-[#c0c0c0] font-bold mb-2 uppercase tracking-widest text-xs">Revenue Profits</h3>
