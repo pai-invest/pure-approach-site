@@ -18,9 +18,10 @@ interface RealizedTaxEvent {
   qtySold: number;
   unitSellPrice: number;
   holdingDays: number | string;
-  category: "Capital" | "Revenue" | "Missing Data";
+  category: "Capital" | "Revenue" | "Missing Data" | "Other";
   realizedPnL: number;
   fee: number;
+  action?: string;
 }
 
 export default function EEDataAnalyzer() {
@@ -64,10 +65,9 @@ export default function EEDataAnalyzer() {
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
-    let currentEvent: any = null;
+    let lastTradeEvent: any = null;
     const feeKeywords = ["commission", "clearing", "vat", "fee", "tax", "sec", "finra"];
 
-    // Process line-by-line in original order to maintain adjacency
     for (const line of dataLines) {
       const delimiter = line.includes(";") ? ";" : ",";
       const parts = line.split(delimiter);
@@ -96,29 +96,32 @@ export default function EEDataAnalyzer() {
           const assetName = leftSide.join(" ").trim();
 
           if (qty > 0 && assetName) {
-            currentEvent = { date, action, asset: assetName, qty, amount, fee: 0 };
-            allEvents.push(currentEvent);
+            lastTradeEvent = { date, action, asset: assetName, qty, amount, fee: 0 };
+            allEvents.push(lastTradeEvent);
+          } else {
+            allEvents.push({ date, action: "Other", asset: comment, qty: 0, amount, fee: 0 });
+            lastTradeEvent = null;
           }
+        } else {
+            allEvents.push({ date, action: "Other", asset: comment, qty: 0, amount, fee: 0 });
+            lastTradeEvent = null;
         }
-      } else if (isFee && currentEvent) {
-        currentEvent.fee += Math.abs(amount);
+      } else if (isFee && lastTradeEvent) {
+        lastTradeEvent.fee += Math.abs(amount);
       } else {
-        currentEvent = null;
+        allEvents.push({ date, action: "Other", asset: comment, qty: 0, amount, fee: 0 });
+        lastTradeEvent = null;
       }
     }
-
-    // Now sort for FIFO tracing
-    allEvents.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const lots = new Map<string, BuyLot[]>();
     const realizedTrades: RealizedTaxEvent[] = [];
 
+    // Separate logic for trades vs other events
     for (const event of allEvents) {
-      if (!lots.has(event.asset)) lots.set(event.asset, []);
-      const assetLots = lots.get(event.asset)!;
-
       if (event.action === "Buy") {
-        assetLots.push({
+        if (!lots.has(event.asset)) lots.set(event.asset, []);
+        lots.get(event.asset)!.push({
           date: event.date,
           qty: event.qty,
           unitCost: Math.abs(event.amount) / event.qty,
@@ -127,28 +130,20 @@ export default function EEDataAnalyzer() {
         });
       } 
       else if (event.action === "Sell") {
+        if (!lots.has(event.asset)) lots.set(event.asset, []);
+        const assetLots = lots.get(event.asset)!;
         let remainingToSell = event.qty;
         const unitSellPrice = Math.abs(event.amount) / event.qty;
 
         for (const lot of assetLots) {
           if (remainingToSell <= 0.000001) break; 
-          if (lot.remainingQty <= 0.000001) continue;
-
           const qtyToTake = Math.min(remainingToSell, lot.remainingQty);
-          
           lot.remainingQty -= qtyToTake;
           remainingToSell -= qtyToTake;
 
           const holdingDays = Math.ceil(Math.abs(event.date.getTime() - lot.date.getTime()) / (1000 * 60 * 60 * 24));
           const category = holdingDays >= 1095 ? "Capital" : "Revenue";
-
-          const chunkCost = qtyToTake * lot.unitCost;
-          const chunkProceeds = qtyToTake * unitSellPrice;
-          
-          const proportionalBuyFee = (lot.totalFee * (qtyToTake / lot.qty));
-          const proportionalSellFee = (event.fee * (qtyToTake / event.qty));
-          
-          const realizedPnL = chunkProceeds - chunkCost - proportionalBuyFee - proportionalSellFee;
+          const proportionalFee = (lot.totalFee * (qtyToTake / lot.qty)) + (event.fee * (qtyToTake / event.qty));
 
           realizedTrades.push({
             id: `${event.asset}-${event.date.getTime()}-${Math.random()}`,
@@ -159,10 +154,24 @@ export default function EEDataAnalyzer() {
             unitSellPrice,
             holdingDays,
             category,
-            realizedPnL,
-            fee: proportionalBuyFee + proportionalSellFee
+            realizedPnL: (qtyToTake * unitSellPrice) - (qtyToTake * lot.unitCost) - proportionalFee,
+            fee: proportionalFee
           });
         }
+      } else {
+        // "Other" events
+        realizedTrades.push({
+          id: `${event.date.getTime()}-${Math.random()}`,
+          asset: event.asset,
+          buyDate: event.date,
+          sellDate: event.date,
+          qtySold: 0,
+          unitSellPrice: 0,
+          holdingDays: "N/A",
+          category: "Other",
+          realizedPnL: 0,
+          fee: 0
+        });
       }
     }
 
@@ -392,8 +401,8 @@ export default function EEDataAnalyzer() {
                         <td className="p-4 text-sm text-[#8d99ae]">{trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}</td>
                         <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
                         <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
-                        <td className="p-4"><span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase ${trade.category === "Capital" ? "bg-purple-900/40 text-purple-300" : trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300" : "bg-yellow-900/40 text-yellow-300"}`}>{trade.category}</span></td>
-                        <td className="p-4 font-mono font-bold text-sm text-right">{trade.category === 'Missing Data' ? "—" : formatCurrency(trade.realizedPnL)}</td>
+                        <td className="p-4"><span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase ${trade.category === "Capital" ? "bg-purple-900/40 text-purple-300" : trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300" : trade.category === "Other" ? "bg-gray-700 text-gray-300" : "bg-yellow-900/40 text-yellow-300"}`}>{trade.category}</span></td>
+                        <td className="p-4 font-mono font-bold text-sm text-right">{trade.category === 'Missing Data' ? "—" : trade.category === "Other" ? "—" : formatCurrency(trade.realizedPnL)}</td>
                         <td className="p-4 text-center">
                           {trade.category === "Missing Data" && <button onClick={() => startEditing(trade)} className="text-yellow-400 border border-yellow-500/50 px-2 py-1 text-xs font-bold rounded-sm hover:bg-yellow-500/20">+ ADD DATA</button>}
                         </td>
