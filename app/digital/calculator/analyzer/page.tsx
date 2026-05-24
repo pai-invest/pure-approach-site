@@ -229,41 +229,43 @@ export default function EEDataAnalyzer() {
   };
 
   const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
+  const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState<string>("");
   const [manualUnitCost, setManualUnitCost] = useState<number | "">("");
+  const [manualQty, setManualQty] = useState<number | "">("");
+  const [manualSellPrice, setManualSellPrice] = useState<number | "">("");
 
   const startEditing = (trade: RealizedTaxEvent) => {
     setEditingTradeId(trade.id);
-    setManualDate("");
+    setManualAsset(trade.asset);
+    setManualDate(trade.buyDate instanceof Date ? trade.buyDate.toISOString().split('T')[0] : "");
     setManualUnitCost("");
+    setManualQty(trade.qtySold);
+    setManualSellPrice(trade.unitSellPrice);
   };
 
   const saveManualData = (tradeId: string) => {
-    if (!manualDate || manualUnitCost === "") {
-      alert("Please provide both the original buy date and the average buy price per share.");
-      return;
-    }
+    if (!manualDate || manualUnitCost === "" || manualQty === "" || manualSellPrice === "") return;
 
     const parsedDate = new Date(manualDate);
     const unitCost = Number(manualUnitCost);
+    const qty = Number(manualQty);
+    const sellPrice = Number(manualSellPrice);
 
     setAnalyzedData(prevData => prevData.map(trade => {
       if (trade.id === tradeId) {
-        // FIX: Using .getTime() to avoid TypeScript build error
         const holdingDays = Math.ceil(Math.abs(trade.sellDate.getTime() - parsedDate.getTime()) / (1000 * 60 * 60 * 24));
         const category = holdingDays >= 1095 ? "Capital" : "Revenue";
         
-        const costBasis = trade.qtySold * unitCost;
-        const proceeds = trade.qtySold * trade.unitSellPrice;
-        const newRealizedPnL = proceeds - costBasis;
-
         return {
           ...trade,
-          asset: trade.asset.replace(" (Missing Buy Data)", ""),
+          asset: manualAsset,
           buyDate: parsedDate,
+          qtySold: qty,
+          unitSellPrice: sellPrice,
           holdingDays,
           category,
-          realizedPnL: newRealizedPnL
+          realizedPnL: (qty * sellPrice) - (qty * unitCost)
         };
       }
       return trade;
@@ -300,19 +302,35 @@ export default function EEDataAnalyzer() {
             <h1 className="text-3xl font-bold text-[#c0c0c0] tracking-wide uppercase">FIFO TAX ANALYZER</h1>
             <p className="text-[#8d99ae] text-sm mt-1">Strict Parcel Tracing (Splits & Capital vs Revenue)</p>
           </div>
-          <button 
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition shadow-[0_0_15px_rgba(192,192,192,0.15)] rounded-sm"
-          >
-            {isAnalyzing ? "ANALYZING..." : "UPLOAD EE CSV"}
-          </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileUpload} 
-            className="hidden" 
-          />
+          <div>
+            <button 
+              type="button"
+              onClick={() => {
+                const id = "NEW-" + Date.now();
+                setAnalyzedData(prev => [{
+                    id, asset: "NEW ASSET", buyDate: new Date(), sellDate: new Date(), qtySold: 0,
+                    unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0
+                }, ...prev]);
+                setEditingTradeId(id);
+              }}
+              className="bg-blue-600 text-white px-5 py-2 font-bold mr-2 hover:bg-blue-700 transition"
+            >
+              + ADD NEW TRADE
+            </button>
+            <button 
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition shadow-[0_0_15px_rgba(192,192,192,0.15)] rounded-sm"
+            >
+              {isAnalyzing ? "ANALYZING..." : "UPLOAD EE CSV"}
+            </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileUpload} 
+              className="hidden" 
+            />
+          </div>
         </div>
 
         {analyzedData.length === 0 ? (
@@ -322,7 +340,6 @@ export default function EEDataAnalyzer() {
           </div>
         ) : (
           <>
-            {/* Dynamic Date Segment Filter */}
             <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end shadow-md">
               <div className="flex flex-col">
                 <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Currency</label>
@@ -403,14 +420,18 @@ export default function EEDataAnalyzer() {
                   {filteredData.map((trade) => (
                     editingTradeId === trade.id ? (
                       <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
-                        <td className="p-4 font-semibold text-yellow-400">{trade.asset.replace(" (Missing Buy Data)", "")}</td>
+                        <td className="p-4 font-semibold text-yellow-400">
+                           <input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={trade.asset === "NEW ASSET" ? "" : trade.asset} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" />
+                        </td>
                         <td className="p-4">
-                          <input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[140px]" />
+                          <input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full" />
                         </td>
                         <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
-                        <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
                         <td className="p-4">
-                          <input type="number" placeholder="Avg Price/Share" value={manualUnitCost} onChange={e => setManualUnitCost(e.target.value ? parseFloat(e.target.value) : "")} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[130px]" />
+                            <input type="number" placeholder="Qty" value={manualQty} onChange={e => setManualQty(e.target.value ? parseFloat(e.target.value) : "")} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-20" />
+                        </td>
+                        <td className="p-4">
+                          <input type="number" placeholder="Avg Price" value={manualUnitCost} onChange={e => setManualUnitCost(e.target.value ? parseFloat(e.target.value) : "")} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full" />
                         </td>
                         <td className="p-4 text-xs text-yellow-400/70 text-right uppercase mt-1 block">Awaiting P/L</td>
                         <td className="p-4 text-center whitespace-nowrap">
