@@ -26,11 +26,33 @@ export default function EEDataAnalyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Dynamic Macro Summaries
-  const revenueLoss = analyzedData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
-  const capitalLoss = analyzedData.reduce((sum, t) => t.category === "Capital" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
-  const revenueProfit = analyzedData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
-  const netPnL = analyzedData.reduce((sum, t) => sum + t.realizedPnL, 0);
+  // Segment / Time Filter State
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+
+  // Derived Filtered Data
+  const filteredData = analyzedData.filter((trade) => {
+    let isValid = true;
+    if (startDate) {
+      const start = new Date(startDate + "T00:00:00");
+      isValid = isValid && trade.sellDate >= start;
+    }
+    if (endDate) {
+      const end = new Date(endDate + "T23:59:59");
+      isValid = isValid && trade.sellDate <= end;
+    }
+    return isValid;
+  });
+
+  // Dynamic Macro Summaries (Based strictly on Filtered Data)
+  const revenueLoss = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
+  const capitalLoss = filteredData.reduce((sum, t) => t.category === "Capital" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
+  const revenueProfit = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
+  
+  // Explicit Net P/L Calculation (Total Profit - Total Loss)
+  const totalProfit = filteredData.reduce((sum, t) => t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
+  const totalLoss = Math.abs(filteredData.reduce((sum, t) => t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0));
+  const netPnL = totalProfit - totalLoss;
 
   const processCSV = (text: string) => {
     const lines = text.split("\n");
@@ -40,15 +62,17 @@ export default function EEDataAnalyzer() {
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number }[] = [];
 
     for (const line of dataLines) {
-      const matches = line.match(/(?:^|,)("(?:[^"]|"")*"|[^,]*)/g);
-      if (!matches || matches.length < 3) continue;
+      // FIX 1: Dynamic delimiter detection and decimal parsing
+      const delimiter = line.includes(";") ? ";" : ",";
+      const parts = line.split(delimiter);
+      if (parts.length < 3) continue;
 
-      const dateStr = matches[0].replace(/^,/, "").trim();
-      let comment = matches[1].replace(/^,/, "").trim().replace(/^"|"$/g, ""); 
-      const amountStr = matches[2].replace(/^,/, "").trim();
+      const dateStr = parts[0].trim();
+      let comment = parts[1].replace(/^"|"$/g, "").trim(); 
+      let amountStr = parts[2].trim().replace(",", "."); // Force dot for float parsing
 
-      const amount = parseFloat(amountStr.replace(/,/g, "")) || 0;
-      const date = new Date(dateStr);
+      const amount = parseFloat(amountStr) || 0;
+      const date = new Date(dateStr.replace(/\//g, "-"));
 
       const isBuy = comment.startsWith("Bought ");
       const isSell = comment.startsWith("Sold ");
@@ -62,7 +86,7 @@ export default function EEDataAnalyzer() {
         if (atParts.length >= 2) {
           const leftSide = atParts[0].trim().split(" ");
           const qtyStr = leftSide.pop() || "0";
-          const qty = parseFloat(qtyStr.replace(/,/g, ""));
+          const qty = parseFloat(qtyStr.replace(",", "."));
           const assetName = leftSide.join(" ").trim();
 
           if (qty > 0 && assetName) {
@@ -76,7 +100,7 @@ export default function EEDataAnalyzer() {
         if (atParts.length >= 2) {
           const leftSide = atParts[0].trim().split(" ");
           const qtyStr = leftSide.pop() || "0";
-          const qty = parseFloat(qtyStr.replace(/,/g, ""));
+          const qty = parseFloat(qtyStr.replace(",", "."));
           
           const type = leftSide.shift(); 
           const assetName = leftSide.join(" ").trim(); 
@@ -188,7 +212,7 @@ export default function EEDataAnalyzer() {
         processCSV(text);
       } catch (error) {
         console.error("Parse Error:", error);
-        alert("The parser failed on a specific CSV row. Check the browser console (F12) for the exact error.");
+        alert("The parser failed on a specific CSV row.");
         setIsAnalyzing(false);
       }
     };
@@ -217,6 +241,7 @@ export default function EEDataAnalyzer() {
 
     setAnalyzedData(prevData => prevData.map(trade => {
       if (trade.id === tradeId) {
+        // FIX 2: Added .getTime() to avoid TypeScript build error
         const holdingDays = Math.ceil(Math.abs(trade.sellDate.getTime() - parsedDate.getTime()) / (1000 * 60 * 60 * 24));
         const category = holdingDays >= 1095 ? "Capital" : "Revenue";
         
@@ -269,6 +294,34 @@ export default function EEDataAnalyzer() {
           </div>
         ) : (
           <>
+            {/* Dynamic Date Segment Filter */}
+            <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end shadow-md">
+              <div className="flex flex-col">
+                <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Segment Start</label>
+                <input 
+                  type="date" 
+                  value={startDate} 
+                  onChange={(e) => setStartDate(e.target.value)} 
+                  className="bg-[#0a1128] border border-[#c0c0c0]/30 p-2 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-sky-500 transition"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Segment End</label>
+                <input 
+                  type="date" 
+                  value={endDate} 
+                  onChange={(e) => setEndDate(e.target.value)} 
+                  className="bg-[#0a1128] border border-[#c0c0c0]/30 p-2 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-sky-500 transition"
+                />
+              </div>
+              <button 
+                onClick={() => { setStartDate(""); setEndDate(""); }}
+                className="bg-[#c0c0c0]/10 text-[#c0c0c0] px-4 py-2 text-sm font-bold hover:bg-[#c0c0c0]/20 transition rounded-sm border border-[#c0c0c0]/20"
+              >
+                CLEAR FILTER
+              </button>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Revenue Losses</h3>
@@ -314,30 +367,17 @@ export default function EEDataAnalyzer() {
                   </tr>
                 </thead>
                 <tbody>
-                  {analyzedData.map((trade) => (
+                  {filteredData.map((trade) => (
                     editingTradeId === trade.id ? (
                       <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
-                        <td className="p-4 font-semibold text-yellow-400">
-                          {trade.asset.replace(" (Missing Buy Data)", "")}
-                        </td>
+                        <td className="p-4 font-semibold text-yellow-400">{trade.asset.replace(" (Missing Buy Data)", "")}</td>
                         <td className="p-4">
-                          <input 
-                            type="date" 
-                            value={manualDate} 
-                            onChange={e => setManualDate(e.target.value)} 
-                            className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[140px]" 
-                          />
+                          <input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[140px]" />
                         </td>
                         <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
                         <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
                         <td className="p-4">
-                          <input 
-                            type="number" 
-                            placeholder="Avg Price/Share" 
-                            value={manualUnitCost} 
-                            onChange={e => setManualUnitCost(e.target.value ? parseFloat(e.target.value) : "")} 
-                            className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[130px]" 
-                          />
+                          <input type="number" placeholder="Avg Price/Share" value={manualUnitCost} onChange={e => setManualUnitCost(e.target.value ? parseFloat(e.target.value) : "")} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-yellow-400 w-full max-w-[130px]" />
                         </td>
                         <td className="p-4 text-xs text-yellow-400/70 text-right uppercase mt-1 block">Awaiting P/L</td>
                         <td className="p-4 text-center whitespace-nowrap">
@@ -347,12 +387,8 @@ export default function EEDataAnalyzer() {
                       </tr>
                     ) : (
                       <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
-                        <td className={`p-4 font-semibold ${trade.category === 'Missing Data' ? 'text-yellow-400' : 'text-[#e0e1dd]'}`}>
-                          {trade.asset}
-                        </td>
-                        <td className="p-4 text-sm text-[#8d99ae]">
-                          {trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}
-                        </td>
+                        <td className={`p-4 font-semibold ${trade.category === 'Missing Data' ? 'text-yellow-400' : 'text-[#e0e1dd]'}`}>{trade.asset}</td>
+                        <td className="p-4 text-sm text-[#8d99ae]">{trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}</td>
                         <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
                         <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
                         <td className="p-4">
@@ -360,17 +396,13 @@ export default function EEDataAnalyzer() {
                             trade.category === "Capital" ? "bg-purple-900/40 text-purple-300 border border-purple-800" : 
                             trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300 border border-sky-800" :
                             "bg-yellow-900/40 text-yellow-300 border border-yellow-800"
-                          }`}>
-                            {trade.category}
-                          </span>
+                          }`}>{trade.category}</span>
                         </td>
                         <td className={`p-4 font-mono font-bold text-sm text-right ${trade.category === 'Missing Data' ? 'text-[#8d99ae]' : trade.realizedPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>
                           {trade.category === 'Missing Data' ? "—" : `${trade.realizedPnL < 0 ? "" : "+"}${trade.realizedPnL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                         </td>
                         <td className="p-4 text-center">
-                          {trade.category === "Missing Data" && (
-                            <button onClick={() => startEditing(trade)} className="text-yellow-400 border border-yellow-500/50 px-2 py-1 text-xs font-bold rounded-sm hover:bg-yellow-500/20 transition">+ ADD DATA</button>
-                          )}
+                          {trade.category === "Missing Data" && <button onClick={() => startEditing(trade)} className="text-yellow-400 border border-yellow-500/50 px-2 py-1 text-xs font-bold rounded-sm hover:bg-yellow-500/20 transition">+ ADD DATA</button>}
                         </td>
                       </tr>
                     )
