@@ -61,15 +61,13 @@ export default function EEDataAnalyzer() {
   const processCSV = (text: string) => {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
-    const sortedLines = dataLines.sort((a, b) => new Date(a.split(";")[0]).getTime() - new Date(b.split(";")[0]).getTime());
-
+    // Removed the global sort to preserve Trade-Fee adjacency
+    
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
     let currentEvent: any = null;
-
-    // Keywords to capture the 5 common fees: Commission, Clearing, VAT, SEC, FINRA/Tax
     const feeKeywords = ["Commission", "Clearing", "VAT", "Fee", "Tax", "SEC", "FINRA"];
 
-    for (const line of sortedLines) {
+    for (const line of dataLines) {
       const delimiter = line.includes(";") ? ";" : ",";
       const parts = line.split(delimiter);
       if (parts.length < 3) continue;
