@@ -295,6 +295,7 @@ export default function EEDataAnalyzer() {
         <div className="mb-8 border-b border-[#c0c0c0]/30 pb-4 flex justify-between items-end">
           <div>
             <h1 className="text-3xl font-bold text-[#c0c0c0] tracking-wide uppercase">FIFO TAX ANALYZER</h1>
+            <p className="text-[#8d99ae] text-sm mt-1">Strict Parcel Tracing (Splits & Capital vs Revenue)</p>
           </div>
           <div>
             <button 
@@ -328,33 +329,96 @@ export default function EEDataAnalyzer() {
           </div>
         </div>
 
-        {analyzedData.length > 0 && (
+        {analyzedData.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-[#c0c0c0]/30 rounded-sm bg-[#14213d]">
+            <p className="text-[#8d99ae] mb-4">Export your Account History from EasyEquities as a CSV</p>
+            <p className="text-[#c0c0c0] font-mono text-sm">Upload to run fractional FIFO parcel tracing.</p>
+          </div>
+        ) : (
           <>
             <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end shadow-md">
-              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-[#0a1128] p-2 border border-gray-600"><option>ZAR</option><option>USD</option></select>
-              <input type="date" onChange={(e) => setStartDate(e.target.value)} className="bg-black p-2 border border-gray-600"/>
-              <input type="date" onChange={(e) => setEndDate(e.target.value)} className="bg-black p-2 border border-gray-600"/>
-              <button onClick={exportReport} className="ml-auto bg-sky-900 text-white px-4 py-2">EXPORT CSV</button>
+              <div className="flex flex-col">
+                <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Currency</label>
+                <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-[#0a1128] border border-[#c0c0c0]/30 p-2 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-sky-500 transition">
+                  <option value="ZAR">ZAR (R)</option>
+                  <option value="USD">USD ($)</option>
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Segment Start</label>
+                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="bg-[#0a1128] border border-[#c0c0c0]/30 p-2 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-sky-500 transition" />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Segment End</label>
+                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="bg-[#0a1128] border border-[#c0c0c0]/30 p-2 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-sky-500 transition" />
+              </div>
+              <button onClick={() => { setStartDate(""); setEndDate(""); }} className="bg-[#c0c0c0]/10 text-[#c0c0c0] px-4 py-2 text-sm font-bold hover:bg-[#c0c0c0]/20 transition rounded-sm border border-[#c0c0c0]/20">CLEAR FILTER</button>
+              <button onClick={exportReport} className="ml-auto bg-sky-900 text-white px-4 py-2 text-sm font-bold rounded-sm border border-sky-700">EXPORT CSV</button>
             </div>
 
-            <table className="w-full text-left border border-gray-700">
-                <thead><tr className="bg-[#14213d] border-b border-gray-700"><th className="p-4">ASSET</th><th className="p-4">BUY DATE</th><th className="p-4">SELL DATE</th><th className="p-4">QTY</th><th className="p-4">PRICE</th><th className="p-4">P/L</th><th className="p-4">ACTION</th></tr></thead>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
+                <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Revenue Losses</h3>
+                <p className="text-3xl font-mono text-red-400">{formatCurrency(revenueLoss)}</p>
+              </div>
+              <div className="bg-[#120f1a] border border-purple-900 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
+                <h3 className="text-purple-400 font-bold mb-2 uppercase tracking-widest text-xs">Locked Capital Losses</h3>
+                <p className="text-3xl font-mono text-red-400">{formatCurrency(capitalLoss)}</p>
+              </div>
+              <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
+                <h3 className="text-[#c0c0c0] font-bold mb-2 uppercase tracking-widest text-xs">Revenue Profits</h3>
+                <p className="text-3xl font-mono text-green-400">{formatCurrency(revenueProfit)}</p>
+              </div>
+              <div className="bg-[#14213d] border border-blue-500/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
+                <h3 className="text-blue-400 font-bold mb-2 uppercase tracking-widest text-xs">Total Net P/L</h3>
+                <p className={`text-3xl font-mono ${netPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>{formatCurrency(netPnL)}</p>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto bg-[#14213d] p-1 shadow-lg border border-[#c0c0c0]/20 rounded-sm">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="text-[#c0c0c0] border-b border-[#c0c0c0]/20 bg-[#0a1128]">
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Asset / Ticker</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Buy Date</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Sell Date</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty Matched</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">SARS Category</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold text-right">Realized P/L</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold text-center">Action</th>
+                  </tr>
+                </thead>
                 <tbody>
-                    {filteredData.map(t => (
-                        <tr key={t.id} className="border-b border-gray-800">
-                            <td className="p-4">{editingTradeId === t.id ? <input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={t.asset === "NEW ASSET" ? "" : t.asset} className="text-black"/> : t.asset}</td>
-                            <td className="p-4">{editingTradeId === t.id ? <input type="date" onChange={e => setManualDate(e.target.value)} defaultValue={manualDate} className="text-black"/> : (t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate)}</td>
-                            <td className="p-4">{editingTradeId === t.id ? <input type="date" onChange={e => setManualSellDate(e.target.value)} defaultValue={manualSellDate} className="text-black"/> : t.sellDate.toLocaleDateString()}</td>
-                            <td className="p-4">{editingTradeId === t.id ? <input type="number" onChange={e => setManualQty(parseFloat(e.target.value))} defaultValue={t.qtySold} className="text-black w-20"/> : t.qtySold}</td>
-                            <td className="p-4">{editingTradeId === t.id ? <input type="number" onChange={e => setManualSellPrice(parseFloat(e.target.value))} defaultValue={t.unitSellPrice} className="text-black w-20"/> : t.unitSellPrice}</td>
-                            <td className="p-4">{t.realizedPnL.toFixed(2)}</td>
-                            <td className="p-4">
-                                {editingTradeId === t.id ? <button onClick={() => saveManualData(t.id)} className="text-green-500 font-bold">SAVE</button> : <button onClick={() => startEditing(t)} className="text-yellow-500 underline">EDIT</button>}
-                            </td>
-                        </tr>
-                    ))}
+                  {filteredData.map((trade) => (
+                    editingTradeId === trade.id ? (
+                      <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
+                        <td className="p-4 font-semibold text-yellow-400"><input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={trade.asset === "NEW ASSET" ? "" : trade.asset} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="date" value={manualSellDate} onChange={e => setManualSellDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4"><input type="number" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-20" /></td>
+                        <td className="p-4"><input type="number" value={manualUnitCost} onChange={e => setManualUnitCost(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4 text-xs text-yellow-400/70 text-right uppercase">Pending</td>
+                        <td className="p-4 text-center">
+                          <button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1 font-bold rounded-sm">SAVE</button>
+                        </td>
+                      </tr>
+                    ) : (
+                      <tr key={trade.id} className="border-b border-[#c0c0c0]/5 hover:bg-[#1f2f54]/40 transition">
+                        <td className={`p-4 font-semibold ${trade.category === 'Missing Data' ? 'text-yellow-400' : 'text-[#e0e1dd]'}`}>{trade.asset}</td>
+                        <td className="p-4 text-sm text-[#8d99ae]">{trade.buyDate instanceof Date ? trade.buyDate.toLocaleDateString() : trade.buyDate}</td>
+                        <td className="p-4 text-sm text-[#8d99ae]">{trade.sellDate.toLocaleDateString()}</td>
+                        <td className="p-4 text-sm font-mono text-[#e0e1dd]">{trade.qtySold.toFixed(4)}</td>
+                        <td className="p-4"><span className={`px-2 py-1 text-xs font-bold rounded-sm uppercase ${trade.category === "Capital" ? "bg-purple-900/40 text-purple-300" : trade.category === "Revenue" ? "bg-sky-900/40 text-sky-300" : "bg-yellow-900/40 text-yellow-300"}`}>{trade.category}</span></td>
+                        <td className="p-4 font-mono font-bold text-sm text-right">{trade.category === 'Missing Data' ? "—" : formatCurrency(trade.realizedPnL)}</td>
+                        <td className="p-4 text-center">
+                          {trade.category === "Missing Data" && <button onClick={() => startEditing(trade)} className="text-yellow-400 border border-yellow-500/50 px-2 py-1 text-xs font-bold rounded-sm hover:bg-yellow-500/20">+ ADD DATA</button>}
+                        </td>
+                      </tr>
+                    )
+                  ))}
                 </tbody>
-            </table>
+              </table>
+            </div>
           </>
         )}
       </div>
