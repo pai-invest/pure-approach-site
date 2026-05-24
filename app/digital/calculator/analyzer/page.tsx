@@ -238,7 +238,10 @@ export default function EEDataAnalyzer() {
   };
 
   const saveManualData = (tradeId: string) => {
-    if (!manualDate || !manualSellDate || manualUnitCost === "" || manualQty === "" || manualSellPrice === "") return;
+    if (manualDate === "" || manualSellDate === "" || manualUnitCost === "" || manualQty === "" || manualSellPrice === "") {
+        alert("Please fill all fields.");
+        return;
+    }
 
     const parsedBuyDate = new Date(manualDate);
     const parsedSellDate = new Date(manualSellDate);
@@ -251,6 +254,9 @@ export default function EEDataAnalyzer() {
         const holdingDays = Math.ceil(Math.abs(parsedSellDate.getTime() - parsedBuyDate.getTime()) / (1000 * 60 * 60 * 24));
         const category = holdingDays >= 1095 ? "Capital" : "Revenue";
         
+        // PnL Logic: (Qty * Unit Sell Price) - (Qty * Unit Cost)
+        const newRealizedPnL = (qty * sellPrice) - (qty * unitCost);
+
         return {
           ...trade,
           asset: manualAsset,
@@ -260,7 +266,7 @@ export default function EEDataAnalyzer() {
           unitSellPrice: sellPrice,
           holdingDays,
           category,
-          realizedPnL: (qty * sellPrice) - (qty * unitCost)
+          realizedPnL: newRealizedPnL
         };
       }
       return trade;
@@ -307,8 +313,8 @@ export default function EEDataAnalyzer() {
                     unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0
                 }, ...prev]);
                 setEditingTradeId(id);
-                setManualAsset("NEW ASSET");
-                setManualDate(new Date().toISOString().split('T')[0]);
+                setManualAsset("");
+                setManualDate("");
                 setManualSellDate(new Date().toISOString().split('T')[0]);
                 setManualUnitCost("");
                 setManualQty(0);
@@ -395,10 +401,10 @@ export default function EEDataAnalyzer() {
                         <td className="p-4 font-semibold text-yellow-400"><input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={trade.asset === "NEW ASSET" ? "" : trade.asset} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
                         <td className="p-4"><input type="date" value={manualDate} onChange={e => setManualDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
                         <td className="p-4"><input type="date" value={manualSellDate} onChange={e => setManualSellDate(e.target.value)} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4"><input type="number" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-20" /></td>
-                        <td className="p-4"><input type="number" value={manualUnitCost} onChange={e => setManualUnitCost(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
-                        <td className="p-4 text-xs text-yellow-400/70 text-right uppercase">Pending</td>
-                        <td className="p-4 text-center">
+                        <td className="p-4"><input type="number" placeholder="Qty" value={manualQty} onChange={e => setManualQty(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-20" /></td>
+                        <td className="p-4"><input type="number" placeholder="Avg Unit Cost" value={manualUnitCost} onChange={e => setManualUnitCost(e.target.value ? parseFloat(e.target.value) : "")} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full" /></td>
+                        <td className="p-4 text-xs text-yellow-400/70 text-right uppercase">PENDING</td>
+                        <td className="p-4 text-center whitespace-nowrap">
                           <button onClick={() => saveManualData(trade.id)} className="bg-yellow-500 text-[#0a1128] px-3 py-1 font-bold rounded-sm">SAVE</button>
                         </td>
                       </tr>
