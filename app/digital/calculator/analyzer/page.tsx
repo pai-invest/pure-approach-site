@@ -24,13 +24,13 @@ interface RealizedTaxEvent {
 export default function EEDataAnalyzer() {
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isAddingNew, setIsAddingNew] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Segment / Time Filter State
+  const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
 
-  // Derived Filtered Data
   const filteredData = analyzedData.filter((trade) => {
     let isValid = true;
     if (startDate) {
@@ -44,32 +44,35 @@ export default function EEDataAnalyzer() {
     return isValid;
   });
 
-  // Dynamic Macro Summaries (Based strictly on Filtered Data)
   const revenueLoss = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const capitalLoss = filteredData.reduce((sum, t) => t.category === "Capital" && t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0);
   const revenueProfit = filteredData.reduce((sum, t) => t.category === "Revenue" && t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
   
-  // Explicit Net P/L Calculation (Total Profit - Total Loss)
   const totalProfit = filteredData.reduce((sum, t) => t.realizedPnL > 0 ? sum + t.realizedPnL : sum, 0);
   const totalLoss = Math.abs(filteredData.reduce((sum, t) => t.realizedPnL < 0 ? sum + t.realizedPnL : sum, 0));
   const netPnL = totalProfit - totalLoss;
 
+  const formatCurrency = (amount: number) => {
+    const sym = currency === "USD" ? "$" : "R";
+    const absVal = Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return `${amount < 0 ? '-' : ''}${sym}${absVal}`;
+  };
+
   const processCSV = (text: string) => {
     const lines = text.split("\n");
+    const delimiter = lines[0].includes(";") ? ";" : ",";
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     dataLines.reverse(); 
 
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number }[] = [];
 
     for (const line of dataLines) {
-      // FIX 1: Dynamic delimiter detection and decimal parsing
-      const delimiter = line.includes(";") ? ";" : ",";
       const parts = line.split(delimiter);
       if (parts.length < 3) continue;
 
       const dateStr = parts[0].trim();
       let comment = parts[1].replace(/^"|"$/g, "").trim(); 
-      let amountStr = parts[2].trim().replace(",", "."); // Force dot for float parsing
+      let amountStr = parts[2].trim().replace(",", "."); 
 
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
@@ -211,8 +214,6 @@ export default function EEDataAnalyzer() {
         const text = evt.target?.result as string;
         processCSV(text);
       } catch (error) {
-        console.error("Parse Error:", error);
-        alert("The parser failed on a specific CSV row.");
         setIsAnalyzing(false);
       }
     };
@@ -231,37 +232,50 @@ export default function EEDataAnalyzer() {
   };
 
   const saveManualData = (tradeId: string) => {
-    if (!manualDate || manualUnitCost === "") {
-      alert("Please provide both the original buy date and the average buy price per share.");
-      return;
-    }
+    if (!manualDate || manualUnitCost === "") return;
 
     const parsedDate = new Date(manualDate);
     const unitCost = Number(manualUnitCost);
 
     setAnalyzedData(prevData => prevData.map(trade => {
       if (trade.id === tradeId) {
-        // FIX 2: Added .getTime() to avoid TypeScript build error
         const holdingDays = Math.ceil(Math.abs(trade.sellDate.getTime() - parsedDate.getTime()) / (1000 * 60 * 60 * 24));
         const category = holdingDays >= 1095 ? "Capital" : "Revenue";
         
-        const costBasis = trade.qtySold * unitCost;
-        const proceeds = trade.qtySold * trade.unitSellPrice;
-        const newRealizedPnL = proceeds - costBasis;
-
         return {
           ...trade,
-          asset: trade.asset.replace(" (Missing Buy Data)", ""),
+          asset: trade.asset === "NEW ASSET" ? "MANUAL TRADE" : trade.asset.replace(" (Missing Buy Data)", ""),
           buyDate: parsedDate,
           holdingDays,
           category,
-          realizedPnL: newRealizedPnL
+          realizedPnL: (trade.qtySold * trade.unitSellPrice) - (trade.qtySold * unitCost)
         };
       }
       return trade;
     }));
 
     setEditingTradeId(null);
+    setIsAddingNew(false);
+  };
+
+  const exportReport = () => {
+    const headers = ["Asset", "Buy Date", "Sell Date", "Qty", "Category", "PnL"];
+    const rows = filteredData.map(t => [
+      `"${t.asset}"`, 
+      t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate, 
+      t.sellDate.toLocaleDateString(), 
+      t.qtySold.toFixed(4), 
+      t.category, 
+      t.realizedPnL.toFixed(2)
+    ].join(","));
+    
+    const csvContent = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Tax_Report_${currency}.csv`;
+    a.click();
   };
 
   return (
@@ -272,19 +286,41 @@ export default function EEDataAnalyzer() {
             <h1 className="text-3xl font-bold text-[#c0c0c0] tracking-wide uppercase">FIFO TAX ANALYZER</h1>
             <p className="text-[#8d99ae] text-sm mt-1">Strict Parcel Tracing (Splits & Capital vs Revenue)</p>
           </div>
-          <button 
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition shadow-[0_0_15px_rgba(192,192,192,0.15)] rounded-sm"
-          >
-            {isAnalyzing ? "ANALYZING..." : "UPLOAD EE CSV"}
-          </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileUpload} 
-            className="hidden" 
-          />
+          <div>
+            <button 
+              type="button"
+              onClick={() => {
+                setIsAddingNew(true);
+                setAnalyzedData(prev => [{
+                  id: "NEW-" + Date.now(),
+                  asset: "NEW ASSET",
+                  buyDate: new Date(),
+                  sellDate: new Date(),
+                  qtySold: 1,
+                  unitSellPrice: 0,
+                  holdingDays: 0,
+                  category: "Missing Data",
+                  realizedPnL: 0
+                }, ...prev]);
+              }}
+              className="bg-blue-600 text-white px-5 py-2 font-bold mr-2 hover:bg-blue-700 transition"
+            >
+              + ADD NEW TRADE
+            </button>
+            <button 
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition shadow-[0_0_15px_rgba(192,192,192,0.15)] rounded-sm"
+            >
+              {isAnalyzing ? "ANALYZING..." : "UPLOAD EE CSV"}
+            </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileUpload} 
+              className="hidden" 
+            />
+          </div>
         </div>
 
         {analyzedData.length === 0 ? (
@@ -294,8 +330,18 @@ export default function EEDataAnalyzer() {
           </div>
         ) : (
           <>
-            {/* Dynamic Date Segment Filter */}
             <div className="mb-6 p-4 bg-[#14213d] border border-[#c0c0c0]/20 rounded-sm flex flex-wrap gap-4 items-end shadow-md">
+              <div className="flex flex-col">
+                <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Currency</label>
+                <select 
+                  value={currency} 
+                  onChange={(e) => setCurrency(e.target.value)}
+                  className="bg-[#0a1128] border border-[#c0c0c0]/30 p-2 rounded-sm text-[#e0e1dd] text-sm focus:outline-none focus:border-sky-500 transition"
+                >
+                  <option value="ZAR">ZAR (R)</option>
+                  <option value="USD">USD ($)</option>
+                </select>
+              </div>
               <div className="flex flex-col">
                 <label className="text-[#8d99ae] text-xs uppercase tracking-widest mb-1 font-semibold">Segment Start</label>
                 <input 
@@ -320,36 +366,30 @@ export default function EEDataAnalyzer() {
               >
                 CLEAR FILTER
               </button>
+              <button 
+                onClick={exportReport}
+                className="ml-auto bg-sky-900 text-white px-4 py-2 text-sm font-bold rounded-sm border border-sky-700"
+              >
+                EXPORT CSV
+              </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-[#081b2e] border border-sky-800 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-sky-400 font-bold mb-2 uppercase tracking-widest text-xs">Revenue Losses</h3>
-                <p className="text-3xl font-mono text-red-400">
-                  {revenueLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Deductible against short-term trades</p>
+                <p className="text-3xl font-mono text-red-400">{formatCurrency(revenueLoss)}</p>
               </div>
               <div className="bg-[#120f1a] border border-purple-900 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-purple-400 font-bold mb-2 uppercase tracking-widest text-xs">Locked Capital Losses</h3>
-                <p className="text-3xl font-mono text-red-400">
-                  {capitalLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Ring-fenced for &gt;36 month holdings</p>
+                <p className="text-3xl font-mono text-red-400">{formatCurrency(capitalLoss)}</p>
               </div>
               <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-[#c0c0c0] font-bold mb-2 uppercase tracking-widest text-xs">Revenue Profits</h3>
-                <p className="text-3xl font-mono text-green-400">
-                  +{revenueProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Taxable at flat 27% corporate rate</p>
+                <p className="text-3xl font-mono text-green-400">{formatCurrency(revenueProfit)}</p>
               </div>
               <div className="bg-[#14213d] border border-blue-500/30 p-6 shadow-lg rounded-sm text-center flex flex-col justify-center">
                 <h3 className="text-blue-400 font-bold mb-2 uppercase tracking-widest text-xs">Total Net P/L</h3>
-                <p className={`text-3xl font-mono ${netPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>
-                  {netPnL < 0 ? "" : "+"}{netPnL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-                <p className="text-[#8d99ae] text-xs mt-2">Overall realized performance</p>
+                <p className={`text-3xl font-mono ${netPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>{formatCurrency(netPnL)}</p>
               </div>
             </div>
 
@@ -368,7 +408,7 @@ export default function EEDataAnalyzer() {
                 </thead>
                 <tbody>
                   {filteredData.map((trade) => (
-                    editingTradeId === trade.id ? (
+                    editingTradeId === trade.id || trade.asset === "NEW ASSET" ? (
                       <tr key={`edit-${trade.id}`} className="border-b border-yellow-500/30 bg-yellow-900/10 transition">
                         <td className="p-4 font-semibold text-yellow-400">{trade.asset.replace(" (Missing Buy Data)", "")}</td>
                         <td className="p-4">
@@ -399,7 +439,7 @@ export default function EEDataAnalyzer() {
                           }`}>{trade.category}</span>
                         </td>
                         <td className={`p-4 font-mono font-bold text-sm text-right ${trade.category === 'Missing Data' ? 'text-[#8d99ae]' : trade.realizedPnL < 0 ? 'text-red-400' : 'text-green-400'}`}>
-                          {trade.category === 'Missing Data' ? "—" : `${trade.realizedPnL < 0 ? "" : "+"}${trade.realizedPnL.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                          {trade.category === 'Missing Data' ? "—" : formatCurrency(trade.realizedPnL)}
                         </td>
                         <td className="p-4 text-center">
                           {trade.category === "Missing Data" && <button onClick={() => startEditing(trade)} className="text-yellow-400 border border-yellow-500/50 px-2 py-1 text-xs font-bold rounded-sm hover:bg-yellow-500/20 transition">+ ADD DATA</button>}
