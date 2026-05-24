@@ -39,9 +39,7 @@ export default function EEDataAnalyzer() {
   const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
   const [isSelling, setIsSelling] = useState<string | null>(null);
   
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Manual Edit States
+  // Manual Entry States
   const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState("");
   const [manualSellDate, setManualSellDate] = useState("");
@@ -49,6 +47,8 @@ export default function EEDataAnalyzer() {
   const [manualInvested, setManualInvested] = useState<number>(0);
   const [manualSold, setManualSold] = useState<number>(0);
   const [manualFee, setManualFee] = useState<number>(0);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredData = analyzedData.filter((t) => {
     if (startDate && t.sellDate instanceof Date && t.sellDate < new Date(startDate)) return false;
