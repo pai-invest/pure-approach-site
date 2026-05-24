@@ -62,10 +62,9 @@ export default function EEDataAnalyzer() {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     
-    // We process lines in their original order to maintain Trade-Fee adjacency
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
     let currentEvent: any = null;
-    const feeKeywords = ["Commission", "Clearing", "VAT", "Fee", "Tax", "SEC", "FINRA"];
+    const feeKeywords = ["commission", "clearing", "vat", "fee", "tax", "sec", "finra"];
 
     for (const line of dataLines) {
       const delimiter = line.includes(";") ? ";" : ",";
@@ -77,10 +76,11 @@ export default function EEDataAnalyzer() {
       let amountStr = parts[2].trim().replace(",", "."); 
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
+      const commentLower = comment.toLowerCase();
 
       const isBuy = comment.startsWith("Bought ");
       const isSell = comment.startsWith("Sold ");
-      const isFee = feeKeywords.some(keyword => comment.includes(keyword));
+      const isFee = feeKeywords.some(keyword => commentLower.includes(keyword));
 
       if (isBuy || isSell) {
         const action = isBuy ? "Buy" : "Sell";
@@ -99,9 +99,11 @@ export default function EEDataAnalyzer() {
           }
         }
       } else if (isFee && currentEvent) {
-        // Debits (negative values) are added as costs (positive fee)
-        // Credits (positive values) are added as negative costs (discount)
-        currentEvent.fee += (-amount);
+        // Debits are costs (positive fee)
+        currentEvent.fee += Math.abs(amount);
+      } else {
+        // Reset if we hit a non-trade/non-fee line
+        currentEvent = null;
       }
     }
 
@@ -139,7 +141,6 @@ export default function EEDataAnalyzer() {
           const chunkCost = qtyToTake * lot.unitCost;
           const chunkProceeds = qtyToTake * unitSellPrice;
           
-          // Allocate fees proportionally to the qty sold
           const proportionalFee = event.fee * (qtyToTake / event.qty);
           const realizedPnL = chunkProceeds - chunkCost - proportionalFee;
 
