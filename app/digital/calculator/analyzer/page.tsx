@@ -32,7 +32,6 @@ interface PortfolioItem {
 export default function EEDataAnalyzer() {
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -41,7 +40,7 @@ export default function EEDataAnalyzer() {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Manual Entry States
+  // Manual Edit States
   const [manualAsset, setManualAsset] = useState("");
   const [manualDate, setManualDate] = useState("");
   const [manualSellDate, setManualSellDate] = useState("");
@@ -70,13 +69,7 @@ export default function EEDataAnalyzer() {
     return `${amount < 0 ? '-' : ''}${sym}${absVal}`;
   };
 
-  const formatDate = (d: Date | string) => {
-    if (d instanceof Date) return d.toISOString().split('T')[0];
-    return d;
-  };
-
   const processCSV = (text: string) => {
-    setIsAnalyzing(true);
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     const allEvents: any[] = [];
@@ -149,11 +142,10 @@ export default function EEDataAnalyzer() {
     });
     setPortfolio(port);
     setAnalyzedData(realized.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
-    setIsAnalyzing(false);
   };
 
   const exportReport = () => {
-    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${formatDate(t.buyDate)},${t.sellDate.toISOString().split('T')[0]},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
+    const csv = ["Asset,Buy Date,Sell Date,Qty,Category,PnL,Fee", ...filteredData.map(t => `${t.asset},${t.buyDate},${t.sellDate.toISOString().split('T')[0]},${t.qtySold},${t.category},${t.realizedPnL},${t.fee}`)].join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
     a.download = "Report.csv";
@@ -170,7 +162,7 @@ export default function EEDataAnalyzer() {
       <div className="flex justify-between mb-8">
         <h1 className="text-2xl font-bold uppercase">FIFO TAX ANALYZER</h1>
         <div className="flex gap-2">
-          <button onClick={() => setAnalyzedData(prev => [{ id: "NEW", asset: "New Trade", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 }, ...prev])} className="bg-blue-600 px-4 py-2 text-sm font-bold">+ ADD TRADE</button>
+          <button onClick={() => setAnalyzedData(prev => [{ id: Math.random().toString(), asset: "New Trade", buyDate: new Date(), sellDate: new Date(), qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 }, ...prev])} className="bg-blue-600 px-4 py-2 text-sm font-bold">+ ADD TRADE</button>
           <button onClick={exportReport} className="bg-sky-900 px-4 py-2 text-sm font-bold">EXPORT CSV</button>
           <button onClick={() => fileInputRef.current?.click()} className="bg-[#c0c0c0] text-black px-4 py-2 text-sm font-bold">UPLOAD CSV</button>
           <input type="file" ref={fileInputRef} className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if(f){ const r=new FileReader(); r.onload=(e)=>processCSV(e.target?.result as string); r.readAsText(f); } }} />
@@ -204,8 +196,8 @@ export default function EEDataAnalyzer() {
           ) : (
             <tr key={t.id} className="border-b border-gray-800 text-sm">
                 <td className="p-4">{t.asset}</td>
-                <td className="p-4 text-[#8d99ae]">{formatDate(t.buyDate)}</td>
-                <td className="p-4 text-[#8d99ae]">{t.sellDate.toISOString().split('T')[0]}</td>
+                <td className="p-4 text-[#8d99ae]">{t.buyDate.toString()}</td>
+                <td className="p-4 text-[#8d99ae]">{t.sellDate instanceof Date ? t.sellDate.toISOString().split('T')[0] : "—"}</td>
                 <td className="p-4">{formatCurrency(t.realizedPnL)}</td>
                 <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => setEditingTradeId(t.id)} className="text-yellow-400 border px-2">ADD</button>}</td>
             </tr>
