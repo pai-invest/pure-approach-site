@@ -19,6 +19,7 @@ interface RealizedTaxEvent {
   holdingDays: number | string;
   category: "Capital" | "Revenue" | "Missing Data";
   realizedPnL: number;
+  fee: number;
 }
 
 export default function EEDataAnalyzer() {
@@ -62,7 +63,7 @@ export default function EEDataAnalyzer() {
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     dataLines.reverse(); 
 
-    const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number }[] = [];
+    const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
 
     for (const line of dataLines) {
       const delimiter = line.includes(";") ? ";" : ",";
@@ -72,6 +73,7 @@ export default function EEDataAnalyzer() {
       const dateStr = parts[0].trim();
       let comment = parts[1].replace(/^"|"$/g, "").trim(); 
       let amountStr = parts[2].trim().replace(",", "."); 
+      const fee = parts.length > 3 ? parseFloat(parts[3].trim().replace(",", ".")) || 0 : 0;
 
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
@@ -92,7 +94,7 @@ export default function EEDataAnalyzer() {
           const assetName = leftSide.join(" ").trim();
 
           if (qty > 0 && assetName) {
-            allEvents.push({ date, action, asset: assetName, qty, amount });
+            allEvents.push({ date, action, asset: assetName, qty, amount, fee });
           }
         }
       } else if (isCA) {
@@ -100,7 +102,7 @@ export default function EEDataAnalyzer() {
         const atParts = withoutCA.split(" @ ");
         
         if (atParts.length >= 2) {
-          const leftSide = atParts[0].trim().split(" ");
+          const leftSide = withoutCA.split(" @ ")[0].trim().split(" ");
           const qtyStr = leftSide.pop() || "0";
           const qty = parseFloat(qtyStr.replace(",", "."));
           
@@ -108,7 +110,7 @@ export default function EEDataAnalyzer() {
           const assetName = leftSide.join(" ").trim(); 
 
           if ((type === "Consolidation" || type === "Subdivision") && assetName) {
-            allEvents.push({ date, action: "CA", asset: assetName, qty, amount: 0 });
+            allEvents.push({ date, action: "CA", asset: assetName, qty, amount: 0, fee: 0 });
           }
         }
       }
@@ -167,7 +169,7 @@ export default function EEDataAnalyzer() {
 
           const chunkCost = qtyToTake * lot.unitCost;
           const chunkProceeds = qtyToTake * unitSellPrice;
-          const realizedPnL = chunkProceeds - chunkCost;
+          const realizedPnL = chunkProceeds - chunkCost - event.fee;
 
           realizedTrades.push({
             id: `${event.asset}-${event.date.getTime()}-${Math.random()}`,
@@ -179,6 +181,7 @@ export default function EEDataAnalyzer() {
             holdingDays,
             category,
             realizedPnL,
+            fee: event.fee
           });
         }
 
@@ -192,7 +195,8 @@ export default function EEDataAnalyzer() {
             unitSellPrice,
             holdingDays: "N/A",
             category: "Missing Data",
-            realizedPnL: (remainingToSell * unitSellPrice) - 0, 
+            realizedPnL: (remainingToSell * unitSellPrice) - 0 - event.fee, 
+            fee: event.fee
           });
         }
       }
@@ -227,6 +231,7 @@ export default function EEDataAnalyzer() {
   const [manualAmountInvested, setManualAmountInvested] = useState<number | "">("");
   const [manualQty, setManualQty] = useState<number | "">("");
   const [manualAmountSold, setManualAmountSold] = useState<number | "">("");
+  const [manualFee, setManualFee] = useState<number | "">("");
 
   const startEditing = (trade: RealizedTaxEvent) => {
     setEditingTradeId(trade.id);
@@ -236,11 +241,12 @@ export default function EEDataAnalyzer() {
     setManualAmountInvested("");
     setManualQty(trade.qtySold);
     setManualAmountSold("");
+    setManualFee(0);
   };
 
   const saveManualData = (tradeId: string) => {
-    if (!manualDate || !manualSellDate || manualAmountInvested === "" || manualAmountSold === "" || manualQty === "") {
-        alert("Please provide the Buy Date, Sell Date, Qty, Amount Invested, and Amount Sold.");
+    if (!manualDate || !manualSellDate || manualAmountInvested === "" || manualAmountSold === "" || manualQty === "" || manualFee === "") {
+        alert("Please provide the Buy Date, Sell Date, Qty, Amount Invested, Amount Sold, and Fee.");
         return;
     }
 
@@ -249,6 +255,7 @@ export default function EEDataAnalyzer() {
     const qty = Number(manualQty);
     const amountInvested = Number(manualAmountInvested);
     const amountSold = Number(manualAmountSold);
+    const fee = Number(manualFee);
 
     setAnalyzedData(prevData => prevData.map(trade => {
       if (trade.id === tradeId) {
@@ -264,7 +271,8 @@ export default function EEDataAnalyzer() {
           unitSellPrice: amountSold / qty,
           holdingDays,
           category,
-          realizedPnL: amountSold - amountInvested
+          realizedPnL: (amountSold - amountInvested) - fee,
+          fee: fee
         };
       }
       return trade;
@@ -274,14 +282,15 @@ export default function EEDataAnalyzer() {
   };
 
   const exportReport = () => {
-    const headers = ["Asset", "Buy Date", "Sell Date", "Qty", "Category", "PnL"];
+    const headers = ["Asset", "Buy Date", "Sell Date", "Qty", "Category", "PnL", "Fee"];
     const rows = filteredData.map(t => [
       `"${t.asset}"`, 
       t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate, 
       t.sellDate.toLocaleDateString(), 
       t.qtySold.toFixed(4), 
       t.category, 
-      t.realizedPnL.toFixed(2)
+      t.realizedPnL.toFixed(2),
+      t.fee.toFixed(2)
     ].join(","));
     
     const csvContent = [headers.join(","), ...rows].join("\n");
@@ -308,7 +317,7 @@ export default function EEDataAnalyzer() {
                 const id = "NEW-" + Date.now();
                 setAnalyzedData(prev => [{
                     id, asset: "NEW ASSET", buyDate: new Date(), sellDate: new Date(), qtySold: 0,
-                    unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0
+                    unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0
                 }, ...prev]);
                 setEditingTradeId(id);
                 setManualAsset("");
@@ -317,6 +326,7 @@ export default function EEDataAnalyzer() {
                 setManualAmountInvested("");
                 setManualQty(0);
                 setManualAmountSold("");
+                setManualFee("");
               }}
               className="bg-blue-600 text-white px-5 py-2 font-bold mr-2 hover:bg-blue-700 transition"
             >
@@ -386,8 +396,8 @@ export default function EEDataAnalyzer() {
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold">Asset / Ticker</th>
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold">Buy Date</th>
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold">Sell Date</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty Matched</th>
-                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">SARS Category</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Qty</th>
+                    <th className="p-4 text-xs uppercase tracking-widest font-semibold">Details</th>
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold text-right">Realized P/L</th>
                     <th className="p-4 text-xs uppercase tracking-widest font-semibold text-center">Action</th>
                   </tr>
@@ -404,6 +414,7 @@ export default function EEDataAnalyzer() {
                            <div className="flex flex-col gap-1">
                                 <input type="number" placeholder="Amt Inv" value={manualAmountInvested} onChange={e => setManualAmountInvested(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full"/>
                                 <input type="number" placeholder="Amt Sold" value={manualAmountSold} onChange={e => setManualAmountSold(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full"/>
+                                <input type="number" placeholder="Fee" value={manualFee} onChange={e => setManualFee(parseFloat(e.target.value))} className="bg-[#0a1128] border border-yellow-500/50 p-1.5 rounded-sm w-full"/>
                            </div>
                         </td>
                         <td className="p-4 text-xs text-yellow-400/70 text-right uppercase">PENDING</td>
