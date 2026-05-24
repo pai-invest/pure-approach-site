@@ -32,6 +32,7 @@ interface PortfolioItem {
 export default function EEDataAnalyzer() {
   const [analyzedData, setAnalyzedData] = useState<RealizedTaxEvent[]>([]);
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -70,6 +71,7 @@ export default function EEDataAnalyzer() {
   };
 
   const processCSV = (text: string) => {
+    setIsAnalyzing(true);
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
     const allEvents: any[] = [];
@@ -82,13 +84,16 @@ export default function EEDataAnalyzer() {
       if (parts.length < 3) continue;
 
       const dateStr = parts[0].trim();
-      if (!dateStr || dateStr.length < 8) continue;
-      
       let comment = parts[1].replace(/^"|"$/g, "").trim(); 
       let amountStr = parts[2].trim().replace(",", "."); 
       const amount = parseFloat(amountStr) || 0;
       const date = new Date(dateStr.replace(/\//g, "-"));
-      if (isNaN(date.getTime())) continue;
+
+      // FIX: Capture invalid dates as "Missing Data" instead of skipping
+      if (isNaN(date.getTime()) || !dateStr) {
+         allEvents.push({ date: new Date(), action: "Invalid", asset: comment, qty: 0, amount, fee: 0, isInvalid: true });
+         continue;
+      }
 
       const commentLower = comment.toLowerCase();
       if (comment.startsWith("Bought ") || comment.startsWith("Sold ")) {
@@ -112,7 +117,9 @@ export default function EEDataAnalyzer() {
     const realized: RealizedTaxEvent[] = [];
 
     for (const e of allEvents) {
-      if (e.action === "Buy") {
+      if (e.isInvalid) {
+        realized.push({ id: Math.random().toString(), asset: e.asset, buyDate: "INVALID DATE", sellDate: e.date, qtySold: 0, unitSellPrice: 0, holdingDays: 0, category: "Missing Data", realizedPnL: 0, fee: 0 });
+      } else if (e.action === "Buy") {
         if (!lots.has(e.asset)) lots.set(e.asset, []);
         lots.get(e.asset)!.push({ date: e.date, qty: e.qty, unitCost: Math.abs(e.amount)/e.qty, remainingQty: e.qty, totalFee: e.fee });
       } else if (e.action === "Sell") {
@@ -142,6 +149,7 @@ export default function EEDataAnalyzer() {
     });
     setPortfolio(port);
     setAnalyzedData(realized.sort((a, b) => b.sellDate.getTime() - a.sellDate.getTime()));
+    setIsAnalyzing(false);
   };
 
   const exportReport = () => {
@@ -153,7 +161,7 @@ export default function EEDataAnalyzer() {
   };
 
   const saveManual = (id: string) => {
-    setAnalyzedData(prev => prev.map(t => t.id === id ? {...t, asset: manualAsset, buyDate: manualDate, sellDate: new Date(manualSellDate), qtySold: manualQty, realizedPnL: manualSold - manualInvested - manualFee, fee: manualFee} : t));
+    setAnalyzedData(prev => prev.map(t => t.id === id ? {...t, asset: manualAsset, buyDate: manualDate, sellDate: new Date(manualSellDate), qtySold: manualQty, realizedPnL: manualSold - manualInvested - manualFee, fee: manualFee, category: "Revenue"} : t));
     setEditingTradeId(null);
   };
 
@@ -196,8 +204,8 @@ export default function EEDataAnalyzer() {
           ) : (
             <tr key={t.id} className="border-b border-gray-800 text-sm">
                 <td className="p-4">{t.asset}</td>
-                <td className="p-4 text-[#8d99ae]">{t.buyDate.toString()}</td>
-                <td className="p-4 text-[#8d99ae]">{t.sellDate instanceof Date ? t.sellDate.toISOString().split('T')[0] : "—"}</td>
+                <td className="p-4 text-[#8d99ae]">{t.buyDate instanceof Date ? t.buyDate.toISOString().split('T')[0] : t.buyDate}</td>
+                <td className="p-4 text-[#8d99ae]">{t.sellDate.toISOString().split('T')[0]}</td>
                 <td className="p-4">{formatCurrency(t.realizedPnL)}</td>
                 <td className="p-4 text-center">{t.category === "Missing Data" && <button onClick={() => setEditingTradeId(t.id)} className="text-yellow-400 border px-2">ADD</button>}</td>
             </tr>
