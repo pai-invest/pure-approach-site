@@ -61,12 +61,13 @@ export default function EEDataAnalyzer() {
   const processCSV = (text: string) => {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
-    
-    // We process chronologically (oldest to newest) to correctly attribute fees
     const sortedLines = dataLines.sort((a, b) => new Date(a.split(";")[0]).getTime() - new Date(b.split(";")[0]).getTime());
 
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
     let currentEvent: any = null;
+
+    // Keywords to capture the 5 common fees: Commission, Clearing, VAT, SEC, FINRA/Tax
+    const feeKeywords = ["Commission", "Clearing", "VAT", "Fee", "Tax", "SEC", "FINRA"];
 
     for (const line of sortedLines) {
       const delimiter = line.includes(";") ? ";" : ",";
@@ -81,7 +82,7 @@ export default function EEDataAnalyzer() {
 
       const isBuy = comment.startsWith("Bought ");
       const isSell = comment.startsWith("Sold ");
-      const isFee = comment.includes("Commission") || comment.includes("Clearing") || comment.includes("VAT") || comment.includes("Fee") || comment.includes("Tax");
+      const isFee = feeKeywords.some(keyword => comment.includes(keyword));
 
       if (isBuy || isSell) {
         const action = isBuy ? "Buy" : "Sell";
