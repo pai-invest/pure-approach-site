@@ -44,6 +44,16 @@ export default function EEDataAnalyzer() {
   const [currency, setCurrency] = useState("ZAR");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const [editingTradeId, setEditingTradeId] = useState<string | null>(null);
+
+  // Manual Edit States
+  const [manualAsset, setManualAsset] = useState("");
+  const [manualDate, setManualDate] = useState<string>("");
+  const [manualSellDate, setManualSellDate] = useState<string>("");
+  const [manualAmountInvested, setManualAmountInvested] = useState<number | "">("");
+  const [manualQty, setManualQty] = useState<number | "">("");
+  const [manualAmountSold, setManualAmountSold] = useState<number | "">("");
+  const [manualFee, setManualFee] = useState<number | "">("");
 
   const filteredData = analyzedData.filter((trade) => {
     let isValid = true;
@@ -223,79 +233,137 @@ export default function EEDataAnalyzer() {
     setIsAnalyzing(false);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const startEditing = (trade: RealizedTaxEvent) => {
+    setEditingTradeId(trade.id);
+    setManualAsset(trade.asset);
+    setManualDate(trade.buyDate instanceof Date ? trade.buyDate.toISOString().split('T')[0] : "");
+    setManualSellDate(trade.sellDate.toISOString().split('T')[0]);
+    setManualAmountInvested("");
+    setManualQty(trade.qtySold);
+    setManualAmountSold("");
+    setManualFee(0);
+  };
 
-    setIsAnalyzing(true);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const text = evt.target?.result as string;
-        processCSV(text);
-      } catch (error) {
-        setIsAnalyzing(false);
+  const saveManualData = (tradeId: string) => {
+    if (!manualDate || !manualSellDate || manualAmountInvested === "" || manualAmountSold === "" || manualQty === "" || manualFee === "") {
+        alert("Please provide the Buy Date, Sell Date, Qty, Amount Invested, Amount Sold, and Fee.");
+        return;
+    }
+
+    const parsedBuyDate = new Date(manualDate);
+    const parsedSellDate = new Date(manualSellDate);
+    const qty = Number(manualQty);
+    const amountInvested = Number(manualAmountInvested);
+    const amountSold = Number(manualAmountSold);
+    const fee = Number(manualFee);
+
+    setAnalyzedData(prevData => prevData.map(trade => {
+      if (trade.id === tradeId) {
+        const holdingDays = Math.ceil(Math.abs(parsedSellDate.getTime() - parsedBuyDate.getTime()) / (1000 * 60 * 60 * 24));
+        const category = holdingDays >= 1095 ? "Capital" : "Revenue";
+        
+        return {
+          ...trade,
+          asset: manualAsset,
+          buyDate: parsedBuyDate,
+          sellDate: parsedSellDate,
+          qtySold: qty,
+          unitSellPrice: amountSold / qty,
+          holdingDays,
+          category,
+          realizedPnL: (amountSold - amountInvested) - fee,
+          fee: fee
+        };
       }
-    };
-    reader.readAsText(file);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+      return trade;
+    }));
+
+    setEditingTradeId(null);
+  };
+
+  const exportReport = () => {
+    const headers = ["Asset", "Buy Date", "Sell Date", "Qty", "Category", "PnL", "Fee"];
+    const rows = filteredData.map(t => [
+      `"${t.asset}"`, 
+      t.buyDate instanceof Date ? t.buyDate.toLocaleDateString() : t.buyDate, 
+      t.sellDate.toLocaleDateString(), 
+      t.qtySold.toFixed(4), 
+      t.category, 
+      t.realizedPnL.toFixed(2),
+      t.fee.toFixed(2)
+    ].join(","));
+    
+    const csvContent = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Tax_Report_${currency}.csv`;
+    a.click();
   };
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto bg-[#0a1128] text-[#e0e1dd] min-h-screen font-sans">
-        <h1 className="text-3xl font-bold text-[#c0c0c0] mb-8 uppercase tracking-widest">FIFO TAX ANALYZER</h1>
-        
-        <div className="flex gap-4 mb-8">
-            <button onClick={() => fileInputRef.current?.click()} className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold">UPLOAD CSV</button>
-            <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
+        <div className="flex justify-between items-center mb-8 border-b border-[#c0c0c0]/30 pb-4">
+            <h1 className="text-3xl font-bold text-[#c0c0c0] uppercase tracking-widest">FIFO TAX ANALYZER</h1>
+            <div className="flex gap-4">
+                <button onClick={exportReport} className="bg-sky-900 text-white px-5 py-2 font-bold hover:bg-sky-800 transition rounded-sm">EXPORT CSV</button>
+                <button onClick={() => fileInputRef.current?.click()} className="bg-[#c0c0c0] text-[#0a1128] px-5 py-2 font-bold hover:bg-white transition rounded-sm">UPLOAD CSV</button>
+                <input type="file" ref={fileInputRef} onChange={(e) => { const file = e.target.files?.[0]; if(file) { setIsAnalyzing(true); const reader = new FileReader(); reader.onload = (evt) => processCSV(evt.target?.result as string); reader.readAsText(file); } }} className="hidden" />
+            </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-[#081b2e] border border-sky-800 p-6 text-center">
-                <h3 className="text-xs uppercase text-sky-400">Revenue Losses</h3>
-                <p className="text-3xl text-red-400">{formatCurrency(revenueLoss)}</p>
-            </div>
-            <div className="bg-[#120f1a] border border-purple-900 p-6 text-center">
-                <h3 className="text-xs uppercase text-purple-400">Net Capital P/L</h3>
-                <p className="text-3xl text-green-400">{formatCurrency(netCapitalPnL)}</p>
-            </div>
-             <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 text-center">
-                <h3 className="text-xs uppercase text-[#c0c0c0]">Revenue Profits</h3>
-                <p className="text-3xl text-green-400">{formatCurrency(revenueProfit)}</p>
-            </div>
-            <div className="bg-[#14213d] border border-blue-500/30 p-6 text-center">
-                <h3 className="text-xs uppercase text-blue-400">Trading Net P/L</h3>
-                <p className="text-3xl text-green-400">{formatCurrency(netPnL)}</p>
-            </div>
+            <div className="bg-[#081b2e] border border-sky-800 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-sky-400">Revenue Losses</h3><p className="text-3xl text-red-400">{formatCurrency(revenueLoss)}</p></div>
+            <div className="bg-[#120f1a] border border-purple-900 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-purple-400">Net Capital P/L</h3><p className="text-3xl text-green-400">{formatCurrency(netCapitalPnL)}</p></div>
+            <div className="bg-[#0a1128] border border-[#c0c0c0]/30 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-[#c0c0c0]">Revenue Profits</h3><p className="text-3xl text-green-400">{formatCurrency(revenueProfit)}</p></div>
+            <div className="bg-[#14213d] border border-blue-500/30 p-6 text-center shadow-lg"><h3 className="text-xs uppercase text-blue-400">Trading Net P/L</h3><p className="text-3xl text-green-400">{formatCurrency(netPnL)}</p></div>
         </div>
 
-        <div className="overflow-x-auto bg-[#14213d] border border-[#c0c0c0]/20 mb-12">
+        <div className="overflow-x-auto bg-[#14213d] border border-[#c0c0c0]/20 mb-12 shadow-lg">
             <table className="w-full text-left">
-                <thead><tr className="bg-[#0a1128] text-[#c0c0c0] uppercase text-xs"><th className="p-4">Asset</th><th className="p-4">Buy Date</th><th className="p-4">Sell Date</th><th className="p-4">PnL</th></tr></thead>
+                <thead><tr className="bg-[#0a1128] text-[#c0c0c0] uppercase text-xs"><th className="p-4">Asset</th><th className="p-4">Buy Date</th><th className="p-4">Sell Date</th><th className="p-4">Qty</th><th className="p-4">Category</th><th className="p-4 text-right">Realized P/L</th><th className="p-4 text-center">Action</th></tr></thead>
                 <tbody>
-                    {filteredData.map((t, i) => (
-                        <tr key={i} className="border-b border-[#c0c0c0]/5 text-sm">
+                    {filteredData.map((t) => (
+                        editingTradeId === t.id ? (
+                            <tr key={`edit-${t.id}`} className="bg-yellow-900/10 border-b border-yellow-500/30">
+                                <td className="p-4"><input type="text" onChange={e => setManualAsset(e.target.value)} defaultValue={t.asset} className="bg-black p-1 w-full" /></td>
+                                <td className="p-4"><input type="date" onChange={e => setManualDate(e.target.value)} className="bg-black p-1 w-full" /></td>
+                                <td className="p-4"><input type="date" onChange={e => setManualSellDate(e.target.value)} className="bg-black p-1 w-full" /></td>
+                                <td className="p-4"><input type="number" onChange={e => setManualQty(Number(e.target.value))} className="bg-black p-1 w-16" /></td>
+                                <td className="p-4">—</td>
+                                <td className="p-4"><input type="number" onChange={e => setManualAmountInvested(Number(e.target.value))} placeholder="Amount" className="bg-black p-1 w-20" /></td>
+                                <td className="p-4 text-center"><button onClick={() => saveManualData(t.id)} className="bg-yellow-500 text-black px-3 py-1 font-bold">SAVE</button></td>
+                            </tr>
+                        ) : (
+                        <tr key={t.id} className="border-b border-[#c0c0c0]/5 text-sm hover:bg-[#1f2f54]/40">
                             <td className="p-4">{t.asset}</td>
-                            <td className="p-4">{t.buyDate.toString()}</td>
-                            <td className="p-4">{t.sellDate.toLocaleDateString()}</td>
-                            <td className="p-4 font-mono">{t.category !== "Other" ? formatCurrency(t.realizedPnL) : "—"}</td>
+                            <td className="p-4 text-[#8d99ae]">{t.buyDate.toString()}</td>
+                            <td className="p-4 text-[#8d99ae]">{t.sellDate instanceof Date ? t.sellDate.toLocaleDateString() : "—"}</td>
+                            <td className="p-4">{t.qtySold.toFixed(4)}</td>
+                            <td className="p-4"><span className={`px-2 py-1 text-xs uppercase font-bold rounded ${t.category === 'Capital' ? 'bg-purple-900' : 'bg-sky-900'}`}>{t.category}</span></td>
+                            <td className="p-4 text-right font-mono">{t.category !== "Other" ? formatCurrency(t.realizedPnL) : "—"}</td>
+                            <td className="p-4 text-center">
+                                {t.category === "Missing Data" && <button onClick={() => startEditing(t)} className="text-yellow-400 text-xs border border-yellow-400 px-2 py-1 rounded">ADD DATA</button>}
+                            </td>
                         </tr>
+                        )
                     ))}
                 </tbody>
             </table>
         </div>
 
         <div>
-            <h2 className="text-xl font-bold text-[#c0c0c0] uppercase mb-4">Open Portfolio</h2>
-            <table className="w-full text-left bg-[#14213d] border border-[#c0c0c0]/20">
+            <h2 className="text-xl font-bold text-[#c0c0c0] uppercase mb-4 tracking-wide">Open Portfolio</h2>
+            <table className="w-full text-left bg-[#14213d] border border-[#c0c0c0]/20 shadow-lg">
                 <thead><tr className="bg-[#0a1128] text-[#c0c0c0] uppercase text-xs"><th className="p-4">Asset</th><th className="p-4 text-right">Qty</th><th className="p-4 text-center">Action</th></tr></thead>
                 <tbody>
                     {portfolio.map((item, idx) => (
                         <tr key={idx} className="border-b border-[#c0c0c0]/5">
                             <td className="p-4">{item.asset}</td>
-                            <td className="p-4 text-right">{item.qty.toFixed(4)}</td>
+                            <td className="p-4 text-right font-mono">{item.qty.toFixed(4)}</td>
                             <td className="p-4 text-center">
-                                <button onClick={() => setIsSelling(item.asset)} className="bg-sky-900 px-3 py-1 text-xs rounded">SELL</button>
+                                <button onClick={() => setIsSelling(item.asset)} className="bg-sky-900 px-3 py-1 text-xs rounded hover:bg-sky-700">SELL</button>
                             </td>
                         </tr>
                     ))}
@@ -305,15 +373,16 @@ export default function EEDataAnalyzer() {
 
         {isSelling && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-                <div className="bg-[#14213d] p-6 border border-sky-500 rounded-sm">
-                    <h3 className="text-white mb-4">Record Sale for {isSelling}</h3>
-                    <input type="date" className="block w-full mb-2 bg-[#0a1128] p-2" onChange={e => setSellDate(e.target.value)} />
-                    <input type="number" placeholder="Qty" className="block w-full mb-2 bg-[#0a1128] p-2" onChange={e => setSellQty(Number(e.target.value))} />
-                    <input type="number" placeholder="Total Sale Price" className="block w-full mb-2 bg-[#0a1128] p-2" onChange={e => setSellPrice(Number(e.target.value))} />
-                    <input type="number" placeholder="Fees" className="block w-full mb-2 bg-[#0a1128] p-2" onChange={e => setSellFee(Number(e.target.value))} />
+                <div className="bg-[#14213d] p-8 border border-sky-500 rounded shadow-2xl w-96">
+                    <h3 className="text-white font-bold mb-4 uppercase">Record Sale: {isSelling}</h3>
+                    <label className="text-xs text-[#c0c0c0] block mb-1">Sale Date</label>
+                    <input type="date" className="block w-full mb-4 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellDate(e.target.value)} />
+                    <input type="number" placeholder="Quantity Sold" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellQty(Number(e.target.value))} />
+                    <input type="number" placeholder="Total Sale Amount" className="block w-full mb-2 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellPrice(Number(e.target.value))} />
+                    <input type="number" placeholder="Total Fees" className="block w-full mb-4 bg-[#0a1128] p-2 border border-sky-900" onChange={e => setSellFee(Number(e.target.value))} />
                     <div className="flex gap-2">
-                        <button onClick={() => { /* Add logic to push to realizedTrades */ setIsSelling(null); }} className="bg-sky-600 px-4 py-2">CONFIRM SALE</button>
-                        <button onClick={() => setIsSelling(null)} className="bg-gray-600 px-4 py-2">CANCEL</button>
+                        <button onClick={() => { setIsSelling(null); }} className="bg-sky-600 flex-1 py-2 font-bold uppercase text-sm">Confirm Sale</button>
+                        <button onClick={() => setIsSelling(null)} className="bg-gray-600 flex-1 py-2 font-bold uppercase text-sm">Cancel</button>
                     </div>
                 </div>
             </div>
