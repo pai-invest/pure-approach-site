@@ -61,8 +61,8 @@ export default function EEDataAnalyzer() {
   const processCSV = (text: string) => {
     const lines = text.split("\n");
     const dataLines = lines.slice(1).filter(l => l.trim() !== "");
-    // Removed the global sort to preserve Trade-Fee adjacency
     
+    // We process lines in their original order to maintain Trade-Fee adjacency
     const allEvents: { date: Date; action: string; asset: string; qty: number; amount: number; fee: number }[] = [];
     let currentEvent: any = null;
     const feeKeywords = ["Commission", "Clearing", "VAT", "Fee", "Tax", "SEC", "FINRA"];
@@ -99,7 +99,9 @@ export default function EEDataAnalyzer() {
           }
         }
       } else if (isFee && currentEvent) {
-        currentEvent.fee += Math.abs(amount);
+        // Debits (negative values) are added as costs (positive fee)
+        // Credits (positive values) are added as negative costs (discount)
+        currentEvent.fee += (-amount);
       }
     }
 
@@ -136,7 +138,10 @@ export default function EEDataAnalyzer() {
 
           const chunkCost = qtyToTake * lot.unitCost;
           const chunkProceeds = qtyToTake * unitSellPrice;
-          const realizedPnL = chunkProceeds - chunkCost - (event.fee * (qtyToTake / event.qty));
+          
+          // Allocate fees proportionally to the qty sold
+          const proportionalFee = event.fee * (qtyToTake / event.qty);
+          const realizedPnL = chunkProceeds - chunkCost - proportionalFee;
 
           realizedTrades.push({
             id: `${event.asset}-${event.date.getTime()}-${Math.random()}`,
@@ -148,7 +153,7 @@ export default function EEDataAnalyzer() {
             holdingDays,
             category,
             realizedPnL,
-            fee: event.fee * (qtyToTake / event.qty)
+            fee: proportionalFee
           });
         }
       }
